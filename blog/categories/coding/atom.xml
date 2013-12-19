@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[joakimbech.com]]></title>
-  <link href="http://Jyx.github.io/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Coding | joakimbech.com]]></title>
+  <link href="http://Jyx.github.io/blog/categories/coding/atom.xml" rel="self"/>
   <link href="http://Jyx.github.io/"/>
   <updated>2013-12-20T00:17:56+01:00</updated>
   <id>http://Jyx.github.io/</id>
@@ -45,15 +45,6 @@
     <link href="http://Jyx.github.io/blog/2010/04/25/my-coming-iphone-application/"/>
     <updated>2010-04-25T01:11:17+02:00</updated>
     <id>http://Jyx.github.io/blog/2010/04/25/my-coming-iphone-application</id>
-    <content type="html"><![CDATA[
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[What About Total Commander?]]></title>
-    <link href="http://Jyx.github.io/blog/2010/03/12/what-about-total-commander/"/>
-    <updated>2010-03-12T00:06:26+01:00</updated>
-    <id>http://Jyx.github.io/blog/2010/03/12/what-about-total-commander</id>
     <content type="html"><![CDATA[
 ]]></content>
   </entry>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Git | joakimbech.com]]></title>
+  <link href="http://Jyx.github.io/blog/categories/git/atom.xml" rel="self"/>
+  <link href="http://Jyx.github.io/"/>
+  <updated>2013-12-20T00:17:56+01:00</updated>
+  <id>http://Jyx.github.io/</id>
+  <author>
+    <name><![CDATA[Joakim Bech]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Apply Patches in Git]]></title>
+    <link href="http://Jyx.github.io/blog/2012/03/09/apply-patches-in-git/"/>
+    <updated>2012-03-09T00:16:48+01:00</updated>
+    <id>http://Jyx.github.io/blog/2012/03/09/apply-patches-in-git</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+</feed>
