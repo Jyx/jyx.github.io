@@ -9,8 +9,8 @@
   <meta name="author" content="Joakim Bech">
 
   
-  <meta name="description" content="
-">
+  <meta name="description" content="One common task that a developer has to do sooner or later is to apply a patch
+in Git. I have a simple scheme that I&rsquo;ve been using for a long &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -96,7 +96,84 @@
   </header>
 
 
-<div class="entry-content">
+<div class="entry-content"><p><img class="right" src="/images/git/logo_git.gif">
+One common task that a developer has to do sooner or later is to apply a patch
+in Git. I have a simple scheme that I&rsquo;ve been using for a long time and it is
+very seldom that I get into problem nowadays when I&rsquo;m doing patch work.</p>
+
+<!-- more -->
+
+
+<h3>The short version for the impatient</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>git am &lt; my_new_feature.patch
+</span><span class='line'><span class="nv">$ </span>git apply --reject --whitespace<span class="o">=</span>fix my_new_feature.patch
+</span><span class='line'><span class="nv">$ </span>git status
+</span><span class='line'><span class="nv">$ </span>vim my_conflicting_file.c*
+</span><span class='line'><span class="nv">$ </span>find . -name <span class="s2">&quot;*.rej&quot;</span> -exec rm -f <span class="o">{}</span> <span class="se">\;</span>
+</span><span class='line'><span class="nv">$ </span>git add .
+</span><span class='line'><span class="nv">$ </span>git am --resolved
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Long version for the one needing explanations to the steps</h3>
+
+<p>To start with I always first try applying the patch with git am, i.e.</p>
+
+<pre><code>$ git am &lt; my_new_feature.patch
+</code></pre>
+
+<p>Sometimes this is enough and the patch simply applies, however when it fails to
+apply I just continue writing.</p>
+
+<pre><code>$ git apply --reject --whitespace=fix my_new_feature.patch
+</code></pre>
+
+<p>This will force Git to apply as much as it can and for the rest of the hunks
+that it cannot merge it will produce files ending with .rej. So the next step I
+do after git apply is just to run</p>
+
+<pre><code>$ git status
+</code></pre>
+
+<p>And notice the untracked files ending in .rej. Now I know what files Git
+couldn&rsquo;t merge when applying the patch, so let&rsquo;s say that I have a file called
+my_conflicting_file.c which Git couldn&rsquo;t merge. To solve this I open it in my
+favorite editor by doing like this:</p>
+
+<pre><code>$ vim my_conflicting_file.c*
+</code></pre>
+
+<p>This will open both my_conflicting_file.c and my_conflicting_file.c.rej. I will
+split the window in vim (CTRL+W V), and then open the other file by typing :bp
+in vim. Now it is up to you as a developer to decicde what changes in the <em>.rej
+file should go into the conflicting file. I.e, what changes in
+my_conflicting_file.c.rej, should be in my_conflicting_file.c. Sometimes you
+will notice that you don&rsquo;t have to change anything at all and sometimes you will
+notice that you have to add or remove lines in the conflicting file. Don&rsquo;t
+forget to remove the + and/or &ndash; at the start of the lines in the </em>.rej file!
+When this step is done I delete all the *.rej files and then add the changes
+files to the index in Git. I.e:</p>
+
+<pre><code>$ find . -name "*.rej" -exec rm -f {} \;
+$ git add .
+</code></pre>
+
+<p>The last step you have to do before the patch have been merged is to tell git
+that the &ldquo;am&rdquo; that you started have been resolved.</p>
+
+<pre><code>$ git am --resolved
+</code></pre>
+
+<p>Patch work done! If you follow this scheme I&rsquo;m pretty sure that you will do fine
+in the future when applying patches.</p>
 </div>
 
 

@@ -4,7 +4,7 @@
   <title><![CDATA[joakimbech.com]]></title>
   <link href="http://Jyx.github.io/atom.xml" rel="self"/>
   <link href="http://Jyx.github.io/"/>
-  <updated>2013-12-20T00:17:56+01:00</updated>
+  <updated>2013-12-20T11:46:03+01:00</updated>
   <id>http://Jyx.github.io/</id>
   <author>
     <name><![CDATA[Joakim Bech]]></name>
@@ -18,7 +18,84 @@
     <link href="http://Jyx.github.io/blog/2012/03/09/apply-patches-in-git/"/>
     <updated>2012-03-09T00:16:48+01:00</updated>
     <id>http://Jyx.github.io/blog/2012/03/09/apply-patches-in-git</id>
-    <content type="html"><![CDATA[
+    <content type="html"><![CDATA[<p><img class="right" src="http://Jyx.github.io/images/git/logo_git.gif">
+One common task that a developer has to do sooner or later is to apply a patch
+in Git. I have a simple scheme that I&rsquo;ve been using for a long time and it is
+very seldom that I get into problem nowadays when I&rsquo;m doing patch work.</p>
+
+<!-- more -->
+
+
+<h3>The short version for the impatient</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>git am &lt; my_new_feature.patch
+</span><span class='line'><span class="nv">$ </span>git apply --reject --whitespace<span class="o">=</span>fix my_new_feature.patch
+</span><span class='line'><span class="nv">$ </span>git status
+</span><span class='line'><span class="nv">$ </span>vim my_conflicting_file.c*
+</span><span class='line'><span class="nv">$ </span>find . -name <span class="s2">&quot;*.rej&quot;</span> -exec rm -f <span class="o">{}</span> <span class="se">\;</span>
+</span><span class='line'><span class="nv">$ </span>git add .
+</span><span class='line'><span class="nv">$ </span>git am --resolved
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Long version for the one needing explanations to the steps</h3>
+
+<p>To start with I always first try applying the patch with git am, i.e.</p>
+
+<pre><code>$ git am &lt; my_new_feature.patch
+</code></pre>
+
+<p>Sometimes this is enough and the patch simply applies, however when it fails to
+apply I just continue writing.</p>
+
+<pre><code>$ git apply --reject --whitespace=fix my_new_feature.patch
+</code></pre>
+
+<p>This will force Git to apply as much as it can and for the rest of the hunks
+that it cannot merge it will produce files ending with .rej. So the next step I
+do after git apply is just to run</p>
+
+<pre><code>$ git status
+</code></pre>
+
+<p>And notice the untracked files ending in .rej. Now I know what files Git
+couldn&rsquo;t merge when applying the patch, so let&rsquo;s say that I have a file called
+my_conflicting_file.c which Git couldn&rsquo;t merge. To solve this I open it in my
+favorite editor by doing like this:</p>
+
+<pre><code>$ vim my_conflicting_file.c*
+</code></pre>
+
+<p>This will open both my_conflicting_file.c and my_conflicting_file.c.rej. I will
+split the window in vim (CTRL+W V), and then open the other file by typing :bp
+in vim. Now it is up to you as a developer to decicde what changes in the <em>.rej
+file should go into the conflicting file. I.e, what changes in
+my_conflicting_file.c.rej, should be in my_conflicting_file.c. Sometimes you
+will notice that you don&rsquo;t have to change anything at all and sometimes you will
+notice that you have to add or remove lines in the conflicting file. Don&rsquo;t
+forget to remove the + and/or &ndash; at the start of the lines in the </em>.rej file!
+When this step is done I delete all the *.rej files and then add the changes
+files to the index in Git. I.e:</p>
+
+<pre><code>$ find . -name "*.rej" -exec rm -f {} \;
+$ git add .
+</code></pre>
+
+<p>The last step you have to do before the patch have been merged is to tell git
+that the &ldquo;am&rdquo; that you started have been resolved.</p>
+
+<pre><code>$ git am --resolved
+</code></pre>
+
+<p>Patch work done! If you follow this scheme I&rsquo;m pretty sure that you will do fine
+in the future when applying patches.</p>
 ]]></content>
   </entry>
   
@@ -27,7 +104,136 @@
     <link href="http://Jyx.github.io/blog/2012/03/04/perl-pack-and-unpack/"/>
     <updated>2012-03-04T00:15:48+01:00</updated>
     <id>http://Jyx.github.io/blog/2012/03/04/perl-pack-and-unpack</id>
-    <content type="html"><![CDATA[
+    <content type="html"><![CDATA[<p><img class="right" src="http://Jyx.github.io/images/perlpap/logo_perl.jpg">
+When you have to read and write binary data using Perl, then you preferably use
+the built in functions pack and unpack. With the pack function you will create
+a string which will be different depending on what kind of template you provide
+to the pack function (the unpack does the same, but in the opposite direction).</p>
+
+<!-- more -->
+
+
+<p>I was writing a simple Perl script that was reading a binary file which
+contained data that originated from a c struct. I.e, I wanted to parse the
+binary file and print what the values would be if the binary file was read into
+the c struct.</p>
+
+<p>Let&rsquo;s say that the struct is on the format:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="k">struct</span> <span class="n">binary_data</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kt">uint32_t</span> <span class="n">a</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">uint32_t</span> <span class="n">b</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">uint8_t</span> <span class="n">c</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I.e, we have data consisting of 4 bytes for &ldquo;a&rdquo;, 4 bytes for &ldquo;b&rdquo; and 1 byte for
+&ldquo;c&rdquo;. Let us say that the binary files consist of the following values</p>
+
+<pre><code>a = 196 dec (0xC4 hex)
+b = 4293844428 dec (0xFFEEDDCC hex)
+c = 75 dec (0x4B hex)
+</code></pre>
+
+<p>then our binary file, &ldquo;binary_data.bin&rdquo; would contain this:</p>
+
+<pre><code>"c4 00 00 00 cc dd ee ff 4b"
+</code></pre>
+
+<p>To be able to read this back and print the values in decimal or hex, you simply
+start by reading the size of each element in the struct one by one and for each
+item you unpack the data according to the size of the element in the struct.
+For uint32_t you use &ldquo;L&rdquo; and for uint8_t &ldquo;C&rdquo;. A complete listing of the
+different templates (as they are called in Perl) could be found here. Be
+careful about little- vs big-endian when you select template.</p>
+
+<p>Below is a Perl script that both create the binary file, then read the data
+back from the file and print the values both in decimal and hex.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='perl'><span class='line'><span class="c1">#!/usr/bin/perl</span>
+</span><span class='line'><span class="k">use</span> <span class="n">strict</span><span class="p">;</span>
+</span><span class='line'><span class="k">use</span> <span class="n">warnings</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">binmode</span> <span class="n">FILE</span><span class="p">;</span>
+</span><span class='line'><span class="k">my</span> <span class="nv">$buf</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Write decimal values as binary data.</span>
+</span><span class='line'><span class="nb">open</span> <span class="n">FILE</span><span class="p">,</span> <span class="s">&quot;&gt;binary_data.bin&quot;</span> <span class="ow">or</span> <span class="nb">die</span> <span class="vg">$!</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nb">pack</span> <span class="s">&#39;L&#39;</span><span class="p">,</span> <span class="mi">196</span><span class="p">;</span>
+</span><span class='line'><span class="k">print</span> <span class="n">FILE</span> <span class="nv">$data</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$data</span> <span class="o">=</span> <span class="nb">pack</span> <span class="s">&#39;L&#39;</span><span class="p">,</span> <span class="mi">4293844428</span><span class="p">;</span>
+</span><span class='line'><span class="k">print</span> <span class="n">FILE</span> <span class="nv">$data</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$data</span> <span class="o">=</span> <span class="nb">pack</span> <span class="s">&#39;C&#39;</span><span class="p">,</span> <span class="mi">75</span><span class="p">;</span>
+</span><span class='line'><span class="k">print</span> <span class="n">FILE</span> <span class="nv">$data</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">close</span> <span class="n">FILE</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Read back binary data to decimal value.</span>
+</span><span class='line'><span class="nb">open</span> <span class="n">FILE</span><span class="p">,</span> <span class="s">&quot;binary_data.bin&quot;</span> <span class="ow">or</span> <span class="nb">die</span> <span class="vg">$!</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">read</span> <span class="n">FILE</span><span class="p">,</span> <span class="nv">$buf</span><span class="p">,</span> <span class="mi">4</span><span class="p">;</span>
+</span><span class='line'><span class="nv">$data</span> <span class="o">=</span> <span class="nb">unpack</span> <span class="s">&#39;L&#39;</span><span class="p">,</span> <span class="nv">$buf</span><span class="p">;</span>
+</span><span class='line'><span class="k">print</span> <span class="nv">$data</span> <span class="o">.</span> <span class="s">&quot; - &quot;</span> <span class="o">.</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s">&quot;%x&quot;</span><span class="p">,</span> <span class="nv">$data</span><span class="p">)</span> <span class="o">.</span> <span class="s">&quot;\n&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">read</span> <span class="n">FILE</span><span class="p">,</span> <span class="nv">$buf</span><span class="p">,</span> <span class="mi">4</span><span class="p">;</span>
+</span><span class='line'><span class="nv">$data</span> <span class="o">=</span> <span class="nb">unpack</span> <span class="s">&#39;L&#39;</span><span class="p">,</span> <span class="nv">$buf</span><span class="p">;</span>
+</span><span class='line'><span class="k">print</span> <span class="nv">$data</span> <span class="o">.</span> <span class="s">&quot; - &quot;</span> <span class="o">.</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s">&quot;%x&quot;</span><span class="p">,</span> <span class="nv">$data</span><span class="p">)</span> <span class="o">.</span> <span class="s">&quot;\n&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">read</span> <span class="n">FILE</span><span class="p">,</span> <span class="nv">$buf</span><span class="p">,</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'><span class="nv">$data</span> <span class="o">=</span> <span class="nb">unpack</span> <span class="s">&#39;C&#39;</span><span class="p">,</span> <span class="nv">$buf</span><span class="p">;</span>
+</span><span class='line'><span class="k">print</span> <span class="nv">$data</span> <span class="o">.</span> <span class="s">&quot; - &quot;</span> <span class="o">.</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s">&quot;%x&quot;</span><span class="p">,</span> <span class="nv">$data</span><span class="p">)</span> <span class="o">.</span> <span class="s">&quot;\n&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">close</span> <span class="n">FILE</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
 ]]></content>
   </entry>
   
@@ -36,7 +242,155 @@
     <link href="http://Jyx.github.io/blog/2010/08/05/using-libcurl-with-minimal-dependencies/"/>
     <updated>2010-08-05T01:13:15+02:00</updated>
     <id>http://Jyx.github.io/blog/2010/08/05/using-libcurl-with-minimal-dependencies</id>
-    <content type="html"><![CDATA[
+    <content type="html"><![CDATA[<p><img class="right" src="http://Jyx.github.io/images/libcurldep/logo_curl-200x150.jpg">
+For an ongoing project I needed to retrieve webpages from my C-program and
+first I used sockets directly, but then I thought why not try use libcurl? If I
+could use libcurl and link it statically then I would get the good features
+from libcurl, but still could make my application stand alone.</p>
+
+<!-- more -->
+
+
+<p>With my current setup running Debian (Lenny), I tried to just apt-get the libraries
+(libcurl4-openssl-dev) and build using those libraries That went fine until I
+tried to link them statically with my application. After reading different mail
+archives, forum and tried on my own I got my application to link (static) with
+libcurl. Basically what I needed to do was.</p>
+
+<ul>
+<li>Download libcurl source</li>
+<li>Compile libcurl myself (disable one define, more about that below).</li>
+<li>Point to my own built libcurl.a library when building my own application.</li>
+</ul>
+
+
+<p>So to save some headache for myself next time I want to do it or for someone
+else reading this I&rsquo;ve listed the steps I had to do to get this to work.</p>
+
+<h3>Download libcurl source</h3>
+
+<p>As of writing this, the latest version of libcurl was 7.21.0 so I downloaded
+and unpacked the source.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>wget http://curl.haxx.se/download/curl-7.21.0.tar.bz2
+</span><span class='line'>tar xjvf curl-7.21.0.tar.bz2
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Compile libcurl</h3>
+
+<p>Next it was time to run ./configure and make. Here I basically disabled
+everything for libcurl except HTTP and FILE.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>./configure --prefix<span class="o">=</span><span class="nv">$HOME</span>/devel/libcurl --disable-dict --disable-ftp --disable-imap --disable-ldap --disable-ldaps --disable-pop3 --disable-proxy --disable-rtsp --disable-shared --disable-smtp --disable-telnet --disable-tftp --disable-zlib --without-ca-bundle --without-gnutls --without-libidn --without-librtmp --without-libssh2 --without-nss --without-ssl --without-zlib
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Edit the file lib/curl_config.h which is generated during the configure step.
+In this file we uncomment the line saying</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cm">/* Define to 1 if you have the clock_gettime function and monotonic timer. */</span>
+</span><span class='line'><span class="c1">//#define HAVE_CLOCK_GETTIME_MONOTONIC 1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If I didn&rsquo;t do this, then I would have a dependency to librt which I didn&rsquo;t want to.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>make
+</span><span class='line'>make install
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now I was done with libcurl, next I should use this library in my application.</p>
+
+<h3>Build the application using libcurl</h3>
+
+<p>To make things simple when describing this I instead use the file
+<a href="http://curl.haxx.se/libcurl/c/simple.html">simple.c</a>
+which is found on <a href="http://curl.haxx.se/libcurl">libcurl&rsquo;s</a> site.</p>
+
+<p>In <a href="http://Jyx.github.io/downloads/libcurldep/simple_libcurl.tar.gz">simple_libcurl.tar.gz</a> I&rsquo;ve
+put together the source and a Makefile which builds using the library just
+created. The magick is the LDFLAGS line used in the linking step on line 12 and
+24 below. I.e. on line 12 I had have to point the the folder where the library
+is located that I had built myself (-L/path/to/my/libcurl.a) and I still needed
+to tell the linker that I wanted to use libcurl, hence the -lcurl parameter.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='make'><span class='line'><span class="nv">SRCDIR</span>   <span class="o">:=</span> src
+</span><span class='line'><span class="nv">OBJDIR</span>    <span class="o">:=</span> obj
+</span><span class='line'><span class="nv">SRC</span>       <span class="o">:=</span> <span class="k">$(</span>patsubst <span class="k">$(</span>SRCDIR<span class="k">)</span>/%.c, %.c, <span class="k">$(</span>wildcard <span class="k">$(</span>SRCDIR<span class="k">)</span>/*.c<span class="k">))</span>
+</span><span class='line'><span class="nv">OBJS</span>  <span class="o">:=</span> <span class="k">$(</span>addprefix <span class="k">$(</span>OBJDIR<span class="k">)</span>/, <span class="k">$(</span>patsubst %.c, %.o, <span class="k">$(</span>SRC<span class="k">)))</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">INCDIR</span>    <span class="o">:=</span> inc
+</span><span class='line'>
+</span><span class='line'><span class="nv">CC</span>        <span class="o">:=</span> gcc
+</span><span class='line'><span class="nv">CFLAGS</span>    <span class="o">+=</span> <span class="k">$(</span>addprefix -I, <span class="k">$(</span>INCDIR<span class="k">))</span>
+</span><span class='line'><span class="nv">CFLAGS</span>    <span class="o">+=</span> -I/home/jyx/devel/libcurl/include
+</span><span class='line'>
+</span><span class='line'><span class="nv">LDFLAGS</span>   <span class="o">:=</span> -L/home/jyx/devel/libcurl/lib -lcurl
+</span><span class='line'>
+</span><span class='line'><span class="nf">.PHONY </span><span class="o">:</span> <span class="m">all clean</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">all</span><span class="o">:</span> <span class="m">main</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">$(</span>OBJDIR<span class="k">)</span>/%.o: <span class="k">$(</span>SRCDIR<span class="k">)</span>/%.c
+</span><span class='line'>  @echo <span class="s2">&quot; (CC)  $&lt;&quot;</span>
+</span><span class='line'>  @<span class="k">$(</span>CC<span class="k">)</span> <span class="k">$(</span>CFLAGS<span class="k">)</span> -c <span class="nv">$&lt;</span> -o <span class="nv">$@</span>
+</span><span class='line'>
+</span><span class='line'>main: <span class="k">$(</span>OBJS<span class="k">)</span>
+</span><span class='line'>  @echo <span class="s2">&quot;Create binary: $@&quot;</span>
+</span><span class='line'>  @<span class="k">$(</span>CC<span class="k">)</span> -o main <span class="nv">$+</span> <span class="k">$(</span>LDFLAGS<span class="k">)</span>
+</span><span class='line'>
+</span><span class='line'>clean:
+</span><span class='line'>  rm -f <span class="k">$(</span>OBJDIR<span class="k">)</span>/* main
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When this is achieved, then you have a quite clean binary when it comes to
+dependencies. In the example code in simple_libcurl I now have these
+dependencies on a machine running Debian (Lenny).</p>
+
+<pre><code>$ ldd main
+    linux-vdso.so.1 =&gt;  (0x00007f157db66000)
+    libc.so.6 =&gt; /lib/libc.so.6 (0x00007f157d5f9000)
+    /lib64/ld-linux-x86-64.so.2 (0x00007f157d94c000)
+</code></pre>
+
+<p>Have fun with libcurl!</p>
 ]]></content>
   </entry>
   
@@ -45,7 +399,15 @@
     <link href="http://Jyx.github.io/blog/2010/04/25/my-coming-iphone-application/"/>
     <updated>2010-04-25T01:11:17+02:00</updated>
     <id>http://Jyx.github.io/blog/2010/04/25/my-coming-iphone-application</id>
-    <content type="html"><![CDATA[
+    <content type="html"><![CDATA[<p>I just want to show an early screenshot of my coming iPhone application that
+I&rsquo;m currently is writing. I do not want to say to much about what purpose it
+should fulfill, but it&rsquo;s kind of a maths / algorithm / practice application.
+Below is screenshot of how it (most likely) will look.</p>
+
+<!-- more -->
+
+
+<p><img src="http://Jyx.github.io/images/iphonebd//bd_preview.jpg"></p>
 ]]></content>
   </entry>
   
@@ -54,7 +416,141 @@
     <link href="http://Jyx.github.io/blog/2010/03/12/what-about-total-commander/"/>
     <updated>2010-03-12T00:06:26+01:00</updated>
     <id>http://Jyx.github.io/blog/2010/03/12/what-about-total-commander</id>
-    <content type="html"><![CDATA[
+    <content type="html"><![CDATA[<p><img class="right" src="http://Jyx.github.io/images/totcmd/logo_tc.jpg">
+As my first post on my new site I&rsquo;ll start by talking about Total Commander. I
+have been using this wonderful tools since I think I got my first PC. Back then
+it was called Windows Commander. So what is it that makes this tool so
+wonderful?</p>
+
+<!-- more -->
+
+
+<p>Well, if you just install it and start it you maybe won&rsquo;t be that
+impressed. It has a quite old and perhaps boring look. But, if I can choose
+between good looking tool without any features (Windows Explorer) and a not so
+good looking tool with almost any features you can think of that is needed or
+could be nice to have when it comes to file handling on a computer. Then I
+choose the latter one. Which, in this case is Total Commander.</p>
+
+<p>So, what do you normally do with your files on your computer? For a normal user
+you open files and maybe move files. That might be it for a big part of the
+population. But if you are a slightly more advanced user? Then you might need to
+duplicate files, pack/unpack files. You maybe want to filter the files so you
+only will se files matching a certain pattern. You maybe want to synchronize
+your files on a backup drive? Want to syntax hi-light files with certain name?
+Copy file names with or without full path to clipboard? All of this and much
+more you can do with Total Commander and as a good bonus there are quite easy
+keyboard shortcuts for doing that. So you don&rsquo;t have to move one of you hands
+between the keyboard and the mouse all the time.</p>
+
+<h3>The look</h3>
+
+<p>Total Commander is  composed as one main window with a split pane. First time I
+saw this was back in time when Amiga 500 was a popular computer. I&rsquo;m thinking of
+the file manager <a href="http://en.wikipedia.org/wiki/Directory_Opus">Directory Opus</a>.
+Is this a good or a bad thing? Well, since it still exists and seems to be quite
+popular among people that have some higher demand on file exploring tool than
+the average user have, then I think we can say, yes it&rsquo;s a good thing. To be
+honest it&rsquo;s actually very good. You have two panes open all the time within the
+same program, so you can very easy move, copy files etc. Since quite some time
+ago Total Commander also supports tabs. Hence you can have multiple tabs for
+both panes. You jump between the panes by simply pressing TAB and you jump
+between tabs in the panes by pressing CTRL + TAB.</p>
+
+<h3>Renaming on steroids</h3>
+
+<p>There&rsquo;s something called Multi-Rename Tool in Total Commander which is quite
+handy. It can rename a lot of files for you in very few clicks. Imagine you have
+a folder with following files:</p>
+
+<pre><code>a_foo.zip
+b_foo.zip
+c_foo.zip
+</code></pre>
+
+<p>Now you wan&rsquo;t to rename those to:</p>
+
+<pre><code>01_a.zip
+02_b.zip
+03_c.zip
+</code></pre>
+
+<p>In Total Commander you simply mark the files and press CTRL + M and the
+Multi-Rename Tool will launch. In this particular example you prepend the
+&ldquo;Rename mask: file name&rdquo; with &ldquo;01_&rdquo; and in the &ldquo;Search &amp; Replace&rdquo; you write
+&ldquo;_foo&rdquo; in the &ldquo;Search For&rdquo;, like shown in the screenshot below.</p>
+
+<p><img src="http://Jyx.github.io/images/totcmd/tc_multi_rename_tool.png"></p>
+
+<p>You can just imaging how helpful this is when you are renaming a couple of
+hundred jpg files taken with your digital camera where you often have quite
+cryptic naming as default.</p>
+
+<h3>Shortcuts and some more features</h3>
+
+<p>I could explain a bunch of features like the Multi-Rename Tool in detail. But
+some features are very simple to use, so I list a couple of my daily things I do
+using Total Commander.</p>
+
+<p>Let&rsquo;s say you have c:\a in the left pane and c:\b in the right pane.</p>
+
+<p>Mark files? Use space or SHIFT + PgUp/PgDown or CTRL + plus or simply press plus
+and make a filter out the files.</p>
+
+<p>Want to move files from folder a to b? Mark the files you want to move and press
+F6.</p>
+
+<p>Rename a file? SHIFT + F6. This is a bit odd, since most other program have F2
+as rename button.</p>
+
+<p>Pack files? Mark the files, ALT + F5, then ENTER. Files are now packed and put
+into the folder on the other pane.</p>
+
+<p>Unpack files? Mark the files, ALT + F9 then ENTER. Files are unpacked to the
+other pane.</p>
+
+<p>Browse packed files? Simply press ENTER on a zip file for example and you will
+see the content immediately without unpacking it. Very useful! Note that you can
+copy single files when in this state. This is also very useful.</p>
+
+<p>Find files? Alt + F7, then just search. Note the &ldquo;Search subdirectories&rdquo; which
+is very useful of you have a big project with a lot of subfolder but you know
+that the file you are searching is not that deep down into the folder structure.
+Then you use this to select how many subdirectories you want to traverse. Very
+useful, especially in combination with the &ldquo;Find text&rdquo; in the same window.</p>
+
+<p>Go to folders that you have been in? Press ALT + down and you get a neat list
+for the last ~30 folders you have been in. Note that this is unique for the
+pane. I.e. one for the left pane and one for the right pane.</p>
+
+<p>Run a command? Just type it and press ENTER. For example I want command prompt.
+I simply type &ldquo;cmd&rdquo; then press enter. Voila I get a command prompt which have
+the path same to my current folder in my pane.</p>
+
+<p>Mark a folder as favorite? Press CTRL + d then a. Type any name you like to
+refer to this folder.</p>
+
+<p>Go to a favorite folder? Press CTRL + d and select your favorite folder.</p>
+
+<p>Do a mouse right click? Press SHIFT + F10.</p>
+
+<p>View content of a file? Press F3.</p>
+
+<p>Edit a file? Press F4.</p>
+
+<h3>Should you buy Total Commander?</h3>
+
+<p>Well, at least download it asap and start using it. If you just want to try it,
+you will only get one(!) nag screen when starting the program. Then you can
+leave it running for hours, days, weeks, years with full functionality and no
+more nag screens. But, when you notice that you cannot really live without this
+tool, then I think you should register the program. Christian Ghisler (the
+author) deserves money for this great tool and he has given free updates since I
+registered it, which was quite long time ago. As the headline says, I think
+Microsoft should buy this tool/company and replace Windows Explorer with Total
+Commander. Thanks!</p>
+
+<p>Link to the official site: <a href="http://www.ghisler.com/">http://www.ghisler.com/</a></p>
 ]]></content>
   </entry>
   

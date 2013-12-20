@@ -9,8 +9,8 @@
   <meta name="author" content="Joakim Bech">
 
   
-  <meta name="description" content="
-">
+  <meta name="description" content="When you have to read and write binary data using Perl, then you preferably use
+the built in functions pack and unpack. With the pack function you &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -96,7 +96,136 @@
   </header>
 
 
-<div class="entry-content">
+<div class="entry-content"><p><img class="right" src="/images/perlpap/logo_perl.jpg">
+When you have to read and write binary data using Perl, then you preferably use
+the built in functions pack and unpack. With the pack function you will create
+a string which will be different depending on what kind of template you provide
+to the pack function (the unpack does the same, but in the opposite direction).</p>
+
+<!-- more -->
+
+
+<p>I was writing a simple Perl script that was reading a binary file which
+contained data that originated from a c struct. I.e, I wanted to parse the
+binary file and print what the values would be if the binary file was read into
+the c struct.</p>
+
+<p>Let&rsquo;s say that the struct is on the format:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="k">struct</span> <span class="n">binary_data</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kt">uint32_t</span> <span class="n">a</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">uint32_t</span> <span class="n">b</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">uint8_t</span> <span class="n">c</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I.e, we have data consisting of 4 bytes for &ldquo;a&rdquo;, 4 bytes for &ldquo;b&rdquo; and 1 byte for
+&ldquo;c&rdquo;. Let us say that the binary files consist of the following values</p>
+
+<pre><code>a = 196 dec (0xC4 hex)
+b = 4293844428 dec (0xFFEEDDCC hex)
+c = 75 dec (0x4B hex)
+</code></pre>
+
+<p>then our binary file, &ldquo;binary_data.bin&rdquo; would contain this:</p>
+
+<pre><code>"c4 00 00 00 cc dd ee ff 4b"
+</code></pre>
+
+<p>To be able to read this back and print the values in decimal or hex, you simply
+start by reading the size of each element in the struct one by one and for each
+item you unpack the data according to the size of the element in the struct.
+For uint32_t you use &ldquo;L&rdquo; and for uint8_t &ldquo;C&rdquo;. A complete listing of the
+different templates (as they are called in Perl) could be found here. Be
+careful about little- vs big-endian when you select template.</p>
+
+<p>Below is a Perl script that both create the binary file, then read the data
+back from the file and print the values both in decimal and hex.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='perl'><span class='line'><span class="c1">#!/usr/bin/perl</span>
+</span><span class='line'><span class="k">use</span> <span class="n">strict</span><span class="p">;</span>
+</span><span class='line'><span class="k">use</span> <span class="n">warnings</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">binmode</span> <span class="n">FILE</span><span class="p">;</span>
+</span><span class='line'><span class="k">my</span> <span class="nv">$buf</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Write decimal values as binary data.</span>
+</span><span class='line'><span class="nb">open</span> <span class="n">FILE</span><span class="p">,</span> <span class="s">&quot;&gt;binary_data.bin&quot;</span> <span class="ow">or</span> <span class="nb">die</span> <span class="vg">$!</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">my</span> <span class="nv">$data</span> <span class="o">=</span> <span class="nb">pack</span> <span class="s">&#39;L&#39;</span><span class="p">,</span> <span class="mi">196</span><span class="p">;</span>
+</span><span class='line'><span class="k">print</span> <span class="n">FILE</span> <span class="nv">$data</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$data</span> <span class="o">=</span> <span class="nb">pack</span> <span class="s">&#39;L&#39;</span><span class="p">,</span> <span class="mi">4293844428</span><span class="p">;</span>
+</span><span class='line'><span class="k">print</span> <span class="n">FILE</span> <span class="nv">$data</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$data</span> <span class="o">=</span> <span class="nb">pack</span> <span class="s">&#39;C&#39;</span><span class="p">,</span> <span class="mi">75</span><span class="p">;</span>
+</span><span class='line'><span class="k">print</span> <span class="n">FILE</span> <span class="nv">$data</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">close</span> <span class="n">FILE</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Read back binary data to decimal value.</span>
+</span><span class='line'><span class="nb">open</span> <span class="n">FILE</span><span class="p">,</span> <span class="s">&quot;binary_data.bin&quot;</span> <span class="ow">or</span> <span class="nb">die</span> <span class="vg">$!</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">read</span> <span class="n">FILE</span><span class="p">,</span> <span class="nv">$buf</span><span class="p">,</span> <span class="mi">4</span><span class="p">;</span>
+</span><span class='line'><span class="nv">$data</span> <span class="o">=</span> <span class="nb">unpack</span> <span class="s">&#39;L&#39;</span><span class="p">,</span> <span class="nv">$buf</span><span class="p">;</span>
+</span><span class='line'><span class="k">print</span> <span class="nv">$data</span> <span class="o">.</span> <span class="s">&quot; - &quot;</span> <span class="o">.</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s">&quot;%x&quot;</span><span class="p">,</span> <span class="nv">$data</span><span class="p">)</span> <span class="o">.</span> <span class="s">&quot;\n&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">read</span> <span class="n">FILE</span><span class="p">,</span> <span class="nv">$buf</span><span class="p">,</span> <span class="mi">4</span><span class="p">;</span>
+</span><span class='line'><span class="nv">$data</span> <span class="o">=</span> <span class="nb">unpack</span> <span class="s">&#39;L&#39;</span><span class="p">,</span> <span class="nv">$buf</span><span class="p">;</span>
+</span><span class='line'><span class="k">print</span> <span class="nv">$data</span> <span class="o">.</span> <span class="s">&quot; - &quot;</span> <span class="o">.</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s">&quot;%x&quot;</span><span class="p">,</span> <span class="nv">$data</span><span class="p">)</span> <span class="o">.</span> <span class="s">&quot;\n&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">read</span> <span class="n">FILE</span><span class="p">,</span> <span class="nv">$buf</span><span class="p">,</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'><span class="nv">$data</span> <span class="o">=</span> <span class="nb">unpack</span> <span class="s">&#39;C&#39;</span><span class="p">,</span> <span class="nv">$buf</span><span class="p">;</span>
+</span><span class='line'><span class="k">print</span> <span class="nv">$data</span> <span class="o">.</span> <span class="s">&quot; - &quot;</span> <span class="o">.</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s">&quot;%x&quot;</span><span class="p">,</span> <span class="nv">$data</span><span class="p">)</span> <span class="o">.</span> <span class="s">&quot;\n&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">close</span> <span class="n">FILE</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
 </div>
 
 
