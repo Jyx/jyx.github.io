@@ -1,39 +1,39 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://Jyx.github.io/blog/2010/03/12/what-about-total-commander/</loc>
+        <loc>http://jyx.github.io/blog/2010/03/12/what-about-total-commander/</loc>
         <lastmod>2013-12-20T11:44:47+01:00</lastmod>
     </url>
     <url>
-        <loc>http://Jyx.github.io/blog/2010/04/25/my-coming-iphone-application/</loc>
+        <loc>http://jyx.github.io/blog/2010/04/25/my-coming-iphone-application/</loc>
         <lastmod>2013-12-20T11:07:50+01:00</lastmod>
     </url>
     <url>
-        <loc>http://Jyx.github.io/blog/2010/08/05/using-libcurl-with-minimal-dependencies/</loc>
+        <loc>http://jyx.github.io/blog/2010/08/05/using-libcurl-with-minimal-dependencies/</loc>
         <lastmod>2013-12-20T11:45:37+01:00</lastmod>
     </url>
     <url>
-        <loc>http://Jyx.github.io/blog/2012/03/04/perl-pack-and-unpack/</loc>
+        <loc>http://jyx.github.io/blog/2012/03/04/perl-pack-and-unpack/</loc>
         <lastmod>2013-12-20T11:39:04+01:00</lastmod>
     </url>
     <url>
-        <loc>http://Jyx.github.io/blog/2012/03/09/apply-patches-in-git/</loc>
+        <loc>http://jyx.github.io/blog/2012/03/09/apply-patches-in-git/</loc>
         <lastmod>2013-12-20T11:43:45+01:00</lastmod>
     </url>
     <url>
-        <loc>http://Jyx.github.io/about/</loc>
+        <loc>http://jyx.github.io/about/</loc>
         <lastmod>2013-12-19T23:52:16+01:00</lastmod>
     </url>
     <url>
-        <loc>http://Jyx.github.io/robots.txt</loc>
+        <loc>http://jyx.github.io/robots.txt</loc>
         <lastmod>2013-12-19T23:15:49+01:00</lastmod>
     </url>
     <url>
-        <loc>http://Jyx.github.io/</loc>
+        <loc>http://jyx.github.io/</loc>
         <lastmod>2013-12-20T11:45:37+01:00</lastmod>
     </url>
     <url>
-        <loc>http://Jyx.github.io/blog/archives/</loc>
+        <loc>http://jyx.github.io/blog/archives/</loc>
         <lastmod>2013-12-20T11:45:37+01:00</lastmod>
     </url>
 </urlset>

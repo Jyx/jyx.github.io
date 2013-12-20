@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://Jyx.github.io/sitemap.xml 
+Sitemap: http://jyx.github.io/sitemap.xml 

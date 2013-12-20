@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[joakimbech.com]]></title>
-  <link href="http://Jyx.github.io/atom.xml" rel="self"/>
-  <link href="http://Jyx.github.io/"/>
-  <updated>2013-12-20T11:46:03+01:00</updated>
-  <id>http://Jyx.github.io/</id>
+  <link href="http://jyx.github.io/atom.xml" rel="self"/>
+  <link href="http://jyx.github.io/"/>
+  <updated>2013-12-20T15:01:30+01:00</updated>
+  <id>http://jyx.github.io/</id>
   <author>
     <name><![CDATA[Joakim Bech]]></name>
     
@@ -15,10 +15,10 @@
   
   <entry>
     <title type="html"><![CDATA[Apply Patches in Git]]></title>
-    <link href="http://Jyx.github.io/blog/2012/03/09/apply-patches-in-git/"/>
+    <link href="http://jyx.github.io/blog/2012/03/09/apply-patches-in-git/"/>
     <updated>2012-03-09T00:16:48+01:00</updated>
-    <id>http://Jyx.github.io/blog/2012/03/09/apply-patches-in-git</id>
-    <content type="html"><![CDATA[<p><img class="right" src="http://Jyx.github.io/images/git/logo_git.gif">
+    <id>http://jyx.github.io/blog/2012/03/09/apply-patches-in-git</id>
+    <content type="html"><![CDATA[<p><img class="right" src="http://jyx.github.io/images/git/logo_git.gif">
 One common task that a developer has to do sooner or later is to apply a patch
 in Git. I have a simple scheme that I&rsquo;ve been using for a long time and it is
 very seldom that I get into problem nowadays when I&rsquo;m doing patch work.</p>
@@ -101,10 +101,10 @@ in the future when applying patches.</p>
   
   <entry>
     <title type="html"><![CDATA[Perl Pack and Unpack]]></title>
-    <link href="http://Jyx.github.io/blog/2012/03/04/perl-pack-and-unpack/"/>
+    <link href="http://jyx.github.io/blog/2012/03/04/perl-pack-and-unpack/"/>
     <updated>2012-03-04T00:15:48+01:00</updated>
-    <id>http://Jyx.github.io/blog/2012/03/04/perl-pack-and-unpack</id>
-    <content type="html"><![CDATA[<p><img class="right" src="http://Jyx.github.io/images/perlpap/logo_perl.jpg">
+    <id>http://jyx.github.io/blog/2012/03/04/perl-pack-and-unpack</id>
+    <content type="html"><![CDATA[<p><img class="right" src="http://jyx.github.io/images/perlpap/logo_perl.jpg">
 When you have to read and write binary data using Perl, then you preferably use
 the built in functions pack and unpack. With the pack function you will create
 a string which will be different depending on what kind of template you provide
@@ -239,10 +239,10 @@ back from the file and print the values both in decimal and hex.</p>
   
   <entry>
     <title type="html"><![CDATA[Using Libcurl With Minimal Dependencies]]></title>
-    <link href="http://Jyx.github.io/blog/2010/08/05/using-libcurl-with-minimal-dependencies/"/>
+    <link href="http://jyx.github.io/blog/2010/08/05/using-libcurl-with-minimal-dependencies/"/>
     <updated>2010-08-05T01:13:15+02:00</updated>
-    <id>http://Jyx.github.io/blog/2010/08/05/using-libcurl-with-minimal-dependencies</id>
-    <content type="html"><![CDATA[<p><img class="right" src="http://Jyx.github.io/images/libcurldep/logo_curl-200x150.jpg">
+    <id>http://jyx.github.io/blog/2010/08/05/using-libcurl-with-minimal-dependencies</id>
+    <content type="html"><![CDATA[<p><img class="right" src="http://jyx.github.io/images/libcurldep/logo_curl-200x150.jpg">
 For an ongoing project I needed to retrieve webpages from my C-program and
 first I used sockets directly, but then I thought why not try use libcurl? If I
 could use libcurl and link it statically then I would get the good features
@@ -316,7 +316,7 @@ In this file we uncomment the line saying</p>
 <a href="http://curl.haxx.se/libcurl/c/simple.html">simple.c</a>
 which is found on <a href="http://curl.haxx.se/libcurl">libcurl&rsquo;s</a> site.</p>
 
-<p>In <a href="http://Jyx.github.io/downloads/libcurldep/simple_libcurl.tar.gz">simple_libcurl.tar.gz</a> I&rsquo;ve
+<p>In <a href="http://jyx.github.io/downloads/libcurldep/simple_libcurl.tar.gz">simple_libcurl.tar.gz</a> I&rsquo;ve
 put together the source and a Makefile which builds using the library just
 created. The magick is the LDFLAGS line used in the linking step on line 12 and
 24 below. I.e. on line 12 I had have to point the the folder where the library
@@ -396,9 +396,9 @@ dependencies on a machine running Debian (Lenny).</p>
   
   <entry>
     <title type="html"><![CDATA[My Coming iPhone Application]]></title>
-    <link href="http://Jyx.github.io/blog/2010/04/25/my-coming-iphone-application/"/>
+    <link href="http://jyx.github.io/blog/2010/04/25/my-coming-iphone-application/"/>
     <updated>2010-04-25T01:11:17+02:00</updated>
-    <id>http://Jyx.github.io/blog/2010/04/25/my-coming-iphone-application</id>
+    <id>http://jyx.github.io/blog/2010/04/25/my-coming-iphone-application</id>
     <content type="html"><![CDATA[<p>I just want to show an early screenshot of my coming iPhone application that
 I&rsquo;m currently is writing. I do not want to say to much about what purpose it
 should fulfill, but it&rsquo;s kind of a maths / algorithm / practice application.
@@ -407,16 +407,16 @@ Below is screenshot of how it (most likely) will look.</p>
 <!-- more -->
 
 
-<p><img src="http://Jyx.github.io/images/iphonebd//bd_preview.jpg"></p>
+<p><img src="http://jyx.github.io/images/iphonebd//bd_preview.jpg"></p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[What About Total Commander?]]></title>
-    <link href="http://Jyx.github.io/blog/2010/03/12/what-about-total-commander/"/>
+    <link href="http://jyx.github.io/blog/2010/03/12/what-about-total-commander/"/>
     <updated>2010-03-12T00:06:26+01:00</updated>
-    <id>http://Jyx.github.io/blog/2010/03/12/what-about-total-commander</id>
-    <content type="html"><![CDATA[<p><img class="right" src="http://Jyx.github.io/images/totcmd/logo_tc.jpg">
+    <id>http://jyx.github.io/blog/2010/03/12/what-about-total-commander</id>
+    <content type="html"><![CDATA[<p><img class="right" src="http://jyx.github.io/images/totcmd/logo_tc.jpg">
 As my first post on my new site I&rsquo;ll start by talking about Total Commander. I
 have been using this wonderful tools since I think I got my first PC. Back then
 it was called Windows Commander. So what is it that makes this tool so
@@ -480,7 +480,7 @@ Multi-Rename Tool will launch. In this particular example you prepend the
 &ldquo;Rename mask: file name&rdquo; with &ldquo;01_&rdquo; and in the &ldquo;Search &amp; Replace&rdquo; you write
 &ldquo;_foo&rdquo; in the &ldquo;Search For&rdquo;, like shown in the screenshot below.</p>
 
-<p><img src="http://Jyx.github.io/images/totcmd/tc_multi_rename_tool.png"></p>
+<p><img src="http://jyx.github.io/images/totcmd/tc_multi_rename_tool.png"></p>
 
 <p>You can just imaging how helpful this is when you are renaming a couple of
 hundred jpg files taken with your digital camera where you often have quite

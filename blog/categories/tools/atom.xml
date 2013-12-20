@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Tools | joakimbech.com]]></title>
-  <link href="http://Jyx.github.io/blog/categories/tools/atom.xml" rel="self"/>
-  <link href="http://Jyx.github.io/"/>
-  <updated>2013-12-20T11:46:03+01:00</updated>
-  <id>http://Jyx.github.io/</id>
+  <link href="http://jyx.github.io/blog/categories/tools/atom.xml" rel="self"/>
+  <link href="http://jyx.github.io/"/>
+  <updated>2013-12-20T15:01:30+01:00</updated>
+  <id>http://jyx.github.io/</id>
   <author>
     <name><![CDATA[Joakim Bech]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[What About Total Commander?]]></title>
-    <link href="http://Jyx.github.io/blog/2010/03/12/what-about-total-commander/"/>
+    <link href="http://jyx.github.io/blog/2010/03/12/what-about-total-commander/"/>
     <updated>2010-03-12T00:06:26+01:00</updated>
-    <id>http://Jyx.github.io/blog/2010/03/12/what-about-total-commander</id>
+    <id>http://jyx.github.io/blog/2010/03/12/what-about-total-commander</id>
     <content type="html"><![CDATA[<p><img class="right" src="/images/totcmd/logo_tc.jpg">
 As my first post on my new site I&rsquo;ll start by talking about Total Commander. I
 have been using this wonderful tools since I think I got my first PC. Back then

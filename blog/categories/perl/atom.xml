@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Perl | joakimbech.com]]></title>
-  <link href="http://Jyx.github.io/blog/categories/perl/atom.xml" rel="self"/>
-  <link href="http://Jyx.github.io/"/>
-  <updated>2013-12-20T11:46:03+01:00</updated>
-  <id>http://Jyx.github.io/</id>
+  <link href="http://jyx.github.io/blog/categories/perl/atom.xml" rel="self"/>
+  <link href="http://jyx.github.io/"/>
+  <updated>2013-12-20T15:01:30+01:00</updated>
+  <id>http://jyx.github.io/</id>
   <author>
     <name><![CDATA[Joakim Bech]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Perl Pack and Unpack]]></title>
-    <link href="http://Jyx.github.io/blog/2012/03/04/perl-pack-and-unpack/"/>
+    <link href="http://jyx.github.io/blog/2012/03/04/perl-pack-and-unpack/"/>
     <updated>2012-03-04T00:15:48+01:00</updated>
-    <id>http://Jyx.github.io/blog/2012/03/04/perl-pack-and-unpack</id>
+    <id>http://jyx.github.io/blog/2012/03/04/perl-pack-and-unpack</id>
     <content type="html"><![CDATA[<p><img class="right" src="/images/perlpap/logo_perl.jpg">
 When you have to read and write binary data using Perl, then you preferably use
 the built in functions pack and unpack. With the pack function you will create
