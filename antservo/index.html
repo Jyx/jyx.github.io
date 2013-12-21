@@ -1,0 +1,381 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Antenna Servo - joakimbech.com</title>
+  <meta name="author" content="Joakim Bech">
+
+  
+  <meta name="description" content="Antenna Servo Dec 21st, 2013 I bought an indoor antenna for DVB-T which is called Televés Mira. This antenna didn’t work so well for me. I had to &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jyx.github.io/antservo">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="joakimbech.com" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">joakimbech.com</a></h1>
+  
+    <h2>The trash can full of ideas</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jyx.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article role="article">
+  
+  <header>
+    <h1 class="entry-title">Antenna Servo</h1>
+    <p class="meta">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-21T22:54:00+01:00" pubdate data-updated="true">Dec 21<span>st</span>, 2013</time></p>
+  </header>
+  
+  <p>I bought an indoor antenna for DVB-T which is called <a href="http://www.kjell.com/sortiment/ljud-bild/tv-tillbehor/antenner-tillbehor/tv-antenner/campingantenner/televes-mira-p30117">Televés Mira</a>.  This antenna didn’t work so well for me. I had to put into the room next to the room where I have my TV, i.e. not very optimal to have it there with a long
+antenna cable going between the rooms.  Another thing that I had problem with
+when trying to adjust this antenna was that as soon as I was coming close to
+the antenna it seems like I myself became part of the antenna and I get perfect
+picture with good signal quality. But as soon as I let my hands off the Mira
+and went three steps away the picture started to jump.</p>
+
+<p>Then I realised that one of my neighbours told me that there is a tube for
+cables already installed between the attic and our multimedia central in the
+house. So I bought 15 meters of antenna cable and put this into the mentioned
+tube. Now I had to solve the problem where I became antenna as soon as I
+touched my Mira. I decided to buy a small servo which normally are used for RC
+cars etc. The plan was that this servo should move the Mira. But, how do you
+get the actual servo to move?</p>
+
+<h3>Move a servo</h3>
+
+<p>A servo is controlled by PWM (Pulse Width Modulation). It’s not that
+complicated as it might sound. At every 20 ms (50Hz) you need to create a pulse
+which will move the arm of the servo. How it moves depends on the width of the
+pulse. Normally it’s something between 0.5- to 2 ms.  I.e 0.5 ms might move the
+arm to the leftmost position and 2 ms will move the arm to the right most
+position. I found a cheap servo at dealextreme.com which I ordered, but when it
+arrived I realised that it was very tiny and I couldn’t really use it for my
+antenna. But still I wanted to fulfill this project.</p>
+
+<h3>PIC16F690 and Microchips PicKit2 programmer</h3>
+
+<p>I started looking for information about other similar projects and found out
+that a chip from Microchip called
+<a href="http://www.microchip.com/wwwproducts/Devices.aspx?dDocName=en023112">PIC16F690</a>
+had an internal PWM. I thought that this sounded like a fun thing to try. Both
+since I’m curious about building a this stuff and also since it could be fun
+trying to code something in assembler which I haven’t done much at all I had to
+admit. I went to <a href="https://www.elfa.se">Elfa</a> in Malmö and bought a PicKit2
+starter kit which is a programmer and also a small lab board which actually has
+a 16F690 on it. After unpacking the unit and installing drivers I started to
+briefly read the PDF’s that were included in the bundle.  Shortly after I found
+the “low pin count demo” PDF which is a basic tutorial of the hardware and it
+goes through most of the assembler instructions that exist for a PIC. The
+lesson about A/D conversion (Analog/Digital) was quite handy I noticed later
+on.</p>
+
+<p>When I had gone through the low pin count demo lessons I started working on my
+own small program. I quickly realised that I couldn’t use LED as indicator for
+the signal, since it has to high frequency. I was scratching my head and was
+thinking “do I really need to buy some kind of oscilloscope to be able to see
+what is happening?” After reading more PicKit2 PDF I found out that the PicKit2
+itself could actually be used as a logical analyzer. It has three channels for
+this. So this was perfect, just what I needed. I connected the output signal to
+the PicKit2′s logical input and the started the included tool for doing logical
+analyse. Now I could easily follow the output signal.</p>
+
+<h3>Electronics, a voltage divider as A/D signal</h3>
+
+<p>I found a very good blog article at ermicroblog which does basically the same
+as I wanted to do. So I did basically the same thing, but instead of using two
+LDRs (Light Dependant Resistor) with two inputs I only wanted to have a single
+input which varies with the resistance from a potentiometer. The scheme is very
+simple. It is called a voltage divider. I added a 14k resistor in serie with a
+potentiometer, so when the potentiometer is 0 ohm you have some milliamps
+flowing in the circuit.</p>
+
+<pre><code>U = I * R =&gt; I = U/R =&gt; I = 5V / 14k = 0.3 milliamps.
+</code></pre>
+
+<p>When we are in this state their is no voltage over the potentiometer, hence the
+input voltage to the A/D is zero. On the other hand, when you increase the
+potentiometer you will get more and more voltage over the input to the A/D pin.
+You remember the the formula?</p>
+
+<pre><code>U = I * R =&gt; U1 = (I1 + R1) , U2 = (I2 + R2), U = U1 + U2.
+</code></pre>
+
+<p>This is the only few calculations you need to know to get this going. My
+connection scheme looked like this (vridpott is a nickname for potentiometer in
+Swedish).</p>
+
+<h3>The result</h3>
+
+<p>The result was good enough, I can move the servo about ~180 degrees (90 degrees
+CW/CCW). The assembler code is probably quite ugly, but I can live with it
+since it is the first time I was writing assembler for PIC. I also had to tweak
+the min/max values for the server by hard coding values that I found out by
+trail and error using the PicKit2 logical analyzer. One thing that I stumbled
+upon was when doing A/D conversion. The resolution for the A/D conversion in
+the PIC16F690 is 10 bits, i.e 0-1023. But, how do you handle that since your
+variables in PIC assembler has max value of 255. I cheated, I just skipped the
+two least significant bits leaving me with a resolution of 0-255 from the A/D
+conversion. This should be enough since I expected the servo to only turn about
+180 degrees.</p>
+
+<p>I have created a video clip showing it running, you can find it <a href="/antservo/servo.wmv">here</a> (WMV 8.1 MB).</p>
+
+<p>And below is a screenshot which shows the logical analyzer in the background on the monitor.
+<img src="/images/antservo/logical_analyser.jpg"></p>
+
+<h3>Source</h3>
+
+<p>Source code is <a href="/antservo/servo.zip">here</a></p>
+
+  
+    <footer>
+      <p class="meta">
+        
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-21T22:54:00+01:00" pubdate data-updated="true">Dec 21<span>st</span>, 2013</time>
+        
+      </p>
+      
+        <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://jyx.github.io/antservo/index.html" data-via="Jyxxan" data-counturl="http://jyx.github.io/antservo/index.html" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+      
+    </footer>
+  
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/03/09/apply-patches-in-git/">Apply Patches in Git</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/03/04/perl-pack-and-unpack/">Perl Pack and Unpack</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/08/05/using-libcurl-with-minimal-dependencies/">Using Libcurl With Minimal Dependencies</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/04/25/my-coming-iphone-application/">My Coming iPhone Application</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/03/12/what-about-total-commander/">What About Total Commander?</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Projects</h1>
+  <ul id="projects">
+	  <li class='projects'><a href='/bashhelp'>Bash help</a></li>
+	  <li class='projects'><a href='/antservo'>Antenna servo</a></li>
+	  <li class='projects'><a href='/atschjoo'>ATschjoo</a></li>
+	  <li class='projects'><a href='/gengraph'>Gengraph</a></li>
+  </ul>
+</section>
+<section>
+  <h1>Categories</h1>
+  <ul id="categories">
+    <li class='category'><a href='/blog/categories/tools/'>Tools (1)</a></li>
+<li class='category'><a href='/blog/categories/c/'>c (1)</a></li>
+<li class='category'><a href='/blog/categories/coding/'>coding (4)</a></li>
+<li class='category'><a href='/blog/categories/git/'>git (1)</a></li>
+<li class='category'><a href='/blog/categories/perl/'>perl (1)</a></li>
+
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/Jyx">@Jyx</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'Jyx',
+            count: 4,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/+JoakimBech?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Joakim Bech -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'joakimbech';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://jyx.github.io/antservo/index.html';
+        var disqus_url = 'http://jyx.github.io/antservo/index.html';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
