@@ -1,0 +1,554 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>UML FS - joakimbech.com</title>
+  <meta name="author" content="Joakim Bech">
+
+  
+  <meta name="description" content="UML FS Jan 2nd, 2014 From time to time when I want to test things in the Linux kernel I use User Mode Linux
+which is a kind of virtual machine which &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jyx.github.io/umlfs">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="joakimbech.com" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">joakimbech.com</a></h1>
+  
+    <h2>The trash can full of ideas</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jyx.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article role="article">
+  
+  <header>
+    <h1 class="entry-title">UML FS</h1>
+    <p class="meta">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-02T07:01:00+01:00" pubdate data-updated="true">Jan 2<span>nd</span>, 2014</time></p>
+  </header>
+  
+  <p>From time to time when I want to test things in the Linux kernel I use <a href="http://user-mode-linux.sourceforge.net/">User Mode Linux</a>
+which is a kind of virtual machine which allows you to run a Linux
+kernel as a user mode process. To build user mode is simple, just run</p>
+
+<pre><code>$ make ARCH=um
+</code></pre>
+
+<p>and you will get a binary to run UML. However you also need a filesystem and
+that could be a bit tricky to setup. I’ve created a shell script which does
+this for Ubuntu, Hardy Heron. This script will download a “debootstrap” of
+hardy and then configure your filesystem so you can run apt-get. It will also
+create some simple shell scripts, vimrc and put those on the filesystem so they
+are ready to be run when setting up the files system and when UML has booted.
+You are guided during the setup when running this script, so just follow the
+instructions.</p>
+
+<figure class='code'><figcaption><span> (create_uml_fs.sh)</span> <a href='/downloads/code/umlfs/create_uml_fs.sh'>download</a></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c">#!/bin/bash</span>
+</span><span class='line'><span class="nv">DSTDIR</span><span class="o">=</span>/tmp
+</span><span class='line'><span class="nv">IMAGE_FS</span><span class="o">=</span>/tmp/image
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="o">[</span> ! -d <span class="nv">$IMAGE_FS</span> <span class="o">]</span>; <span class="k">then</span>
+</span><span class='line'><span class="k">  </span><span class="nb">echo</span> <span class="s2">&quot;Creating $IMAGE_FS&quot;</span>
+</span><span class='line'>  mkdir -p <span class="nv">$IMAGE_FS</span>
+</span><span class='line'><span class="k">fi</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;Create 2 GB virtual disk&quot;</span>
+</span><span class='line'>dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span><span class="nv">$DSTDIR</span>/imagefile <span class="nv">seek</span><span class="o">=</span>2 <span class="nv">count</span><span class="o">=</span>0 <span class="nv">bs</span><span class="o">=</span>1G
+</span><span class='line'>mkfs.ext3 -F <span class="nv">$DSTDIR</span>/imagefile
+</span><span class='line'>
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;Loop mount the imagefile&quot;</span>
+</span><span class='line'>mount -o loop <span class="nv">$DSTDIR</span>/imagefile <span class="nv">$IMAGE_FS</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;Debootstrap hardy&quot;</span>
+</span><span class='line'>debootstrap --verbose --arch<span class="o">=</span>i386 --include<span class="o">=</span>aptitude,nano,vim hardy <span class="nv">$IMAGE_FS</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;Mount devpts and proc&quot;</span>
+</span><span class='line'>mount -t devpts none <span class="nv">$IMAGE_FS</span>/dev/pts
+</span><span class='line'>mount -t proc none <span class="nv">$IMAGE_FS</span>/proc
+</span><span class='line'>
+</span><span class='line'>df -h
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;Create sources.list&quot;</span>
+</span><span class='line'>cat &gt; <span class="nv">$IMAGE_FS</span>/etc/apt/sources.list <span class="s">&lt;&lt; EOF</span>
+</span><span class='line'><span class="s">deb http://archive.ubuntu.com/ubuntu hardy main restricted</span>
+</span><span class='line'><span class="s">deb http://archive.ubuntu.com/ubuntu hardy-updates main restricted universe</span>
+</span><span class='line'><span class="s">deb http://archive.ubuntu.com/ubuntu hardy-security main restricted</span>
+</span><span class='line'><span class="s">deb http://archive.ubuntu.com/ubuntu hardy universe multiverse</span>
+</span><span class='line'><span class="s">deb http://archive.ubuntu.com/ubuntu hardy-security universe multiverse</span>
+</span><span class='line'><span class="s">EOF</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;Create /etc/hostname&quot;</span>
+</span><span class='line'><span class="nb">echo </span>localhost &gt; <span class="nv">$IMAGE_FS</span>/etc/hostname
+</span><span class='line'>
+</span><span class='line'>cat &gt; <span class="nv">$IMAGE_FS</span>/etc/hosts <span class="s">&lt;&lt; EOF</span>
+</span><span class='line'><span class="s">127.0.0.1       localhost</span>
+</span><span class='line'><span class="s">EOF</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;Create /etc/fstab&quot;</span>
+</span><span class='line'>cat &gt; <span class="nv">$IMAGE_FS</span>/etc/fstab <span class="s">&lt;&lt; EOF</span>
+</span><span class='line'><span class="s">/dev/ubd0       /               ext3    defaults        0       1</span>
+</span><span class='line'><span class="s">proc            /proc           proc    defaults        0       0</span>
+</span><span class='line'><span class="s">tmpfs           /tmp            tmpfs   defaults        0       0</span>
+</span><span class='line'><span class="s">none            /host           hostfs  defaults,noauto 0       0</span>
+</span><span class='line'><span class="s">EOF</span>
+</span><span class='line'>
+</span><span class='line'>mkdir -p <span class="nv">$IMAGE_FS</span>/host
+</span><span class='line'>
+</span><span class='line'>sed -i <span class="s1">&#39;/ACTIVE_CONSOLES/s/.-./1-2/&#39;</span> <span class="nv">$IMAGE_FS</span>/etc/default/console-setup
+</span><span class='line'><span class="k">for </span>i in <span class="nv">$IMAGE_FS</span>/etc/event.d/tty<span class="o">[</span>3-9<span class="o">]</span>
+</span><span class='line'><span class="k">do</span>
+</span><span class='line'><span class="k">  </span>sed -i <span class="s1">&#39;s/start/stop/&#39;</span> <span class="k">${</span><span class="nv">i</span><span class="k">}</span>
+</span><span class='line'><span class="k">done</span>
+</span><span class='line'>
+</span><span class='line'>cat &gt; <span class="nv">$IMAGE_FS</span>/root/setup_uml.sh <span class="s">&lt;&lt; EOF</span>
+</span><span class='line'><span class="s">#!/bin/bash</span>
+</span><span class='line'>
+</span><span class='line'><span class="s">export LANG=C</span>
+</span><span class='line'>
+</span><span class='line'><span class="s">cd /dev</span>
+</span><span class='line'><span class="s">mknod ubd0 b 98 0</span>
+</span><span class='line'><span class="s">aptitude update &amp;&amp; aptitude -y dist-upgrade</span>
+</span><span class='line'>
+</span><span class='line'><span class="s">ln -sf /usr/share/zoneinfo/Europe/Stockholm /etc/localtime</span>
+</span><span class='line'>
+</span><span class='line'><span class="s">aptitude -y install less locales console-data</span>
+</span><span class='line'><span class="s">update-locale LANG=C</span>
+</span><span class='line'>
+</span><span class='line'><span class="s">aptitude -y install tcpdump telnet openssh-client</span>
+</span><span class='line'>
+</span><span class='line'><span class="s"># Prepare for optional image compression</span>
+</span><span class='line'><span class="s">apt-get clean</span>
+</span><span class='line'>
+</span><span class='line'><span class="s">echo &quot;Filling up the image ... this takes some time ...&quot;</span>
+</span><span class='line'><span class="s">dd if=/dev/zero of=remove-this bs=8k</span>
+</span><span class='line'><span class="s">rm -f remove-this </span>
+</span><span class='line'>
+</span><span class='line'><span class="s">echo &quot;Change password, suggesting root/root&quot;</span>
+</span><span class='line'><span class="s">passwd</span>
+</span><span class='line'>
+</span><span class='line'><span class="s">echo &quot;Exit from chroot, by simply typing \&quot;exit\&quot;&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="s">exit</span>
+</span><span class='line'><span class="s">EOF</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;Creating .vimrc&quot;</span>
+</span><span class='line'>cat &gt; <span class="nv">$IMAGE_FS</span>/root/.vimrc <span class="s">&lt;&lt; EOF</span>
+</span><span class='line'><span class="s">syn on</span>
+</span><span class='line'><span class="s">set nocompatible</span>
+</span><span class='line'><span class="s">set incsearch smartcase</span>
+</span><span class='line'><span class="s">set bs=2</span>
+</span><span class='line'><span class="s">set wildmenu</span>
+</span><span class='line'><span class="s">set ts=8</span>
+</span><span class='line'><span class="s">set cindent</span>
+</span><span class='line'><span class="s">set smartindent</span>
+</span><span class='line'><span class="s">EOF</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;export HOME=/root&quot;</span> &gt;&gt; <span class="nv">$IMAGE_FS</span>/root/.bashrc
+</span><span class='line'>
+</span><span class='line'><span class="c"># Go into chroot and perform some configuration</span>
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;Run the script /root/setup_uml.sh when chroot.&quot;</span>
+</span><span class='line'>chroot <span class="nv">$IMAGE_FS</span> /bin/bash
+</span><span class='line'>
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;Unmounting fs&quot;</span>
+</span><span class='line'>umount <span class="nv">$IMAGE_FS</span>/dev/pts
+</span><span class='line'>umount <span class="nv">$IMAGE_FS</span>/proc
+</span><span class='line'>umount <span class="nv">$IMAGE_FS</span>
+</span><span class='line'>
+</span><span class='line'>df -h
+</span><span class='line'>
+</span><span class='line'>ls -alh <span class="nv">$DSTDIR</span>/imagefile
+</span><span class='line'>
+</span><span class='line'>mv <span class="nv">$DSTDIR</span>/imagefile <span class="nv">$DSTDIR</span>/imagefile_uml_hardy.fs
+</span><span class='line'><span class="nb">time </span>tar -C <span class="nv">$DSTDIR</span> -czvf image.tar.gz imagefile_uml_hardy.fs
+</span><span class='line'>
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;Creating a tar.gz of the filesystem ...&quot;</span>
+</span><span class='line'>mv <span class="nv">$DSTDIR</span>/imagefile_uml_hardy.fs .
+</span><span class='line'>mv image.tar.gz image_uml_hard_fs.tar.gz
+</span><span class='line'>
+</span><span class='line'>ls -alh image*
+</span></code></pre></td></tr></table></div></figure>
+
+
+  
+    <footer>
+      <p class="meta">
+        
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-02T07:01:00+01:00" pubdate data-updated="true">Jan 2<span>nd</span>, 2014</time>
+        
+      </p>
+      
+        <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://jyx.github.io/umlfs/index.html" data-via="Jyxxan" data-counturl="http://jyx.github.io/umlfs/index.html" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+      
+    </footer>
+  
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/03/09/apply-patches-in-git/">Apply Patches in Git</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/03/04/perl-pack-and-unpack/">Perl Pack and Unpack</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/08/05/using-libcurl-with-minimal-dependencies/">Using Libcurl With Minimal Dependencies</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/04/25/my-coming-iphone-application/">My Coming iPhone Application</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/03/12/what-about-total-commander/">What About Total Commander?</a>
+      </li>
+    
+  </ul>
+</section>
+<section>
+  <h1>Projects</h1>
+  <ul id="projects">
+	  <li class='projects'><a href='/bashhelp'>Bash help</a></li>
+	  <li class='projects'><a href='/antservo'>Antenna servo</a></li>
+	  <li class='projects'><a href='/atschjoo'>ATschjoo</a></li>
+	  <li class='projects'><a href='/gengraph'>Gengraph</a></li>
+	  <li class='projects'><a href='/globalme'>Global-me</a></li>
+	  <li class='projects'><a href='/nimbox'>NIM and Squeezebox</a></li>
+	  <li class='projects'><a href='/pakgrep'>Pakgrep</a></li>
+	  <li class='projects'><a href='/umlfs'>UML FS</a></li>
+	  <li class='projects'><a href='/wolfparser'>Wolfparser</a></li>
+  </ul>
+</section>
+<section>
+  <h1>Categories</h1>
+  <ul id="categories">
+    <li class='category'><a href='/blog/categories/tools/'>Tools (1)</a></li>
+<li class='category'><a href='/blog/categories/c/'>c (1)</a></li>
+<li class='category'><a href='/blog/categories/coding/'>coding (4)</a></li>
+<li class='category'><a href='/blog/categories/git/'>git (1)</a></li>
+<li class='category'><a href='/blog/categories/perl/'>perl (1)</a></li>
+
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/Jyx">@Jyx</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'Jyx',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/+JoakimBech?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Joakim Bech -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'joakimbech';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://jyx.github.io/umlfs/index.html';
+        var disqus_url = 'http://jyx.github.io/umlfs/index.html';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

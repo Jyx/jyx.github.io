@@ -5,12 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>My Coming iPhone Application - joakimbech.com</title>
+  <title>Pakgrep - joakimbech.com</title>
   <meta name="author" content="Joakim Bech">
 
   
-  <meta name="description" content="I just want to show an early screenshot of my coming iPhone application that
-I&rsquo;m currently is writing. I do not want to say to much about what &hellip;">
+  <meta name="description" content="Pakgrep Dec 22nd, 2013 What is pakgrep? Pakgrep is a program that allows you to extract files from a Quake2 pak-file.
+For you that doesn&rsquo;t &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +19,7 @@ I&rsquo;m currently is writing. I do not want to say to much about what &hellip;
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jyx.github.io/blog/2010/04/25/my-coming-iphone-application">
+  <link rel="canonical" href="http://jyx.github.io/pakgrep">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="joakimbech.com" type="application/atom+xml">
@@ -66,15 +66,87 @@ I&rsquo;m currently is writing. I do not want to say to much about what &hellip;
   <div id="main">
     <div id="content">
       <div>
-<article class="hentry" role="article">
+<article role="article">
   
   <header>
-    
-      <h1 class="entry-title">My Coming iPhone Application</h1>
-    
-    
+    <h1 class="entry-title">Pakgrep</h1>
+    <p class="meta">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-22T22:23:00+01:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2013</time></p>
+  </header>
+  
+  <h3>What is pakgrep?</h3>
+
+<p>Pakgrep is a program that allows you to extract files from a Quake2 pak-file.
+For you that doesn&rsquo;t know what a pak-file is you could compare them with
+zip-files but for the game Quake2 instead. I.e. the pak files contains textures
+for game levels, skins for the models, sound for your models and maps. I could
+contain config files and background picture when showing the console. Pakgrep
+is written in C and supports <a href="http://en.wikipedia.org/wiki/Regular_expression">regular expressions</a> as search string.</p>
+
+<h3>Why pakgrep?</h3>
+
+<p>During all the years I played Quake2 I created a pak-file for myself which
+contained all goodies that I liked. I had nice textures, good sounds and our
+own ergo Gibbus background and a text font that I really liked. One day when I
+was re-installing Windows I did a mistake deleted my Quake2 folder by mistake.
+Not a big deal I thought until I realized that my pak-file was missing. I had a
+lot of pak-files backed up, but not my own. However it should be possible for
+me to recreate it again by copy and paste files from other pak-files. But to do
+that you had to open/extract every single pak-file, browse the extracted files
+and then decide if it was the file you were looking for. A quite time consuming
+task. I especially wanted to find the conchars.pcx file which contains the font
+showed in the game. I decided to create a small program that could extract the
+files and this is what it ended up with, i.e. pakgrep.</p>
+
+<h3>How to use it</h3>
+
+<ol>
+<li>It is made for Windows and I have used it on WinXP (32) and Windows (64).</li>
+<li>Copy pakgrep.exe to a folder containing pak-files (*.pak).</li>
+<li>Type pakgrep.exe files_to_search_for pakfile.pak.</li>
+</ol>
+
+
+<p>For example to search for and extract conchars.pcx files from pak9.pak you could write:</p>
+
+<pre><code>pakgrep.exe conc* pak9.pak
+</code></pre>
+
+<p>On the pakfile I tried when writing this I got the following result</p>
+
+<pre><code>c:\pakgrep&gt;pakgrep.exe conc* pak9.pak
+Pakgrep v1.0 by Joakim Bech
+
+Extracting: pics/conback.pcx
+Extracting: pics/conchars.pcx
+</code></pre>
+
+<p>I.e. the search string matched both conback.pcx and conchars.pcx.</p>
+
+<h3>Download / info</h3>
+
+<p><strong>Language</strong>: C</p>
+
+<p><strong>Source</strong>: Sorry, I will not publish source for this project.</p>
+
+<p><strong>Binary</strong>: <a href="/pakgrep/pakgrep.exe">pakgrep.exe</a> (SHA1: 5c5150099d9e9d7d772ccb9b364a1267697f8463)</p>
+
+  
+    <footer>
       <p class="meta">
         
+        
 
 
 
@@ -86,62 +158,13 @@ I&rsquo;m currently is writing. I do not want to say to much about what &hellip;
   
 
 
-<time datetime="2010-04-25T01:11:17+02:00" pubdate data-updated="true">Apr 25<span>th</span>, 2010</time>
-        
-           | <a href="#disqus_thread"
-             data-disqus-identifier="http://jyx.github.io">Comments</a>
+<time datetime="2013-12-22T22:23:00+01:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2013</time>
         
       </p>
-    
-  </header>
-
-
-<div class="entry-content"><p>I just want to show an early screenshot of my coming iPhone application that
-I&rsquo;m currently is writing. I do not want to say to much about what purpose it
-should fulfill, but it&rsquo;s kind of a maths / algorithm / practice application.
-Below is screenshot of how it (most likely) will look.</p>
-
-<!-- more -->
-
-
-<p><img src="/images/iphonebd//bd_preview.jpg"></p>
-</div>
-
-
-  <footer>
-    <p class="meta">
       
+        <div class="sharing">
   
-
-<span class="byline author vcard">Posted by <span class="fn">Joakim Bech</span></span>
-
-      
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2010-04-25T01:11:17+02:00" pubdate data-updated="true">Apr 25<span>th</span>, 2010</time>
-      
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/coding/'>coding</a>
-  
-</span>
-
-
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://jyx.github.io/blog/2010/04/25/my-coming-iphone-application/" data-via="Jyxxan" data-counturl="http://jyx.github.io/blog/2010/04/25/my-coming-iphone-application/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://jyx.github.io/pakgrep/index.html" data-via="Jyxxan" data-counturl="http://jyx.github.io/pakgrep/index.html" >Tweet</a>
   
   
   
@@ -149,16 +172,9 @@ Below is screenshot of how it (most likely) will look.</p>
   
 </div>
 
-    
-    <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2010/03/12/what-about-total-commander/" title="Previous Post: What about Total Commander?">&laquo; What about Total Commander?</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2010/08/05/using-libcurl-with-minimal-dependencies/" title="Next Post: Using libcurl with minimal dependencies">Using libcurl with minimal dependencies &raquo;</a>
-      
-    </p>
-  </footer>
+    </footer>
+  
 </article>
 
   <section>
@@ -283,8 +299,8 @@ Below is screenshot of how it (most likely) will look.</p>
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://jyx.github.io/blog/2010/04/25/my-coming-iphone-application/';
-        var disqus_url = 'http://jyx.github.io/blog/2010/04/25/my-coming-iphone-application/';
+        var disqus_identifier = 'http://jyx.github.io/pakgrep/index.html';
+        var disqus_url = 'http://jyx.github.io/pakgrep/index.html';
         var disqus_script = 'embed.js';
       
     (function () {
