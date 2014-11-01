@@ -4,7 +4,7 @@
   <title><![CDATA[joakimbech.com]]></title>
   <link href="http://jyx.github.io/atom.xml" rel="self"/>
   <link href="http://jyx.github.io/"/>
-  <updated>2014-02-02T23:49:13+01:00</updated>
+  <updated>2014-11-01T23:56:16+01:00</updated>
   <id>http://jyx.github.io/</id>
   <author>
     <name><![CDATA[Joakim Bech]]></name>
@@ -12,6 +12,145 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Fetchmail and GnuPG]]></title>
+    <link href="http://jyx.github.io/blog/2014/11/01/fetchmail-and-gnupg/"/>
+    <updated>2014-11-01T23:02:03+01:00</updated>
+    <id>http://jyx.github.io/blog/2014/11/01/fetchmail-and-gnupg</id>
+    <content type="html"><![CDATA[<p>When using <a href="http://en.wikipedia.org/wiki/Internet_Message_Access_Protocol">imap</a>
+in <a href="http://en.wikipedia.org/wiki/Mutt_(email_client)">mutt</a> you have the
+possibility to use gpg to decrypt your password instead of having it as
+plaintext in your configuration file (.muttrc), see
+<a href="https://wiki.archlinux.org/index.php/Mutt#Passwords_management">ArchWiki</a> how
+to do that.</p>
+
+<p>However, if you consider using POP3, then you will also need to install and
+enable <a href="http://msmtp.sourceforge.net">msmtp</a> (not strictly needed),
+<a href="http://www.fetchmail.info">fetchmail</a> and
+<a href="http://www.procmail.org">procmail</a>. Ubuntu have created a quite nice
+<a href="https://help.ubuntu.com/community/MuttAndGmail">guide</a> of
+the steps involved.</p>
+
+<!-- more -->
+
+
+<p>Just as mutt also msmtp have the possibility to use gpg in runtime instead of
+having the password stored in plaintext. The way to do that in msmtp is to put a
+line mention gpg in your $HOME/.msmtprc file.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>passwordeval    <span class="s2">&quot;gpg --quiet --for-your-eyes-only --no-tty --decrypt ~/.msmtp-gmail.gpg&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>However, fetchmail doesn&rsquo;t have the same option. So, mutt and msmtp is fine, but
+you still have to put your password in a cleartext file when configuring
+fetchmail. Clearly there must be a better way to handle this? I downloaded the
+source code
+(<a href="http://sourceforge.net/projects/fetchmail/files/branch_6.3/fetchmail-6.3.26.tar.xz/download">fetchmail-6.3.26</a>)
+and did a quick and dirty hack. I just modified the main function in the file
+fetchmail.c, so that instead of having to provide the password on commandline
+(when password isn&rsquo;t set in $HOME/.fetchmailrc) it makes use of gpg similar to how
+both mutt and msmtp does. It isn&rsquo;t pretty &hellip; but it works (tested on Arch Linux
+on a Raspberry PI). To try it out, use the same gpg encrypted file as you use
+for msmtp, i.e, $HOME/msmtp-gmail.gpg and patch fetchmail using this patch and
+rebuild.</p>
+
+<p>+<figure class='code'><figcaption><span>fetchmail patch  (fetchmail_gpg.patch)</span> <a href='http://jyx.github.io/downloads/code/patch/fetchmail_gpg.patch'>download</a></figcaption></p>
+
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'><span class="gh">diff --git a/fetchmail.c b/fetchmail.c</span>
+</span><span class='line'><span class="gh">index ae30f90..6462dfe 100644</span>
+</span><span class='line'><span class="gd">--- a/fetchmail.c</span>
+</span><span class='line'><span class="gi">+++ b/fetchmail.c</span>
+</span><span class='line'><span class="gu">@@ -573,6 +573,28 @@ int main(int argc, char **argv)</span>
+</span><span class='line'>          ctl-&gt;remotename, ctl-&gt;server.pollname);
+</span><span class='line'>      return(PS_AUTHFAIL);
+</span><span class='line'>      } else {
+</span><span class='line'><span class="gi">+#define ENABLE_GPG_PASSWORD</span>
+</span><span class='line'><span class="gi">+#ifdef ENABLE_GPG_PASSWORD</span>
+</span><span class='line'><span class="gi">+        FILE *f;</span>
+</span><span class='line'><span class="gi">+        f = popen(&quot;/usr/bin/gpg -dq $HOME/.msmtp-gmail.gpg&quot;, &quot;r&quot;);</span>
+</span><span class='line'><span class="gi">+        if (f)</span>
+</span><span class='line'><span class="gi">+        {</span>
+</span><span class='line'><span class="gi">+            tmpbuf = (char *)xmalloc(64);</span>
+</span><span class='line'><span class="gi">+            memset(tmpbuf, 0, 64);</span>
+</span><span class='line'><span class="gi">+            fgets(tmpbuf, 64, f);</span>
+</span><span class='line'><span class="gi">+            pclose(f);</span>
+</span><span class='line'><span class="gi">+</span>
+</span><span class='line'><span class="gi">+            /* Remove the newline character. */</span>
+</span><span class='line'><span class="gi">+            tmpbuf[strlen(tmpbuf)-1] = &#39;\0&#39;;</span>
+</span><span class='line'><span class="gi">+            ctl-&gt;password = xstrdup(tmpbuf);</span>
+</span><span class='line'><span class="gi">+            /* fprintf(stdout, &quot;pw: %s : %d\n&quot;, ctl-&gt;password, strlen(ctl-&gt;password)); */</span>
+</span><span class='line'><span class="gi">+            free(tmpbuf);</span>
+</span><span class='line'><span class="gi">+        }</span>
+</span><span class='line'><span class="gi">+        else</span>
+</span><span class='line'><span class="gi">+        {</span>
+</span><span class='line'><span class="gi">+            fprintf(stderr, &quot;No encrypted file at $HOME/.msmtp-gmail.gpg&quot;);</span>
+</span><span class='line'><span class="gi">+        }</span>
+</span><span class='line'><span class="gi">+#else</span>
+</span><span class='line'>      const char* password_prompt = GT_(&quot;Enter password for %s@%s: &quot;);
+</span><span class='line'>      size_t pplen = strlen(password_prompt) + strlen(ctl-&gt;remotename) + strlen(ctl-&gt;server.pollname) + 1;
+</span><span class='line'>
+</span><span class='line'><span class="gu">@@ -580,7 +602,9 @@ int main(int argc, char **argv)</span>
+</span><span class='line'>      snprintf(tmpbuf, pplen, password_prompt,
+</span><span class='line'>          ctl-&gt;remotename, ctl-&gt;server.pollname);
+</span><span class='line'>      ctl-&gt;password = xstrdup((char *)fm_getpassword(tmpbuf));
+</span><span class='line'><span class="gi">+        fprintf(stdout, &quot;pw: %s : %d\n&quot;, ctl-&gt;password, strlen(ctl-&gt;password));</span>
+</span><span class='line'>      free(tmpbuf);
+</span><span class='line'><span class="gi">+#endif</span>
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>     }
+</span></code></pre></td></tr></table></div>
+
+
+<p></figure></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Timing Attack - Proof of Concept]]></title>

@@ -5,12 +5,14 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Bash Help - joakimbech.com</title>
+  <title>Fetchmail and GnuPG - joakimbech.com</title>
   <meta name="author" content="Joakim Bech">
 
   
-  <meta name="description" content="Bash Help Dec 21st, 2013 This is nothing fancy, it’s just a simple bash-script itself that prints the
-syntax of commands that I use quite often. So &hellip;">
+  <meta name="description" content="When using imap
+in mutt you have the
+possibility to use gpg to decrypt your password instead of having it as
+plaintext in your configuration file (. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +21,7 @@ syntax of commands that I use quite often. So &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jyx.github.io/bashhelp">
+  <link rel="canonical" href="http://jyx.github.io/blog/2014/11/01/fetchmail-and-gnupg">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="joakimbech.com" type="application/atom+xml">
@@ -78,11 +80,15 @@ syntax of commands that I use quite often. So &hellip;">
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Bash Help</h1>
-    <p class="meta">
+    
+      <h1 class="entry-title">Fetchmail and GnuPG</h1>
+    
+    
+      <p class="meta">
+        
 
 
 
@@ -94,20 +100,58 @@ syntax of commands that I use quite often. So &hellip;">
   
 
 
-<time datetime="2013-12-21T22:45:00+01:00" pubdate data-updated="true">Dec 21<span>st</span>, 2013</time></p>
+<time datetime="2014-11-01T23:02:03+01:00" pubdate data-updated="true">Nov 1<span>st</span>, 2014</time>
+        
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://jyx.github.io">Comments</a>
+        
+      </p>
+    
   </header>
-  
-  <p>This is nothing fancy, it’s just a simple bash-script itself that prints the
-syntax of commands that I use quite often. So it is quite neat to just clone
-this and put into my PATH, so regardless of which folder I’m currently standing
-in I simply type bhelp command to get the syntax of that particular command.</p>
 
-<p>You find a link to the script in the sidebar to the right under the GitHub
-Repos sections.</p>
 
-<p>A sample of the output from the script could look like this:</p>
+<div class="entry-content"><p>When using <a href="http://en.wikipedia.org/wiki/Internet_Message_Access_Protocol">imap</a>
+in <a href="http://en.wikipedia.org/wiki/Mutt_(email_client)">mutt</a> you have the
+possibility to use gpg to decrypt your password instead of having it as
+plaintext in your configuration file (.muttrc), see
+<a href="https://wiki.archlinux.org/index.php/Mutt#Passwords_management">ArchWiki</a> how
+to do that.</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<p>However, if you consider using POP3, then you will also need to install and
+enable <a href="http://msmtp.sourceforge.net">msmtp</a> (not strictly needed),
+<a href="http://www.fetchmail.info">fetchmail</a> and
+<a href="http://www.procmail.org">procmail</a>. Ubuntu have created a quite nice
+<a href="https://help.ubuntu.com/community/MuttAndGmail">guide</a> of
+the steps involved.</p>
+
+<!-- more -->
+
+
+<p>Just as mutt also msmtp have the possibility to use gpg in runtime instead of
+having the password stored in plaintext. The way to do that in msmtp is to put a
+line mention gpg in your $HOME/.msmtprc file.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>passwordeval    <span class="s2">&quot;gpg --quiet --for-your-eyes-only --no-tty --decrypt ~/.msmtp-gmail.gpg&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>However, fetchmail doesn&rsquo;t have the same option. So, mutt and msmtp is fine, but
+you still have to put your password in a cleartext file when configuring
+fetchmail. Clearly there must be a better way to handle this? I downloaded the
+source code
+(<a href="http://sourceforge.net/projects/fetchmail/files/branch_6.3/fetchmail-6.3.26.tar.xz/download">fetchmail-6.3.26</a>)
+and did a quick and dirty hack. I just modified the main function in the file
+fetchmail.c, so that instead of having to provide the password on commandline
+(when password isn&rsquo;t set in $HOME/.fetchmailrc) it makes use of gpg similar to how
+both mutt and msmtp does. It isn&rsquo;t pretty &hellip; but it works (tested on Arch Linux
+on a Raspberry PI). To try it out, use the same gpg encrypted file as you use
+for msmtp, i.e, $HOME/msmtp-gmail.gpg and patch fetchmail using this patch and
+rebuild.</p>
+
+<p>+<figure class='code'><figcaption><span>fetchmail patch  (fetchmail_gpg.patch)</span> <a href='/downloads/code/patch/fetchmail_gpg.patch'>download</a></figcaption></p>
+
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -145,72 +189,95 @@ Repos sections.</p>
 <span class='line-number'>36</span>
 <span class='line-number'>37</span>
 <span class='line-number'>38</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>bhelp gpg
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'><span class="gh">diff --git a/fetchmail.c b/fetchmail.c</span>
+</span><span class='line'><span class="gh">index ae30f90..6462dfe 100644</span>
+</span><span class='line'><span class="gd">--- a/fetchmail.c</span>
+</span><span class='line'><span class="gi">+++ b/fetchmail.c</span>
+</span><span class='line'><span class="gu">@@ -573,6 +573,28 @@ int main(int argc, char **argv)</span>
+</span><span class='line'>          ctl-&gt;remotename, ctl-&gt;server.pollname);
+</span><span class='line'>      return(PS_AUTHFAIL);
+</span><span class='line'>      } else {
+</span><span class='line'><span class="gi">+#define ENABLE_GPG_PASSWORD</span>
+</span><span class='line'><span class="gi">+#ifdef ENABLE_GPG_PASSWORD</span>
+</span><span class='line'><span class="gi">+        FILE *f;</span>
+</span><span class='line'><span class="gi">+        f = popen(&quot;/usr/bin/gpg -dq $HOME/.msmtp-gmail.gpg&quot;, &quot;r&quot;);</span>
+</span><span class='line'><span class="gi">+        if (f)</span>
+</span><span class='line'><span class="gi">+        {</span>
+</span><span class='line'><span class="gi">+            tmpbuf = (char *)xmalloc(64);</span>
+</span><span class='line'><span class="gi">+            memset(tmpbuf, 0, 64);</span>
+</span><span class='line'><span class="gi">+            fgets(tmpbuf, 64, f);</span>
+</span><span class='line'><span class="gi">+            pclose(f);</span>
+</span><span class='line'><span class="gi">+</span>
+</span><span class='line'><span class="gi">+            /* Remove the newline character. */</span>
+</span><span class='line'><span class="gi">+            tmpbuf[strlen(tmpbuf)-1] = &#39;\0&#39;;</span>
+</span><span class='line'><span class="gi">+            ctl-&gt;password = xstrdup(tmpbuf);</span>
+</span><span class='line'><span class="gi">+            /* fprintf(stdout, &quot;pw: %s : %d\n&quot;, ctl-&gt;password, strlen(ctl-&gt;password)); */</span>
+</span><span class='line'><span class="gi">+            free(tmpbuf);</span>
+</span><span class='line'><span class="gi">+        }</span>
+</span><span class='line'><span class="gi">+        else</span>
+</span><span class='line'><span class="gi">+        {</span>
+</span><span class='line'><span class="gi">+            fprintf(stderr, &quot;No encrypted file at $HOME/.msmtp-gmail.gpg&quot;);</span>
+</span><span class='line'><span class="gi">+        }</span>
+</span><span class='line'><span class="gi">+#else</span>
+</span><span class='line'>      const char* password_prompt = GT_(&quot;Enter password for %s@%s: &quot;);
+</span><span class='line'>      size_t pplen = strlen(password_prompt) + strlen(ctl-&gt;remotename) + strlen(ctl-&gt;server.pollname) + 1;
 </span><span class='line'>
-</span><span class='line'><span class="nv">gpg</span>
-</span><span class='line'><span class="o">================================================================================</span>
-</span><span class='line'>gpg --gen-key                                   Create a keypair
-</span><span class='line'>gpg --list-keys                                 List all keys
-</span><span class='line'>gpg --import tmp/gnupg/secring.gpg              Import keyring
-</span><span class='line'>gpg --import my_friends_key.asc                 Import ASCII key
-</span><span class='line'>gpg --edit-key joakim                           Edit key <span class="s2">&quot;joakim&quot;</span>
-</span><span class='line'>gpg --armor --export 060AB907 &gt; joakimbech.asc  Create public key in ASCII
-</span><span class='line'>gpg -K                                          List all keys from secret
-</span><span class='line'>                                                keyring
-</span><span class='line'>gpg -e -r Joakim my_plaintext_file.txt          Encrypt a file using key Joakim
-</span><span class='line'>gpg -o plain.txt -d cipher.txt.gpg              Decrypt file cipher.txt to
-</span><span class='line'>                                                plain.txt
-</span><span class='line'>gpg -d cipher.txt.gpg                           Decrypt a file
-</span><span class='line'>
-</span><span class='line'>gpg --verify foo.tar.gz.<span class="o">{</span>asc|sig<span class="o">}</span> foo.tar.gz    Verify signature of a file
-</span><span class='line'>gpg --armor --detach-sign foo.tar.gz            Create a detached signature
-</span><span class='line'>gpg --delete-key <span class="s1">&#39;myfriend@his.isp.com&#39;</span>         Remove a key
-</span><span class='line'>gpg --delete-secret-key <span class="s1">&#39;mysecretkey&#39;</span>           Remove a secret key
-</span><span class='line'>
-</span><span class='line'>Change uid
-</span><span class='line'>  gpg --edit-key Joakim
-</span><span class='line'>    uid 2                                       Number of the email/uid
-</span><span class='line'>    primary
-</span><span class='line'>    save
-</span><span class='line'>
-</span><span class='line'>Add uid
-</span><span class='line'>  gpg --edit-key Joakim
-</span><span class='line'>    adduid
-</span><span class='line'>    save
-</span><span class='line'>
-</span><span class='line'>Delete uid
-</span><span class='line'>  gpg --edit-key Joakim
-</span><span class='line'>    deluid 2                                    Number of the email/uid
-</span><span class='line'>    <span class="nv">save</span>
-</span><span class='line'><span class="o">================================================================================</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'><span class="gu">@@ -580,7 +602,9 @@ int main(int argc, char **argv)</span>
+</span><span class='line'>      snprintf(tmpbuf, pplen, password_prompt,
+</span><span class='line'>          ctl-&gt;remotename, ctl-&gt;server.pollname);
+</span><span class='line'>      ctl-&gt;password = xstrdup((char *)fm_getpassword(tmpbuf));
+</span><span class='line'><span class="gi">+        fprintf(stdout, &quot;pw: %s : %d\n&quot;, ctl-&gt;password, strlen(ctl-&gt;password));</span>
+</span><span class='line'>      free(tmpbuf);
+</span><span class='line'><span class="gi">+#endif</span>
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>     }
+</span></code></pre></td></tr></table></div>
 
 
+<p></figure></p>
+</div>
 
 
-  
-    <footer>
-      <p class="meta">
-        
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-21T22:45:00+01:00" pubdate data-updated="true">Dec 21<span>st</span>, 2013</time>
-        
-      </p>
+  <footer>
+    <p class="meta">
       
-        <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://jyx.github.io/bashhelp/index.html" data-via="Jyxxan" data-counturl="http://jyx.github.io/bashhelp/index.html" >Tweet</a>
+
+<span class="byline author vcard">Posted by <span class="fn">Joakim Bech</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-11-01T23:02:03+01:00" pubdate data-updated="true">Nov 1<span>st</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/coding/'>coding</a>, <a class='category' href='/blog/categories/hacking/'>hacking</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://jyx.github.io/blog/2014/11/01/fetchmail-and-gnupg/" data-via="Jyxxan" data-counturl="http://jyx.github.io/blog/2014/11/01/fetchmail-and-gnupg/" >Tweet</a>
   
   
   
@@ -218,9 +285,14 @@ Repos sections.</p>
   
 </div>
 
+    
+    <p class="meta">
       
-    </footer>
-  
+        <a class="basic-alignment left" href="/blog/2014/02/02/timing-attack-proof-of-concept/" title="Previous Post: Timing Attack - Proof of Concept">&laquo; Timing Attack - Proof of Concept</a>
+      
+      
+    </p>
+  </footer>
 </article>
 
   <section>
@@ -346,8 +418,8 @@ Repos sections.</p>
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://jyx.github.io/bashhelp/index.html';
-        var disqus_url = 'http://jyx.github.io/bashhelp/index.html';
+        var disqus_identifier = 'http://jyx.github.io/blog/2014/11/01/fetchmail-and-gnupg/';
+        var disqus_url = 'http://jyx.github.io/blog/2014/11/01/fetchmail-and-gnupg/';
         var disqus_script = 'embed.js';
       
     (function () {
