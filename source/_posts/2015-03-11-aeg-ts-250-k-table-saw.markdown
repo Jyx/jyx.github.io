@@ -218,7 +218,7 @@ much about accuracy, then I think this is a good table saw. However, if you are
 more into accuracy and care about micrometer instead of millimeter and if you
 plan to use various tools attached to the slots, then I'd not recommend you to
 buy this table saw. It's simply too much hassle to create and or modify existing
-runners to make them usable. For me it is working know after the tweaks I've
+runners to make them usable. For me it is working now after the tweaks I've
 done. But if I would have known what I know now I would have looked for another
 table saw instead, like [GTS 10 XC Professional](http://www.bosch-professional.com/gb/en/gts-10-xc-26179-ocs-p/), 
 [Dewalt DW744XRS](http://www.amazon.com/DEWALT-DW744XRS-10-inch-Table-Rolling/dp/B0014GD3HQ) or [DEWALT DW745](http://www.amazon.com/DEWALT-DW745-10-Inch-Job-Site-Capacity/dp/B000HXT2N6).
