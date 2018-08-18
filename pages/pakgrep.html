@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Pakgrep</title>
+        <link rel="stylesheet" href="https://jyx.github.io/theme/css/main.css" />
+        <link href="https://jyx.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="joakimbech.com - A trash can full of ideas Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://jyx.github.io/">joakimbech.com - A trash can full of ideas </a></h1>
+                <nav><ul>
+    
+                        <li><a href="https://jyx.github.io/pages/about.html">About</a></li>
+    
+                        <li><a href="https://jyx.github.io/pages/projects.html">Projects</a></li>
+                    <li><a href="https://jyx.github.io/category/coding.html">Coding</a></li>
+                    <li><a href="https://jyx.github.io/category/git.html">Git</a></li>
+                    <li><a href="https://jyx.github.io/category/hacking.html">Hacking</a></li>
+                    <li><a href="https://jyx.github.io/category/tools.html">Tools</a></li>
+                    <li><a href="https://jyx.github.io/category/woodworking.html">Woodworking</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+    <h1 class="entry-title">Pakgrep</h1>
+    
+    <h1>What is pakgrep?</h1>
+<p>Pakgrep is a program that allows you to extract files from a Quake2 pak-file.
+For you that doesn't know what a pak-file is you could compare them with
+zip-files but for the game Quake2 instead. I.e. the pak files contains textures
+for game levels, skins for the models, sound for your models and maps. I could
+contain config files and background picture when showing the console. Pakgrep
+is written in C and supports <a href="http://en.wikipedia.org/wiki/Regular_expression">regular expressions</a> as search string.</p>
+<h1>Why pakgrep?</h1>
+<p>During all the years I played Quake2 I created a pak-file for myself which
+contained all goodies that I liked. I had nice textures, good sounds and our
+own ergo Gibbus background and a text font that I really liked. One day when I
+was re-installing Windows I did a mistake deleted my Quake2 folder by mistake.
+Not a big deal I thought until I realized that my pak-file was missing. I had a
+lot of pak-files backed up, but not my own. However it should be possible for
+me to recreate it again by copy and paste files from other pak-files. But to do
+that you had to open/extract every single pak-file, browse the extracted files
+and then decide if it was the file you were looking for. A quite time consuming
+task. I especially wanted to find the conchars.pcx file which contains the font
+showed in the game. I decided to create a small program that could extract the
+files and this is what it ended up with, i.e. pakgrep.</p>
+<h1>How to use it</h1>
+<ol>
+<li>It is made for Windows and I have used it on WinXP (32) and Windows (64).</li>
+<li>Copy pakgrep.exe to a folder containing pak-files (*.pak).</li>
+<li>Type pakgrep.exe files_to_search_for pakfile.pak.</li>
+</ol>
+<p>For example to search for and extract conchars.pcx files from pak9.pak you could write:</p>
+<div class="highlight"><pre><span></span>    pakgrep.exe conc* pak9.pak
+</pre></div>
+
+
+<p>On the pakfile I tried when writing this I got the following result</p>
+<div class="highlight"><pre><span></span>    c:\pakgrep&gt;pakgrep.exe conc* pak9.pak
+    Pakgrep v1.0 by Joakim Bech
+
+    Extracting: pics/conback.pcx
+    Extracting: pics/conchars.pcx
+</pre></div>
+
+
+<p>I.e. the search string matched both conback.pcx and conchars.pcx.</p>
+<h3>Download / info</h3>
+<p><strong>Language</strong>: C</p>
+<p><strong>Source</strong>: Sorry, I will not publish source for this project.</p>
+<p><strong>Binary</strong>: <a href="/downloads/pakgrep/pakgrep.exe">pakgrep.exe</a> (SHA1: 5c5150099d9e9d7d772ccb9b364a1267697f8463)</p>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com">Pelican</a></li>
+                            <li><a href="https://linaro.org">Linaro</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://jyx.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="https://www.facebook.com/Jyxxan">Jyxxan @ Facebook</a></li>
+                            <li><a href="https://twitter.com/Jyxxan">Jyxxan @ Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/jbech">Joakim @ LinkedIn</a></li>
+                            <li><a href="https://github.com/jbech-linaro">Joakim @ GitHub</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'https://disqus.com/by/jyxxan';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

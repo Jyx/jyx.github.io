@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>joakimbech.com - A trash can full of ideas - Git</title>
+        <link rel="stylesheet" href="https://jyx.github.io/theme/css/main.css" />
+        <link href="https://jyx.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="joakimbech.com - A trash can full of ideas Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://jyx.github.io/">joakimbech.com - A trash can full of ideas </a></h1>
+                <nav><ul>
+    
+                        <li><a href="https://jyx.github.io/pages/about.html">About</a></li>
+    
+                        <li><a href="https://jyx.github.io/pages/projects.html">Projects</a></li>
+                    <li><a href="https://jyx.github.io/category/coding.html">Coding</a></li>
+                    <li class="active"><a href="https://jyx.github.io/category/git.html">Git</a></li>
+                    <li><a href="https://jyx.github.io/category/hacking.html">Hacking</a></li>
+                    <li><a href="https://jyx.github.io/category/tools.html">Tools</a></li>
+                    <li><a href="https://jyx.github.io/category/woodworking.html">Woodworking</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://jyx.github.io/blog/2012/03/09/apply-patches-in-git/">Apply patches in Git</a></h1>
+<footer class="post-info">
+        <span>Fri 09 March 2012</span>
+
+</footer><!-- /.post-info --><p><img alt="git logo" src="https://jyx.github.io/images/git/logo_git.gif" align="right">
+A common task for a developer has is to apply a patch in Git. I have a simple
+scheme that I've been using for a long time and it is very seldom that I get
+into problem nowadays when I'm doing patch work.</p>
+<h1>The short version for the impatient</h1>
+<div class="highlight"><pre><span></span>$ git am &lt; my_new_feature.patch
+$ git apply --reject --whitespace<span class="o">=</span>fix my_new_feature.patch
+$ git status
+$ vim my_conflicting_file.c*
+$ find . -name <span class="s2">&quot;*.rej&quot;</span> -exec rm -f <span class="o">{}</span> <span class="se">\;</span>
+$ git add .
+$ git am --resolved
+</pre></div>
+
+
+<h1>Long version for the one needing explanations to the steps</h1>
+<p>To start with I always first try applying the patch with git am, i.e.</p>
+<div class="highlight"><pre><span></span>$ git am &lt; my_new_feature.patch
+</pre></div>
+
+
+<p>Sometimes this is enough and the patch simply applies, however when it fails to
+apply I just continue writing.</p>
+<div class="highlight"><pre><span></span>$ git apply --reject --whitespace<span class="o">=</span>fix my_new_feature.patch
+</pre></div>
+
+
+<p>This will force Git to apply as much as it can and for the rest of the hunks
+that it cannot merge it will produce files ending with .rej. So the next step I
+do after git apply is just to run</p>
+<div class="highlight"><pre><span></span>$ git status
+</pre></div>
+
+
+<p>And notice the untracked files ending in .rej. Now I know what files Git
+couldn't merge when applying the patch, so let's say that I have a file called
+my_conflicting_file.c which Git couldn't merge. To solve this I open it in my
+favorite editor by doing like this:</p>
+<div class="highlight"><pre><span></span>$ vim my_conflicting_file.c*
+</pre></div>
+
+
+<p>This will open both my_conflicting_file.c and my_conflicting_file.c.rej. I will
+split the window in vim (CTRL+W V), and then open the other file by typing :bp
+in vim. Now it is up to you as a developer to decicde what changes in the <em>.rej
+file should go into the conflicting file. I.e, what changes in
+my_conflicting_file.c.rej, should be in my_conflicting_file.c. Sometimes you
+will notice that you don't have to change anything at all and sometimes you will
+notice that you have to add or remove lines in the conflicting file. Don't
+forget to remove the + and/or - at the start of the lines in the </em>.rej file!
+When this step is done I delete all the *.rej files and then add the changes
+files to the index in Git. I.e:</p>
+<div class="highlight"><pre><span></span>$ find . -name <span class="s2">&quot;*.rej&quot;</span> -exec rm -f <span class="o">{}</span> <span class="se">\;</span>
+$ git add .
+</pre></div>
+
+
+<p>The last step you have to do before the patch have been merged is to tell git
+that the "am" that you started have been resolved.</p>
+<div class="highlight"><pre><span></span>$ git am --resolved
+</pre></div>
+
+
+<p>Patch work done! If you follow this scheme I'm pretty sure that you will do fine
+in the future when applying patches.</p><p><a href="https://jyx.github.io/blog/2012/03/09/apply-patches-in-git/#disqus_thread">comments</a></p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com">Pelican</a></li>
+                            <li><a href="https://linaro.org">Linaro</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://jyx.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="https://www.facebook.com/Jyxxan">Jyxxan @ Facebook</a></li>
+                            <li><a href="https://twitter.com/Jyxxan">Jyxxan @ Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/jbech">Joakim @ LinkedIn</a></li>
+                            <li><a href="https://github.com/jbech-linaro">Joakim @ GitHub</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'https://disqus.com/by/jyxxan';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

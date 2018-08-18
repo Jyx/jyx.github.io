@@ -1,132 +1,56 @@
-
 <!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Timing Attack - Proof of Concept - joakimbech.com</title>
-  <meta name="author" content="Joakim Bech">
+        <meta charset="utf-8" />
+        <title>Timing Attack - Proof of Concept</title>
+        <link rel="stylesheet" href="https://jyx.github.io/theme/css/main.css" />
+        <link href="https://jyx.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="joakimbech.com - A trash can full of ideas Atom Feed" />
 
-  
-  <meta name="description" content="You might have heard about timing attacks, but either thought it sounded
-too complicated to understand or that it is too complicated to actually do &hellip;">
-  
-
-  <!-- http://t.co/dKP3o1e -->
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  
-  <link rel="canonical" href="http://jyx.github.io/blog/2014/02/02/timing-attack-proof-of-concept">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="joakimbech.com" type="application/atom+xml">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-
-  
-  <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-46803417-1']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
-
-
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
 </head>
 
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">joakimbech.com</a></h1>
-  
-    <h2>The trash can full of ideas</h2>
-  
-</hgroup>
-
-</header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="http://google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:jyx.github.io" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-  <li><a href="/about">About</a></li>
-</ul>
-
-</nav>
-  <div id="main">
-    <div id="content">
-      <div>
-<article class="hentry" role="article">
-  
-  <header>
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://jyx.github.io/">joakimbech.com - A trash can full of ideas </a></h1>
+                <nav><ul>
     
-      <h1 class="entry-title">Timing Attack - Proof of Concept</h1>
+                        <li><a href="https://jyx.github.io/pages/about.html">About</a></li>
     
-    
-      <p class="meta">
-        
+                        <li><a href="https://jyx.github.io/pages/projects.html">Projects</a></li>
+                    <li><a href="https://jyx.github.io/category/coding.html">Coding</a></li>
+                    <li><a href="https://jyx.github.io/category/git.html">Git</a></li>
+                    <li class="active"><a href="https://jyx.github.io/category/hacking.html">Hacking</a></li>
+                    <li><a href="https://jyx.github.io/category/tools.html">Tools</a></li>
+                    <li><a href="https://jyx.github.io/category/woodworking.html">Woodworking</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="https://jyx.github.io/blog/2014/02/02/timing-attack-proof-of-concept/" rel="bookmark"
+           title="Permalink to Timing Attack - Proof of Concept">Timing Attack - Proof of Concept</a></h1>
+    </header>
 
+    <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 02 February 2014</span>
 
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-02T10:38:37+01:00" pubdate data-updated="true">Feb 2<span>nd</span>, 2014</time>
-        
-           | <a href="#disqus_thread"
-             data-disqus-identifier="http://jyx.github.io">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-<div class="entry-content"><p>You might have heard about timing attacks, but either thought it sounded
+</footer><!-- /.post-info -->      <p>You might have heard about timing attacks, but either thought it sounded
 too complicated to understand or that it is too complicated to actually do such
-an attack. In this post I&rsquo;m going to give a brief overview of a timing attack
+an attack. In this post I'm going to give a brief overview of a timing attack
 and also provide some example code that you can play with on your own. Hopefully
 after reading this post you will understand that you cannot neglect this if you
 are creating a system where security is needed.</p>
-
-<!-- more -->
-
-
-<h3>What is a timing attack</h3>
-
+<h1>What is a timing attack</h1>
 <p>A <a href="http://en.wikipedia.org/wiki/Timing_attack">timing attack</a> is a so called
 <a href="http://en.wikipedia.org/wiki/Side_channel_attack">side channel attack</a>
 where you analyze the timing information on a system is such a way that it
 allows to break the protection of the system or a program running on it.</p>
-
-<h3>How is a timing attack done?</h3>
-
+<h1>How is a timing attack performed?</h1>
 <p>Typically you need to measure the amount of time needed to do operations of some
 kind. You can do this in several ways, for example you could hook up a set of
 probes on a chip or a PCB and watch the result on an oscilloscope or a logical
@@ -135,789 +59,157 @@ CPU/architecture itself. On a normal PC running Intel (or AMD) you can use the
 time stamp counter <a href="http://en.wikipedia.org/wiki/Time_Stamp_Counter">rdtsc</a>
 or a High Precision Event Timer
 <a href="http://en.wikipedia.org/wiki/High_Precision_Event_Timer">hpet</a>. Be aware that
-the time stamp counter isn&rsquo;t reliable any longer, since process speeds can
+the time stamp counter isn't reliable any longer, since process speeds can
 change (due to power management), you have context switches etc. But just for
 testing it can be good enough.</p>
-
 <p>So you have found a way of taking time measures, what next? The easy answer is,
 start measure the execution time of sensitive functions. For example when
 calling functions that verifies password, functions that does encryption and
-such. Measuring the time needed for strcmp as exemplified in the proof of
+such. Measuring the time needed for <code>strcmp</code> as exemplified in the proof of
 concept code below is easy. It becomes more complicated if you want to do the
 same when doing
 <a href="http://en.wikipedia.org/wiki/Advanced_Encryption_Standard#Side-channel_attacks">AES</a>
 encryption for example. It is still doable, but you also need to know the
-algorithm to know where to look and how to interpretate the leaked information.</p>
-
-<h3>Countermeasures</h3>
-
-<p>TBD, but the main idea is that you need balance the string compare functions so
-that it always takes the same amount of time to perform.</p>
-
-<h3>Proof of concept</h3>
-
-<p>I have created a small proof of concept / testing program to show that it is
-actually not that complicated to do a timing attack. It is unlikely that it is
-as easy as this, but still, it gives the idea and shows that you can actually
-use timing to guess password, guesses that are fairly good. The main idea is to
-show how execution time actually varies when doing string comparison. The by
-using this information leakage we show that we can guess pretty good what we
-believe the correct character is in the correct password/string.</p>
-
-<h4>The algorithm</h4>
-
+algorithm to know where to look and how to interpret the leaked information.</p>
+<h1>Countermeasures</h1>
+<p>Main idea is that you need balance the string compare functions so that it
+always takes the same amount of time to perform.</p>
+<h1>Proof of concept</h1>
+<p>I have put together a small proof of concept / testing program to show that it
+is actually not that complicated to do a timing attack. It is unlikely that it
+is as easy as this, but still, it gives the idea and shows that you can
+actually use timing to guess password, guesses that are fairly good. The main
+idea is to show how execution time actually varies when doing string
+comparison. The by using this information leakage we show that we can guess
+pretty good what we believe the correct character is in the correct
+password/string.</p>
+<h1>The algorithm</h1>
 <ol>
-<li>Loop over all characters, one by one in the string that we want to check
-(&ldquo;thisisalongstring&rdquo; in this case).</li>
-<li>For every character in the string, do an inner loop, where you are looping
-from &lsquo;a&rsquo; to &lsquo;z&rsquo;. For every call to the string comparison function record the
-amount of time it took. The letter that had longest execution time is most
-likely the correct character. Hence save that character in the in the array
-that contains guessed character.</li>
-<li>Lastly compare the correct string with guessed string to see if we got all
-timing based guesses correct or not.</li>
+<li>
+<p>Loop over all characters, one by one in the string that we want to check
+   (<code>thisisalongstring</code> in this case).</p>
+</li>
+<li>
+<p>For every character in the string, do an inner loop, where you are looping
+   from <code>'a'</code> to <code>'z'</code>. For every call to the string comparison function record
+   the amount of time it took. The letter that had longest execution time is
+   most likely the correct character. Hence save that character in the in the
+   array that contains guessed character.</p>
+</li>
+<li>
+<p>Lastly compare the correct string with guessed string to see if we got all
+   timing based guesses correct or not.</p>
+</li>
 </ol>
-
-
-<h4>Results</h4>
-
+<h2>Results</h2>
 <p>Here are the test result of a test run with debug information enabled</p>
-
-<pre><code>make DEBUG=1 &amp;&amp; ./main 10
-</code></pre>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>./main 10
-</span><span class='line'>Shows a couple of examples of the <span class="nb">time </span>it takes to make string comparison
-</span><span class='line'>avg <span class="nb">time </span>long string <span class="o">(</span>thisisalongstring<span class="o">)</span>: 821
-</span><span class='line'>avg <span class="nb">time </span>short string <span class="o">(</span>foo<span class="o">)</span>: 532
-</span><span class='line'>avg <span class="nb">time </span>0 char correct <span class="o">(</span>XXX/foo<span class="o">)</span>: 486
-</span><span class='line'>avg <span class="nb">time </span>1 char correct <span class="o">(</span>fXX/foo<span class="o">)</span>: 495
-</span><span class='line'>avg <span class="nb">time </span>2 char correct <span class="o">(</span>foX/foo<span class="o">)</span>: 540
-</span><span class='line'>avg <span class="nb">time </span>3 char correct <span class="o">(</span>foo/foo<span class="o">)</span>: 561
-</span><span class='line'>Guessed that pw should be: thisisalongshring
-</span><span class='line'>Guessed that pw should be: thisisalongstring
-</span><span class='line'>Guessed that pw should be: thisisalongstring
-</span><span class='line'>Guessed that pw should be: thhbisalongstring
-</span><span class='line'>Guessed that pw should be: thisisalongstring
-</span><span class='line'>Guessed that pw should be: thisisalongstring
-</span><span class='line'>Guessed that pw should be: thisisalongstring
-</span><span class='line'>Guessed that pw should be: thisisalongstring
-</span><span class='line'>Guessed that pw should be: thisimalongstrimf
-</span><span class='line'>Guessed that pw should be: thisisalongstrhng
-</span><span class='line'>6 successful timing attacks
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span></span>$ make <span class="nv">DEBUG</span><span class="o">=</span><span class="m">1</span>
+$ ./main <span class="m">10</span>
+Shows a couple of examples of the <span class="nb">time</span> it takes to make string comparison
+avg <span class="nb">time</span> long string <span class="o">(</span>thisisalongstring<span class="o">)</span>: <span class="m">821</span>
+avg <span class="nb">time</span> short string <span class="o">(</span>foo<span class="o">)</span>: <span class="m">532</span>
+avg <span class="nb">time</span> <span class="m">0</span> char correct <span class="o">(</span>XXX/foo<span class="o">)</span>: <span class="m">486</span>
+avg <span class="nb">time</span> <span class="m">1</span> char correct <span class="o">(</span>fXX/foo<span class="o">)</span>: <span class="m">495</span>
+avg <span class="nb">time</span> <span class="m">2</span> char correct <span class="o">(</span>foX/foo<span class="o">)</span>: <span class="m">540</span>
+avg <span class="nb">time</span> <span class="m">3</span> char correct <span class="o">(</span>foo/foo<span class="o">)</span>: <span class="m">561</span>
+Guessed that pw should be: thisisalongshring
+Guessed that pw should be: thisisalongstring
+Guessed that pw should be: thisisalongstring
+Guessed that pw should be: thhbisalongstring
+Guessed that pw should be: thisisalongstring
+Guessed that pw should be: thisisalongstring
+Guessed that pw should be: thisisalongstring
+Guessed that pw should be: thisisalongstring
+Guessed that pw should be: thisimalongstrimf
+Guessed that pw should be: thisisalongstrhng
+<span class="m">6</span> successful timing attacks
+</pre></div>
 
 
 <p>The figures will vary, but they are almost always in the same region. Looking
 at:</p>
-
-<p><strong>Line 3</strong>: we can see that it takes 821 time units for a full and correct string
-compare of the string &ldquo;thisisalongstring&rdquo;.</p>
-
-<p><strong>Line 4</strong>: we can see that it takes 532 time units to correctly match the string
-&ldquo;foo&rdquo;.</p>
-
-<p><strong>Line 5-8</strong>: for every trail, we add a correct matching character and as expected
-we can see that the time increases for every correct character. This is because
-the string compare function as said before has a timing linear to the correct
-number of characters.</p>
-
+<p><strong>Line 3</strong>: we can see that it takes <code>821</code> time units for a full and correct string
+compare of the string <code>thisisalongstring</code>.</p>
+<p><strong>Line 4</strong>: we can see that it takes <code>532</code> time units to correctly match the
+string <code>foo</code>.</p>
+<p><strong>Line 5-8</strong>: for every test run, we add a correct matching character and as
+expected we can see that the time increases for every correct character. This
+is because the string compare function as said before has a timing linear to
+the correct number of characters.</p>
 <p><strong>Line 9-19</strong>: shows the result when trying to guess the string
-&ldquo;thisisalongstring&rdquo; based on the time it takes to guess a, b, c, &hellip; z, for
-every character. This particular run we guessed correct 6 out or 10 times.
-Not that bad, it takes roughly 0.002 seconds to run everything above. According
-to Steve Gibson&rsquo;s <a href="https://www.grc.com/haystack.htm">Password Haystack</a> page, it
-takes approximately 3.75 centuries to brute force that password <strong>once</strong> using a
-what he calls a &ldquo;massive cracking array scenario (assuming one hundred trillion
-guesses per second)&rdquo;.</p>
-
-<h4>A couple of interesting things I&rsquo;ve noticed</h4>
-
+<code>thisisalongstring</code> based on the time it takes to guess <code>'a'</code>, <code>'b'</code>, <code>'c'</code>,
+... <code>'z'</code>, for every character. This particular run we guessed correct 6 out or
+10 times. Not that bad, it takes roughly 0.002 seconds to run everything above.
+According to Steve Gibson's <a href="https://www.grc.com/haystack.htm">Password Haystack</a>
+page, it takes approximately 3.75 centuries to brute force that password
+<strong>once</strong> using a what he calls a "massive cracking array scenario (assuming one
+hundred trillion guesses per second)".</p>
+<h1>A couple of interesting things I've noticed</h1>
 <ul>
-<li>If I increase the TEST_LOOPS define I actually get much worse result?</li>
-<li>If I turn on all optimizations, i.e. -O3, it doesn&rsquo;t work at all.</li>
+<li>If I increase the <code>TEST_LOOPS</code> define I actually get much worse result?</li>
+<li>If I turn on all optimizations, i.e. <code>-O3</code>, it doesn't work at all.</li>
 <li>The last character was always incorrectly guessed and that is the reason why
-I&rsquo;ve added a space at the end of the string &ldquo;thisisalongstring &rdquo;, which I
-later on strip away. I believe the reason for this problem is inaccuray using
-rdtsc.</li>
+  I've added a space at the end of the string '<code>thisisalongstring</code>', which I
+  later on strip away. I believe the reason for this problem is inaccuracy
+  using <code>rdtsc</code>.</li>
 </ul>
-
-
 <p>If any reader of this post knows the answer to my reflections above, please
 leave a comment.</p>
-
-<h4>Source code</h4>
-
-<figure class='code'><figcaption><span> (time_attack_strcmp.c)</span> <a href='/downloads/code/timing/time_attack_strcmp.c'>download</a></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
-<span class='line-number'>106</span>
-<span class='line-number'>107</span>
-<span class='line-number'>108</span>
-<span class='line-number'>109</span>
-<span class='line-number'>110</span>
-<span class='line-number'>111</span>
-<span class='line-number'>112</span>
-<span class='line-number'>113</span>
-<span class='line-number'>114</span>
-<span class='line-number'>115</span>
-<span class='line-number'>116</span>
-<span class='line-number'>117</span>
-<span class='line-number'>118</span>
-<span class='line-number'>119</span>
-<span class='line-number'>120</span>
-<span class='line-number'>121</span>
-<span class='line-number'>122</span>
-<span class='line-number'>123</span>
-<span class='line-number'>124</span>
-<span class='line-number'>125</span>
-<span class='line-number'>126</span>
-<span class='line-number'>127</span>
-<span class='line-number'>128</span>
-<span class='line-number'>129</span>
-<span class='line-number'>130</span>
-<span class='line-number'>131</span>
-<span class='line-number'>132</span>
-<span class='line-number'>133</span>
-<span class='line-number'>134</span>
-<span class='line-number'>135</span>
-<span class='line-number'>136</span>
-<span class='line-number'>137</span>
-<span class='line-number'>138</span>
-<span class='line-number'>139</span>
-<span class='line-number'>140</span>
-<span class='line-number'>141</span>
-<span class='line-number'>142</span>
-<span class='line-number'>143</span>
-<span class='line-number'>144</span>
-<span class='line-number'>145</span>
-<span class='line-number'>146</span>
-<span class='line-number'>147</span>
-<span class='line-number'>148</span>
-<span class='line-number'>149</span>
-<span class='line-number'>150</span>
-<span class='line-number'>151</span>
-<span class='line-number'>152</span>
-<span class='line-number'>153</span>
-<span class='line-number'>154</span>
-<span class='line-number'>155</span>
-<span class='line-number'>156</span>
-<span class='line-number'>157</span>
-<span class='line-number'>158</span>
-<span class='line-number'>159</span>
-<span class='line-number'>160</span>
-<span class='line-number'>161</span>
-<span class='line-number'>162</span>
-<span class='line-number'>163</span>
-<span class='line-number'>164</span>
-<span class='line-number'>165</span>
-<span class='line-number'>166</span>
-<span class='line-number'>167</span>
-<span class='line-number'>168</span>
-<span class='line-number'>169</span>
-<span class='line-number'>170</span>
-<span class='line-number'>171</span>
-<span class='line-number'>172</span>
-<span class='line-number'>173</span>
-<span class='line-number'>174</span>
-<span class='line-number'>175</span>
-<span class='line-number'>176</span>
-<span class='line-number'>177</span>
-<span class='line-number'>178</span>
-<span class='line-number'>179</span>
-<span class='line-number'>180</span>
-<span class='line-number'>181</span>
-<span class='line-number'>182</span>
-<span class='line-number'>183</span>
-<span class='line-number'>184</span>
-<span class='line-number'>185</span>
-<span class='line-number'>186</span>
-<span class='line-number'>187</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cm">/*</span>
-</span><span class='line'><span class="cm"> * Time attack proof of concept / tutorial.</span>
-</span><span class='line'><span class="cm"> *</span>
-</span><span class='line'><span class="cm"> * Author: Joakim Bech &lt;joakim.bech@gmail.com&gt;</span>
-</span><span class='line'><span class="cm"> * Date: 2014-02-02</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="cp">#include &lt;stdbool.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdint.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;string.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define TEST_LOOPS 1</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#ifdef DEBUG</span>
-</span><span class='line'><span class="cp">#define dprintf printf</span>
-</span><span class='line'><span class="cp">#else</span>
-</span><span class='line'><span class="cp">#define dprintf</span>
-</span><span class='line'><span class="cp">#endif</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/*</span>
-</span><span class='line'><span class="cm"> * strcmp taken from from glibc 2.13, just for reference.</span>
-</span><span class='line'><span class="cm"> * Compare S1 and S2, returning less than, equal to or</span>
-</span><span class='line'><span class="cm"> * greater than zero if S1 is lexicographically less than,</span>
-</span><span class='line'><span class="cm"> *  equal to or greater than S2.</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="k">static</span> <span class="kt">int</span> <span class="n">strcmp2</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">)</span>
-</span><span class='line'>  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">p1</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">p2</span><span class="p">;</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">s1</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">p1</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">s2</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span> <span class="n">p2</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">do</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="n">c1</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="p">)</span> <span class="o">*</span><span class="n">s1</span><span class="o">++</span><span class="p">;</span>
-</span><span class='line'>      <span class="n">c2</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="p">)</span> <span class="o">*</span><span class="n">s2</span><span class="o">++</span><span class="p">;</span>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="n">c1</span> <span class="o">==</span> <span class="sc">&#39;\0&#39;</span><span class="p">)</span>
-</span><span class='line'>          <span class="k">return</span> <span class="n">c1</span> <span class="o">-</span> <span class="n">c2</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="k">while</span> <span class="p">(</span><span class="n">c1</span> <span class="o">==</span> <span class="n">c2</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">return</span> <span class="n">c1</span> <span class="o">-</span> <span class="n">c2</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/*</span>
-</span><span class='line'><span class="cm"> * Change &quot;strcmp2&quot; to some other comparing function that you want to test.</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="k">static</span> <span class="n">bool</span> <span class="n">compare_strings</span><span class="p">(</span><span class="kt">char</span><span class="o">*</span> <span class="n">str1</span><span class="p">,</span> <span class="kt">char</span><span class="o">*</span> <span class="n">str2</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">strcmp2</span><span class="p">(</span><span class="n">str1</span><span class="p">,</span> <span class="n">str2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/*</span>
-</span><span class='line'><span class="cm"> * A wrapper for the cpu instruction rdtsc, which stores the current cycle</span>
-</span><span class='line'><span class="cm"> * number as a 64 bit number. The cpuid instruction is included because it</span>
-</span><span class='line'><span class="cm"> * forces inorder execution. (See the 1997 Intel document on using rdtsc for</span>
-</span><span class='line'><span class="cm"> * performance testing cited in the bibliography).</span>
-</span><span class='line'><span class="cm"> * Grabbed from password.c by Dan Halperin (which also is a time attack proof</span>
-</span><span class='line'><span class="cm"> * of concept).</span>
-</span><span class='line'><span class="cm"> *</span>
-</span><span class='line'><span class="cm"> * Be aware that rdtsc isn&#39;t reliable on a multicore system and power management</span>
-</span><span class='line'><span class="cm"> * features have also made it even more inaccurate. However it works quite good</span>
-</span><span class='line'><span class="cm"> * for the purpose of this demonstration.</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="k">static</span> <span class="kr">inline</span> <span class="kt">uint64_t</span> <span class="n">read_rdtsc</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="kt">uint64_t</span> <span class="n">d</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">__asm__</span> <span class="nf">__volatile__</span> <span class="p">(</span><span class="s">&quot;cpuid </span><span class="se">\n</span><span class="s"> rdtsc&quot;</span> <span class="o">:</span> <span class="s">&quot;=A&quot;</span> <span class="p">(</span><span class="n">d</span><span class="p">));</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">d</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/*</span>
-</span><span class='line'><span class="cm"> * Function that calculates the average time it takes to make TEST_LOOPS string</span>
-</span><span class='line'><span class="cm"> * comparisons.</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="k">static</span> <span class="kt">uint64_t</span> <span class="n">do_stat</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">pw_ref</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">test_pw</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">test_str</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="kt">uint64_t</span> <span class="n">time_long</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">uint64_t</span> <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">uint64_t</span> <span class="n">end</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">uint64_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">TEST_LOOPS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="n">start</span> <span class="o">=</span> <span class="n">read_rdtsc</span><span class="p">();</span>
-</span><span class='line'>      <span class="n">compare_strings</span><span class="p">(</span><span class="n">test_pw</span><span class="p">,</span> <span class="n">pw_ref</span><span class="p">);</span>
-</span><span class='line'>      <span class="n">end</span> <span class="o">=</span> <span class="n">read_rdtsc</span><span class="p">();</span>
-</span><span class='line'>      <span class="n">time_long</span> <span class="o">+=</span> <span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">test_str</span><span class="p">)</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s: %llu</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">test_str</span><span class="p">,</span> <span class="n">time_long</span> <span class="o">/</span> <span class="n">i</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">return</span> <span class="n">time_long</span> <span class="o">/</span> <span class="n">i</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/*</span>
-</span><span class='line'><span class="cm"> * Function that makes a time attack on a provided password. I takes the correct</span>
-</span><span class='line'><span class="cm"> * password, then it try to guess the correct letters in this provided password</span>
-</span><span class='line'><span class="cm"> * one by one by calling a string compare function. Since the standard string</span>
-</span><span class='line'><span class="cm"> * compare (strcmp) function is linear in time when it comes to find the correct</span>
-</span><span class='line'><span class="cm"> * answer you can make fairly good guess to find the correct letter. This since</span>
-</span><span class='line'><span class="cm"> * the correct letter will have slightly longer execution time compared to the</span>
-</span><span class='line'><span class="cm"> * ones with incorrect letters. Therefore loop over a-z and store the letter</span>
-</span><span class='line'><span class="cm"> * that had longest running time when doing string compare. Repeat this for all</span>
-</span><span class='line'><span class="cm"> * letters and then finally do a full string comparison to see whether we</span>
-</span><span class='line'><span class="cm"> * guessed correct or not.</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="n">bool</span> <span class="n">time_attack_pw</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">correct_pw</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="n">bool</span> <span class="n">result</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">char</span> <span class="n">current_char</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">uint64_t</span> <span class="n">current_time</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">uint64_t</span> <span class="n">max_time_found</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">char</span> <span class="o">*</span><span class="n">calculated_string</span> <span class="o">=</span> <span class="n">calloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="n">correct_pw</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">));</span>
-</span><span class='line'>  <span class="n">calculated_string</span><span class="p">[</span><span class="n">strlen</span><span class="p">(</span><span class="n">calculated_string</span><span class="p">)]</span> <span class="o">=</span> <span class="sc">&#39;\0&#39;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="cm">/* FIXME, why do we need to cut away one? rdtsc inaccuracy? */</span>
-</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">strlen</span><span class="p">(</span><span class="n">correct_pw</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="n">max_time_found</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>      <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="sc">&#39;a&#39;</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;=</span> <span class="sc">&#39;z&#39;</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
-</span><span class='line'>      <span class="p">{</span>
-</span><span class='line'>          <span class="n">current_char</span> <span class="o">=</span> <span class="n">j</span><span class="p">;</span>
-</span><span class='line'>          <span class="n">current_time</span> <span class="o">=</span>
-</span><span class='line'>              <span class="n">do_stat</span><span class="p">(</span><span class="n">correct_pw</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">current_char</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>          <span class="k">if</span> <span class="p">(</span><span class="n">current_time</span> <span class="o">&gt;</span> <span class="n">max_time_found</span><span class="p">)</span>
-</span><span class='line'>          <span class="p">{</span>
-</span><span class='line'>              <span class="n">max_time_found</span> <span class="o">=</span> <span class="n">current_time</span><span class="p">;</span>
-</span><span class='line'>              <span class="cm">/*</span>
-</span><span class='line'><span class="cm">              * Store the letter that gave longest the</span>
-</span><span class='line'><span class="cm">              * response time for letter X in position i in</span>
-</span><span class='line'><span class="cm">              * the array where we store all guesses.</span>
-</span><span class='line'><span class="cm">              */</span>
-</span><span class='line'>              <span class="n">calculated_string</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">j</span><span class="p">;</span>
-</span><span class='line'>          <span class="p">}</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="n">dprintf</span><span class="p">(</span><span class="s">&quot;Guessed that pw should be: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">calculated_string</span><span class="p">);</span>
-</span><span class='line'>  <span class="cm">/*</span>
-</span><span class='line'><span class="cm">  * Check if the provided string completely matches the calculated</span>
-</span><span class='line'><span class="cm">  * string. Ignore the last space, see FIXME above.</span>
-</span><span class='line'><span class="cm">  */</span>
-</span><span class='line'>  <span class="n">result</span> <span class="o">=</span> <span class="n">strncmp</span><span class="p">(</span><span class="n">correct_pw</span><span class="p">,</span> <span class="n">calculated_string</span><span class="p">,</span>
-</span><span class='line'>           <span class="n">strlen</span><span class="p">(</span><span class="n">correct_pw</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">free</span><span class="p">(</span><span class="n">calculated_string</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">correct_guesses</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="cm">/*</span>
-</span><span class='line'><span class="cm">  * FIXME, last char gives strange values, we add a space here, and strip</span>
-</span><span class='line'><span class="cm">  * it away in the time_attack_pw function. I suspect inaccurate rdtsc</span>
-</span><span class='line'><span class="cm">  * instruction.</span>
-</span><span class='line'><span class="cm">  */</span>
-</span><span class='line'>  <span class="kt">char</span><span class="o">*</span> <span class="n">long_string</span> <span class="o">=</span> <span class="s">&quot;thisisalongstring &quot;</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">char</span><span class="o">*</span> <span class="n">short_string</span> <span class="o">=</span> <span class="s">&quot;foo&quot;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="s">&quot;Shows a couple of examples of the time it takes to make string comparison&quot;</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">do_stat</span><span class="p">(</span><span class="n">long_string</span><span class="p">,</span> <span class="n">long_string</span><span class="p">,</span> <span class="s">&quot;avg time long string (thisisalongstring)&quot;</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">do_stat</span><span class="p">(</span><span class="n">short_string</span><span class="p">,</span> <span class="n">short_string</span><span class="p">,</span> <span class="s">&quot;avg time short string (foo)&quot;</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">do_stat</span><span class="p">(</span><span class="n">short_string</span><span class="p">,</span> <span class="s">&quot;XXX&quot;</span><span class="p">,</span> <span class="s">&quot;avg time 0 char correct (XXX/foo)&quot;</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">do_stat</span><span class="p">(</span><span class="n">short_string</span><span class="p">,</span> <span class="s">&quot;fXX&quot;</span><span class="p">,</span> <span class="s">&quot;avg time 1 char correct (fXX/foo)&quot;</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">do_stat</span><span class="p">(</span><span class="n">short_string</span><span class="p">,</span> <span class="s">&quot;foX&quot;</span><span class="p">,</span> <span class="s">&quot;avg time 2 char correct (foX/foo)&quot;</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">do_stat</span><span class="p">(</span><span class="n">short_string</span><span class="p">,</span> <span class="s">&quot;foo&quot;</span><span class="p">,</span> <span class="s">&quot;avg time 3 char correct (foo/foo)&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">atoi</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class='line'>      <span class="p">{</span>
-</span><span class='line'>          <span class="k">if</span> <span class="p">(</span><span class="n">time_attack_pw</span><span class="p">(</span><span class="n">long_string</span><span class="p">))</span>
-</span><span class='line'>              <span class="n">correct_guesses</span><span class="o">++</span><span class="p">;</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d successful timing attacks</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">correct_guesses</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<figure class='code'><figcaption><span> (Makefile)</span> <a href='/downloads/code/timing/Makefile'>download</a></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'><span class="n">CC</span>     <span class="p">:=</span> <span class="n">gcc</span>
-</span><span class='line'><span class="n">CFLAGS</span> <span class="p">:=</span> <span class="o">-</span><span class="n">O0</span> <span class="o">-</span><span class="n">g</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">OBJS</span>   <span class="p">:=</span> <span class="n">time_attack_strcmp</span><span class="p">.</span><span class="n">o</span>
-</span><span class='line'><span class="n">BIN</span>    <span class="p">:=</span> <span class="n">main</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">ifdef</span> <span class="n">DEBUG</span>
-</span><span class='line'><span class="n">CFLAGS</span> <span class="o">+</span><span class="p">=</span> <span class="o">-</span><span class="n">DDEBUG</span><span class="p">=</span>$<span class="p">(</span><span class="n">DEBUG</span><span class="p">)</span>
-</span><span class='line'><span class="n">endif</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">all</span><span class="p">:</span> $<span class="p">(</span><span class="n">BIN</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>$<span class="p">(</span><span class="n">BIN</span><span class="p">):</span> $<span class="p">(</span><span class="n">OBJS</span><span class="p">)</span>
-</span><span class='line'>  $<span class="p">(</span><span class="n">CC</span><span class="p">)</span> $<span class="p">(</span><span class="n">CFLAGS</span><span class="p">)</span> <span class="o">-</span><span class="n">o</span> $<span class="p">@</span> $^
-</span><span class='line'>
-</span><span class='line'><span class="c">%.o: %.c</span>
-</span><span class='line'>  $<span class="p">(</span><span class="n">CC</span><span class="p">)</span> <span class="o">-</span><span class="n">c</span> $<span class="p">(</span><span class="n">CFLAGS</span><span class="p">)</span> <span class="o">-</span><span class="n">o</span> $<span class="p">@</span> $<span class="o">&lt;</span>
-</span><span class='line'>  <span class="p">@</span><span class="n">echo</span> &quot;  <span class="n">CC</span> $<span class="o">&lt;</span>&quot;
-</span><span class='line'>
-</span><span class='line'><span class="n">valgrind</span><span class="p">:</span>
-</span><span class='line'>  <span class="n">valgrind</span> <span class="o">--</span><span class="n">tool</span><span class="p">=</span><span class="n">memcheck</span> <span class="o">--</span><span class="n">leak</span><span class="o">-</span><span class="n">check</span><span class="p">=</span><span class="n">full</span> <span class="o">--</span><span class="n">show</span><span class="o">-</span><span class="n">reachable</span><span class="p">=</span><span class="n">yes</span> <span class="o">./</span>$<span class="p">(</span><span class="n">BIN</span><span class="p">)</span> 10
-</span><span class='line'>
-</span><span class='line'><span class="n">clean</span><span class="p">:</span>
-</span><span class='line'>  <span class="n">rm</span> <span class="o">-</span><span class="n">f</span> $<span class="p">(</span><span class="n">OBJS</span><span class="p">)</span> $<span class="p">(</span><span class="n">BIN</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-</div>
-
-
-  <footer>
-    <p class="meta">
-      
-  
-
-<span class="byline author vcard">Posted by <span class="fn">Joakim Bech</span></span>
-
-      
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-02T10:38:37+01:00" pubdate data-updated="true">Feb 2<span>nd</span>, 2014</time>
-      
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/coding/'>coding</a>, <a class='category' href='/blog/categories/hacking/'>hacking</a>
-  
-</span>
-
-
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://jyx.github.io/blog/2014/02/02/timing-attack-proof-of-concept/" data-via="Jyxxan" data-counturl="http://jyx.github.io/blog/2014/02/02/timing-attack-proof-of-concept/" >Tweet</a>
-  
-  
-  
-    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
-  
-</div>
-
-    
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2012/03/09/apply-patches-in-git/" title="Previous Post: Apply patches in Git">&laquo; Apply patches in Git</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2014/11/01/fetchmail-and-gnupg/" title="Next Post: Fetchmail and GnuPG">Fetchmail and GnuPG &raquo;</a>
-      
-    </p>
-  </footer>
-</article>
-
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-  </section>
-
-</div>
-
-<aside class="sidebar">
-  
-    <section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2015/03/11/aeg-ts-250-k-table-saw/">AEG TS 250 K - Table Saw Review</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/11/01/fetchmail-and-gnupg/">Fetchmail and GnuPG</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/02/02/timing-attack-proof-of-concept/">Timing Attack - Proof of Concept</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/03/09/apply-patches-in-git/">Apply Patches in Git</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/03/04/perl-pack-and-unpack/">Perl Pack and Unpack</a>
-      </li>
-    
-  </ul>
-</section>
-<section>
-  <h1>Projects</h1>
-  <ul id="projects">
-	  <li class='projects'><a href='/bashhelp'>Bash help</a></li>
-	  <li class='projects'><a href='/antservo'>Antenna servo</a></li>
-	  <li class='projects'><a href='/atschjoo'>ATschjoo</a></li>
-	  <li class='projects'><a href='/gengraph'>Gengraph</a></li>
-	  <li class='projects'><a href='/globalme'>Global-me</a></li>
-	  <li class='projects'><a href='/nimbox'>NIM and Squeezebox</a></li>
-	  <li class='projects'><a href='/pakgrep'>Pakgrep</a></li>
-	  <li class='projects'><a href='/umlfs'>UML FS</a></li>
-	  <li class='projects'><a href='/wolfparser'>Wolfparser</a></li>
-  </ul>
-</section>
-<section>
-  <h1>Categories</h1>
-  <ul id="categories">
-    <li class='category'><a href='/blog/categories/tools/'>Tools (1)</a></li>
-<li class='category'><a href='/blog/categories/c/'>c (1)</a></li>
-<li class='category'><a href='/blog/categories/coding/'>coding (6)</a></li>
-<li class='category'><a href='/blog/categories/git/'>git (1)</a></li>
-<li class='category'><a href='/blog/categories/hacking/'>hacking (2)</a></li>
-<li class='category'><a href='/blog/categories/perl/'>perl (1)</a></li>
-<li class='category'><a href='/blog/categories/review/'>review (1)</a></li>
-<li class='category'><a href='/blog/categories/woodworking/'>woodworking (1)</a></li>
-
-  </ul>
-</section>
-
-<section>
-  <h1>GitHub Repos</h1>
-  <ul id="gh_repos">
-    <li class="loading">Status updating...</li>
-  </ul>
-  
-  <a href="https://github.com/Jyx">@Jyx</a> on GitHub
-  
-  <script type="text/javascript">
-    $(document).ready(function(){
-        if (!window.jXHR){
-            var jxhr = document.createElement('script');
-            jxhr.type = 'text/javascript';
-            jxhr.src = '/javascripts/libs/jXHR.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(jxhr, s);
-        }
-
-        github.showRepos({
-            user: 'Jyx',
-            count: 5,
-            skip_forks: true,
-            target: '#gh_repos'
-        });
-    });
-  </script>
-  <script src="/javascripts/github.js" type="text/javascript"> </script>
-</section>
-
-
-<section class="googleplus">
-  <h1>
-    <a href="https://plus.google.com/+JoakimBech?rel=author">
-      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
-      Google+
-    </a>
-  </h1>
-</section>
-
-
-
-  
-</aside>
-
-
+<h1>Source code</h1>
+<ul>
+<li><a href="/downloads/timing/time_attack_strcmp.c">time_attack_strcmp.c</a></li>
+<li><a href="/downloads/timing/Makefile">Makefile</a></li>
+</ul>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_identifier = "blog/2014/02/02/timing-attack-proof-of-concept/";
+        var disqus_url = "https://jyx.github.io/blog/2014/02/02/timing-attack-proof-of-concept/";
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//https://disqus.com/by/jyxxan.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
     </div>
-  </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2015 - Joakim Bech -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
 
-</footer>
-  
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com">Pelican</a></li>
+                            <li><a href="https://linaro.org">Linaro</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="https://jyx.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="https://www.facebook.com/Jyxxan">Jyxxan @ Facebook</a></li>
+                            <li><a href="https://twitter.com/Jyxxan">Jyxxan @ Twitter</a></li>
+                            <li><a href="https://www.linkedin.com/in/jbech">Joakim @ LinkedIn</a></li>
+                            <li><a href="https://github.com/jbech-linaro">Joakim @ GitHub</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
 
 <script type="text/javascript">
-      var disqus_shortname = 'joakimbech';
-      
-        
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://jyx.github.io/blog/2014/02/02/timing-attack-proof-of-concept/';
-        var disqus_url = 'http://jyx.github.io/blog/2014/02/02/timing-attack-proof-of-concept/';
-        var disqus_script = 'embed.js';
-      
+    var disqus_shortname = 'https://disqus.com/by/jyxxan';
     (function () {
-      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
     }());
 </script>
-
-
-
-<div id="fb-root"></div>
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) {return;}
-  js = d.createElement(s); js.id = id; js.async = true;
-  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
-
-
-
-
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = '//platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
-
-
-
-
-
 </body>
 </html>

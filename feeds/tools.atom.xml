@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>joakimbech.com - A trash can full of ideas - Tools</title><link href="https://jyx.github.io/" rel="alternate"></link><link href="https://jyx.github.io/feeds/tools.atom.xml" rel="self"></link><id>https://jyx.github.io/</id><updated>2018-08-18T00:00:00+02:00</updated><entry><title>What about Total Commander?</title><link href="https://jyx.github.io/blog/2010/03/12/what-about-total-commander/" rel="alternate"></link><published>2010-03-12T06:26:00+01:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2010-03-12:/blog/2010/03/12/what-about-total-commander/</id><summary type="html">&lt;p&gt;&lt;img alt="Total Commander logo" src="https://jyx.github.io/images/logo_tc.jpg" align="right"&gt;
+As my first post on my new site I'll start by talking about Total Commander. I
+have been using this wonderful tools since I think I got my first PC. Back then
+it was called Windows Commander. So what is it that makes this tool so
+wonderful?&lt;/p&gt;
+&lt;p&gt;Well, if you …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="Total Commander logo" src="https://jyx.github.io/images/logo_tc.jpg" align="right"&gt;
+As my first post on my new site I'll start by talking about Total Commander. I
+have been using this wonderful tools since I think I got my first PC. Back then
+it was called Windows Commander. So what is it that makes this tool so
+wonderful?&lt;/p&gt;
+&lt;p&gt;Well, if you just install it and start it you maybe won't be that
+impressed. It has a quite old and perhaps boring look. But, if I can choose
+between good looking tool without any features (Windows Explorer) and a not so
+good looking tool with almost any features you can think of that is needed or
+could be nice to have when it comes to file handling on a computer. Then I
+choose the latter one. Which, in this case is Total Commander.&lt;/p&gt;
+&lt;p&gt;So, what do you normally do with your files on your computer? For a normal user
+you open files and maybe move files. That might be it for a big part of the
+population. But if you are a slightly more advanced user? Then you might need to
+duplicate files, pack/unpack files. You maybe want to filter the files so you
+only will see files matching a certain pattern. You maybe want to synchronize
+your files on a backup drive? Want to syntax hi-light files with certain name?
+Copy file names with or without full path to clipboard? All of this and much
+more you can do with Total Commander and as a good bonus there are quite easy
+keyboard shortcuts for doing that. So you don't have to move one of you hands
+between the keyboard and the mouse all the time.&lt;/p&gt;
+&lt;h1&gt;The look&lt;/h1&gt;
+&lt;p&gt;Total Commander is composed as one main window with a split pane. First time I
+saw this was back in time when Amiga 500 was a popular computer. I'm thinking of
+the file manager &lt;a href="http://en.wikipedia.org/wiki/Directory_Opus"&gt;Directory Opus&lt;/a&gt;.
+Is this a good or a bad thing? Well, since it still exists and seems to be quite
+popular among people that have some higher demand on file exploring tool than
+the average user have, then I think we can say, yes it's a good thing. To be
+honest it's actually very good. You have two panes open all the time within the
+same program, so you can very easy move, copy files etc. Since quite some time
+ago Total Commander also supports tabs. Hence you can have multiple tabs for
+both panes. You jump between the panes by simply pressing TAB and you jump
+between tabs in the panes by pressing &lt;code&gt;CTRL + TAB&lt;/code&gt;.&lt;/p&gt;
+&lt;h1&gt;Renaming on steroids&lt;/h1&gt;
+&lt;p&gt;There's something called Multi-Rename Tool in Total Commander which is quite
+handy. It can rename a lot of files for you in very few clicks. Imagine you have
+a folder with following files:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    a_foo.zip
+    b_foo.zip
+    c_foo.zip
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now you want to rename those to:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    01_a.zip
+    02_b.zip
+    03_c.zip
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In Total Commander you simply mark the files and press &lt;code&gt;CTRL + M&lt;/code&gt; and the
+Multi-Rename Tool will launch. In this particular example you prepend the
+&lt;code&gt;Rename mask: file name&lt;/code&gt; with &lt;code&gt;01_&lt;/code&gt; and in the &lt;code&gt;Search &amp;amp; Replace&lt;/code&gt; you write
+&lt;code&gt;\_foo&lt;/code&gt; in the &lt;code&gt;Search For&lt;/code&gt;, like shown in the screenshot below.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Total Commander multi rename tool" src="https://jyx.github.io/images/tc_multi_rename_tool.png" align="center"&gt;&lt;/p&gt;
+&lt;p&gt;You can just imagine how helpful this is when you are renaming a couple of
+hundred jpg files snapped with your digital camera where you often have quite
+cryptic naming as default.&lt;/p&gt;
+&lt;h1&gt;Shortcuts and some more features&lt;/h1&gt;
+&lt;p&gt;I could explain a bunch of features like the Multi-Rename Tool in detail. But
+some features are very simple to use, so I list a couple of my daily things I do
+using Total Commander.&lt;/p&gt;
+&lt;p&gt;Let's say you have &lt;code&gt;c:\a&lt;/code&gt; in the left pane and &lt;code&gt;c:\b&lt;/code&gt; in the right pane.&lt;/p&gt;
+&lt;p&gt;Mark files? Use &lt;code&gt;space&lt;/code&gt; or &lt;code&gt;SHIFT + PgUp/PgDown&lt;/code&gt; or &lt;code&gt;CTRL + plus&lt;/code&gt; or simply
+press plus and make a filter out the files.&lt;/p&gt;
+&lt;p&gt;Want to move files from folder &lt;code&gt;a&lt;/code&gt; to &lt;code&gt;b&lt;/code&gt;? Mark the files you want to move and
+press &lt;code&gt;F6&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Rename a file? &lt;code&gt;SHIFT + F6&lt;/code&gt;. This is a bit odd, since most other program have
+&lt;code&gt;F2&lt;/code&gt; as rename button.&lt;/p&gt;
+&lt;p&gt;Pack files? Mark the files, &lt;code&gt;ALT + F5&lt;/code&gt;, then &lt;code&gt;ENTER&lt;/code&gt;. Files are now packed and
+put into the folder on the other pane.&lt;/p&gt;
+&lt;p&gt;Unpack files? Mark the files, &lt;code&gt;ALT + F9&lt;/code&gt; then &lt;code&gt;ENTER&lt;/code&gt;. Files are unpacked to
+the other pane.&lt;/p&gt;
+&lt;p&gt;Browse packed files? Simply press &lt;code&gt;ENTER&lt;/code&gt; on a zip file for example and you will
+see the content immediately without unpacking it. Very useful! Note that you can
+copy single files when in this state. This is also very useful.&lt;/p&gt;
+&lt;p&gt;Find files? &lt;code&gt;Alt + F7&lt;/code&gt;, then just search. Note the &lt;code&gt;Search subdirectories&lt;/code&gt; which
+is very useful of you have a big project with a lot of subfolder but you know
+that the file you are searching is not that deep down into the folder structure.
+Then you use this to select how many subdirectories you want to traverse. Very
+useful, especially in combination with the &lt;code&gt;Find text&lt;/code&gt; in the same window.&lt;/p&gt;
+&lt;p&gt;Go to folders that you have been in? Press &lt;code&gt;ALT + down&lt;/code&gt; and you get a neat list
+for the last ~30 folders you have been in. Note that this is unique for the
+pane. I.e. one for the left pane and one for the right pane.&lt;/p&gt;
+&lt;p&gt;Run a command? Just type it and press &lt;code&gt;ENTER&lt;/code&gt;. For example I want command
+prompt. I simply type &lt;code&gt;cmd&lt;/code&gt; then press enter. Voila I get a command prompt
+which have the path same to my current folder in my pane.&lt;/p&gt;
+&lt;p&gt;Mark a folder as favorite? Press &lt;code&gt;CTRL + d&lt;/code&gt; then &lt;code&gt;a&lt;/code&gt;. Type any name you like to
+refer to this folder.&lt;/p&gt;
+&lt;p&gt;Go to a favorite folder? Press &lt;code&gt;CTRL + d&lt;/code&gt; and select your favorite folder.&lt;/p&gt;
+&lt;p&gt;Do a mouse right click? Press &lt;code&gt;SHIFT + F10&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;View content of a file? Press &lt;code&gt;F3&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Edit a file? Press &lt;code&gt;F4&lt;/code&gt;.&lt;/p&gt;
+&lt;h1&gt;Should you buy Total Commander?&lt;/h1&gt;
+&lt;p&gt;Well, at least download it asap and start using it. If you just want to try it,
+you will only get one(!) nag screen when starting the program. Then you can
+leave it running for hours, days, weeks, years with full functionality and no
+more nag screens. But, when you notice that you cannot really live without this
+tool, then I think you should register the program. Christian Ghisler (the
+author) deserves money for this great tool and he has given free updates since I
+registered it, which was quite long time ago. As the headline says, I think
+Microsoft should buy this tool/company and replace Windows Explorer with Total
+Commander. Thanks!&lt;/p&gt;
+&lt;p&gt;Link to the official site: http://www.ghisler.com&lt;/p&gt;</content></entry></feed>

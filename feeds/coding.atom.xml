@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>joakimbech.com - A trash can full of ideas - Coding</title><link href="https://jyx.github.io/" rel="alternate"></link><link href="https://jyx.github.io/feeds/coding.atom.xml" rel="self"></link><id>https://jyx.github.io/</id><updated>2018-08-18T00:00:00+02:00</updated><entry><title>Fetchmail and GnuPG</title><link href="https://jyx.github.io/blog/2014/11/01/fetchmail-and-gnupg/" rel="alternate"></link><published>2014-11-01T23:02:03+01:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2014-11-01:/blog/2014/11/01/fetchmail-and-gnupg/</id><summary type="html">&lt;p&gt;When using &lt;a href="http://en.wikipedia.org/wiki/Internet_Message_Access_Protocol"&gt;imap&lt;/a&gt;
+in &lt;a href="http://en.wikipedia.org/wiki/Mutt_(email_client)"&gt;mutt&lt;/a&gt; you have the
+possibility to use &lt;code&gt;gpg&lt;/code&gt; to decrypt your password instead of having it as
+plaintext in your configuration file (&lt;code&gt;.muttrc&lt;/code&gt;), see
+&lt;a href="https://wiki.archlinux.org/index.php/Mutt#Passwords_management"&gt;ArchWiki&lt;/a&gt; how
+to do that.&lt;/p&gt;
+&lt;p&gt;However, if you consider using &lt;code&gt;POP3&lt;/code&gt;, then you will also need to install and
+enable &lt;a href="http://msmtp.sourceforge.net"&gt;msmtp&lt;/a&gt; (not …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When using &lt;a href="http://en.wikipedia.org/wiki/Internet_Message_Access_Protocol"&gt;imap&lt;/a&gt;
+in &lt;a href="http://en.wikipedia.org/wiki/Mutt_(email_client)"&gt;mutt&lt;/a&gt; you have the
+possibility to use &lt;code&gt;gpg&lt;/code&gt; to decrypt your password instead of having it as
+plaintext in your configuration file (&lt;code&gt;.muttrc&lt;/code&gt;), see
+&lt;a href="https://wiki.archlinux.org/index.php/Mutt#Passwords_management"&gt;ArchWiki&lt;/a&gt; how
+to do that.&lt;/p&gt;
+&lt;p&gt;However, if you consider using &lt;code&gt;POP3&lt;/code&gt;, then you will also need to install and
+enable &lt;a href="http://msmtp.sourceforge.net"&gt;msmtp&lt;/a&gt; (not strictly needed),
+&lt;a href="http://www.fetchmail.info"&gt;fetchmail&lt;/a&gt; and
+&lt;a href="http://www.procmail.org"&gt;procmail&lt;/a&gt;. Ubuntu have created a quite nice
+&lt;a href="https://help.ubuntu.com/community/MuttAndGmail"&gt;guide&lt;/a&gt; of
+the steps involved.&lt;/p&gt;
+&lt;p&gt;Just as &lt;code&gt;mutt&lt;/code&gt; also &lt;code&gt;msmtp&lt;/code&gt; have the possibility to use &lt;code&gt;gpg&lt;/code&gt; in runtime instead
+of having the password stored in plaintext. The way to do that in &lt;code&gt;msmtp&lt;/code&gt; is to
+put a line mention &lt;code&gt;gpg&lt;/code&gt; in your &lt;code&gt;$HOME/.msmtprc file&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;passwordeval    &lt;span class="s2"&gt;&amp;quot;gpg --quiet --for-your-eyes-only --no-tty --decrypt ~/.msmtp-gmail.gpg&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;However, &lt;code&gt;fetchmail&lt;/code&gt; doesn't have the same option. So, &lt;code&gt;mutt&lt;/code&gt; and &lt;code&gt;msmtp&lt;/code&gt; is
+fine, but you still have to put your password in a cleartext file when
+configuring &lt;code&gt;fetchmail&lt;/code&gt;. Clearly there must be a better way to handle this? I
+downloaded the source code
+(&lt;a href="http://sourceforge.net/projects/fetchmail/files/branch_6.3/fetchmail-6.3.26.tar.xz/download"&gt;fetchmail-6.3.26&lt;/a&gt;)
+and did a quick and dirty hack. I just modified the main function in the file
+&lt;code&gt;fetchmail.c&lt;/code&gt;, so that instead of having to provide the password on command line
+(when password is not set in &lt;code&gt;$HOME/.fetchmailrc&lt;/code&gt;) it makes use of &lt;code&gt;gpg&lt;/code&gt; similar to how
+both mutt and &lt;code&gt;msmtp&lt;/code&gt; does. It isn't pretty ... but it works (tested on Arch Linux
+on a Raspberry PI). To try it out, use the same &lt;code&gt;gpg&lt;/code&gt; encrypted file as you use
+for &lt;code&gt;msmtp&lt;/code&gt;, i.e, &lt;code&gt;$HOME/msmtp-gmail.gpg&lt;/code&gt; and patch &lt;code&gt;fetchmail&lt;/code&gt; using this patch and
+rebuild.&lt;/p&gt;
+&lt;h1&gt;Source&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="/downloads/patch/fetchmail_gpg.patch"&gt;fetchmail_gpg.patch&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content></entry><entry><title>Perl pack and unpack</title><link href="https://jyx.github.io/blog/2012/03/04/perl-pack-and-unpack/" rel="alternate"></link><published>2012-03-04T00:15:48+01:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2012-03-04:/blog/2012/03/04/perl-pack-and-unpack/</id><summary type="html">&lt;p&gt;&lt;img alt="Perl logo" src="https://jyx.github.io/images/perlpap/logo_perl.jpg" align="right"&gt;
+When you have to read and write binary data using Perl, then you preferably use
+the built in functions pack and unpack. With the pack function you will create
+a string which will be different depending on what kind of template you provide
+to the pack function (the unpack does …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="Perl logo" src="https://jyx.github.io/images/perlpap/logo_perl.jpg" align="right"&gt;
+When you have to read and write binary data using Perl, then you preferably use
+the built in functions pack and unpack. With the pack function you will create
+a string which will be different depending on what kind of template you provide
+to the pack function (the unpack does the same, but in the opposite direction).&lt;/p&gt;
+&lt;p&gt;I was writing a simple Perl script that was reading a binary file which
+contained data that originated from a c &lt;code&gt;struct&lt;/code&gt;. I.e., I wanted to parse the
+binary file and print what the values would be if the binary file was read into
+the c struct.&lt;/p&gt;
+&lt;p&gt;Let's say that the struct is on the format:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;binary_data&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="kt"&gt;uint32_t&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="kt"&gt;uint32_t&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I.e, we have data consisting of 4 bytes of &lt;code&gt;a&lt;/code&gt;, 4 bytes of &lt;code&gt;b&lt;/code&gt; and 1 byte of
+&lt;code&gt;c&lt;/code&gt;. Let us say that the binary files consist of the following values&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;a = 196 dec (0xC4 hex)
+b = 4293844428 dec (0xFFEEDDCC hex)
+c = 75 dec (0x4B hex)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;then our binary file, &lt;code&gt;binary_data.bin&lt;/code&gt; would contain this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;c4 00 00 00 cc dd ee ff 4b
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To be able to read this back and print the values in decimal or hex, you simply
+start by reading the size of each element in the struct one by one and for each
+item you unpack the data according to the size of the element in the struct.
+For &lt;code&gt;uint32_t&lt;/code&gt; you use &lt;code&gt;L&lt;/code&gt; and for &lt;code&gt;uint8_t&lt;/code&gt; &lt;code&gt;C&lt;/code&gt;. A complete listing of the
+different templates (as they are called in Perl) could be found in the Perl
+documentation. Be careful about little- vs big-endian when you select template.&lt;/p&gt;
+&lt;p&gt;Below is a Perl script that creates the binary file, then read the data back
+from the file and print the values both in decimal and hex.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/perl&lt;/span&gt;
+&lt;span class="k"&gt;use&lt;/span&gt; &lt;span class="nn"&gt;strict&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;use&lt;/span&gt; &lt;span class="nn"&gt;warnings&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="nb"&gt;binmode&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;my&lt;/span&gt; &lt;span class="nv"&gt;$buf&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Write decimal values as binary data.&lt;/span&gt;
+&lt;span class="nb"&gt;open&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;&amp;gt;binary_data.bin&amp;quot;&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="nb"&gt;die&lt;/span&gt; &lt;span class="vg"&gt;$!&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="k"&gt;my&lt;/span&gt; &lt;span class="nv"&gt;$data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;pack&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;L&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;196&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt; &lt;span class="nv"&gt;$data&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="nv"&gt;$data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;pack&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;L&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;4293844428&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt; &lt;span class="nv"&gt;$data&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="nv"&gt;$data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;pack&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;C&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;75&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt; &lt;span class="nv"&gt;$data&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="nb"&gt;close&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Read back binary data to decimal value.&lt;/span&gt;
+&lt;span class="nb"&gt;open&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;binary_data.bin&amp;quot;&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="nb"&gt;die&lt;/span&gt; &lt;span class="vg"&gt;$!&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="nb"&gt;read&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$buf&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nv"&gt;$data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;unpack&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;L&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$buf&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="nv"&gt;$data&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="s"&gt;&amp;quot; - &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="nb"&gt;sprintf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;%x&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;\n&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="nb"&gt;read&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$buf&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nv"&gt;$data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;unpack&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;L&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$buf&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="nv"&gt;$data&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="s"&gt;&amp;quot; - &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="nb"&gt;sprintf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;%x&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;\n&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="nb"&gt;read&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$buf&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nv"&gt;$data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;unpack&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;C&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$buf&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="nv"&gt;$data&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="s"&gt;&amp;quot; - &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="nb"&gt;sprintf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;%x&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;\n&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="nb"&gt;close&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</content></entry><entry><title>Using libcurl with minimal dependencies</title><link href="https://jyx.github.io/blog/2010/08/05/using-libcurl-with-minimal-dependencies/" rel="alternate"></link><published>2010-08-05T00:13:15+02:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2010-08-05:/blog/2010/08/05/using-libcurl-with-minimal-dependencies/</id><summary type="html">&lt;p&gt;&lt;img alt="LibCURL logo" src="https://jyx.github.io/images/libcurldep/logo_curl-200x150.jpg" align="right"&gt;
+For an ongoing project I needed to retrieve webpages from my C-program and
+first I used sockets directly, but then I thought why not try use libcurl? If I
+could use libcurl and link it statically then I would get the good features
+from libcurl, but still could make my …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="LibCURL logo" src="https://jyx.github.io/images/libcurldep/logo_curl-200x150.jpg" align="right"&gt;
+For an ongoing project I needed to retrieve webpages from my C-program and
+first I used sockets directly, but then I thought why not try use libcurl? If I
+could use libcurl and link it statically then I would get the good features
+from libcurl, but still could make my application stand alone.&lt;/p&gt;
+&lt;p&gt;With my current setup running Debian (Lenny), I tried to just apt-get the libraries
+(&lt;code&gt;libcurl4-openssl-dev&lt;/code&gt;) and build using those libraries That went fine until I
+tried to link them statically with my application. After reading different mail
+archives, forum and tried on my own I got my application to link (static) with
+libcurl. Basically what I needed to do was.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Download libcurl source&lt;/li&gt;
+&lt;li&gt;Compile libcurl myself (disable one define, more about that below).&lt;/li&gt;
+&lt;li&gt;Point to my own built libcurl.a library when building my own application.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;So to save some headache for myself next time I want to do it or for someone
+else reading this I've listed the steps I had to do to get this to work.&lt;/p&gt;
+&lt;h1&gt;Download libcurl source&lt;/h1&gt;
+&lt;p&gt;As of writing this, the latest version of libcurl was 7.21.0 so I downloaded
+and unpacked the source.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;wget http://curl.haxx.se/download/curl-7.21.0.tar.bz2
+tar xjvf curl-7.21.0.tar.bz2
+&lt;span class="o"&gt;{&lt;/span&gt;% endcodeblock %&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Compile libcurl&lt;/h1&gt;
+&lt;p&gt;Next it was time to run &lt;code&gt;./configure&lt;/code&gt; and &lt;code&gt;make&lt;/code&gt;. Here I basically disabled
+everything for libcurl except &lt;code&gt;HTTP&lt;/code&gt; and &lt;code&gt;FILE&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./configure --prefix&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$HOME&lt;/span&gt;/devel/libcurl --disable-dict --disable-ftp --disable-imap --disable-ldap --disable-ldaps --disable-pop3 --disable-proxy --disable-rtsp --disable-shared --disable-smtp --disable-telnet --disable-tftp --disable-zlib --without-ca-bundle --without-gnutls --without-libidn --without-librtmp --without-libssh2 --without-nss --without-ssl --without-zlib
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Edit the file &lt;code&gt;lib/curl_config.h&lt;/code&gt; which is generated during the configure step.
+In this file we uncomment the line saying&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;/* Define to &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; you have the clock_gettime &lt;span class="k"&gt;function&lt;/span&gt; and monotonic timer. */
+//#define HAVE_CLOCK_GETTIME_MONOTONIC &lt;span class="m"&gt;1&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If I didn't do this, then I would have a dependency to &lt;code&gt;librt&lt;/code&gt; which I didn't want to.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;make
+make install
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now I was done with libcurl, next I should use this library in my application.&lt;/p&gt;
+&lt;h1&gt;Build the application using libcurl&lt;/h1&gt;
+&lt;p&gt;To make things simple when describing this I instead use the file
+&lt;a href="http://curl.haxx.se/libcurl/c/simple.html"&gt;simple.c&lt;/a&gt;
+which is found on &lt;a href="http://curl.haxx.se/libcurl"&gt;libcurl's&lt;/a&gt; site.&lt;/p&gt;
+&lt;p&gt;In &lt;a href="/downloads/libcurldep/simple_libcurl.tar.gz"&gt;simple_libcurl.tar.gz&lt;/a&gt; I've
+put together the source and a Makefile which builds using the library just
+created. The magic is the &lt;code&gt;LDFLAGS&lt;/code&gt; line used in the linking step on line 12
+and 24 below. I.e. on line 12 I had have to point the folder where the
+library is located that I had built myself (&lt;code&gt;-L/path/to/my/libcurl.a&lt;/code&gt;) and I
+still needed to tell the linker that I wanted to use libcurl, hence the
+&lt;code&gt;-lcurl&lt;/code&gt; parameter.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;SRCDIR&lt;/span&gt;  &lt;span class="o"&gt;:=&lt;/span&gt; src
+&lt;span class="nv"&gt;OBJDIR&lt;/span&gt;  &lt;span class="o"&gt;:=&lt;/span&gt; obj
+&lt;span class="nv"&gt;SRC&lt;/span&gt;     &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;patsubst &lt;span class="k"&gt;$(&lt;/span&gt;SRCDIR&lt;span class="k"&gt;)&lt;/span&gt;/%.c, %.c, &lt;span class="k"&gt;$(&lt;/span&gt;wildcard &lt;span class="k"&gt;$(&lt;/span&gt;SRCDIR&lt;span class="k"&gt;)&lt;/span&gt;/*.c&lt;span class="k"&gt;))&lt;/span&gt;
+&lt;span class="nv"&gt;OBJS&lt;/span&gt;    &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;addprefix &lt;span class="k"&gt;$(&lt;/span&gt;OBJDIR&lt;span class="k"&gt;)&lt;/span&gt;/, &lt;span class="k"&gt;$(&lt;/span&gt;patsubst %.c, %.o, &lt;span class="k"&gt;$(&lt;/span&gt;SRC&lt;span class="k"&gt;)))&lt;/span&gt;
+
+&lt;span class="nv"&gt;INCDIR&lt;/span&gt;  &lt;span class="o"&gt;:=&lt;/span&gt; inc
+
+&lt;span class="nv"&gt;CC&lt;/span&gt;      &lt;span class="o"&gt;:=&lt;/span&gt; gcc
+&lt;span class="nv"&gt;CFLAGS&lt;/span&gt;  &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;addprefix -I, &lt;span class="k"&gt;$(&lt;/span&gt;INCDIR&lt;span class="k"&gt;))&lt;/span&gt;
+&lt;span class="nv"&gt;CFLAGS&lt;/span&gt;  &lt;span class="o"&gt;+=&lt;/span&gt; -I/home/jyx/devel/libcurl/include
+
+&lt;span class="nv"&gt;LDFLAGS&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; -L/home/jyx/devel/libcurl/lib -lcurl
+
+&lt;span class="nf"&gt;.PHONY &lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;clean&lt;/span&gt;
+
+&lt;span class="nf"&gt;all&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;main&lt;/span&gt;
+
+&lt;span class="nf"&gt;$(OBJDIR)/%.o&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nv"&gt;SRCDIR&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;/%.&lt;span class="n"&gt;c&lt;/span&gt;
+    @echo &lt;span class="s2"&gt;&amp;quot; (CC)    &lt;/span&gt;$&lt;span class="s2"&gt;&amp;lt;&amp;quot;&lt;/span&gt;
+    @&lt;span class="k"&gt;$(&lt;/span&gt;CC&lt;span class="k"&gt;)&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;CFLAGS&lt;span class="k"&gt;)&lt;/span&gt; -c $&amp;lt; -o &lt;span class="nv"&gt;$@&lt;/span&gt;
+
+&lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nv"&gt;OBJS&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+    @echo &lt;span class="s2"&gt;&amp;quot;Create binary: &lt;/span&gt;&lt;span class="nv"&gt;$@&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+    @&lt;span class="k"&gt;$(&lt;/span&gt;CC&lt;span class="k"&gt;)&lt;/span&gt; -o main $+ &lt;span class="k"&gt;$(&lt;/span&gt;LDFLAGS&lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="nf"&gt;clean&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    rm -f &lt;span class="k"&gt;$(&lt;/span&gt;OBJDIR&lt;span class="k"&gt;)&lt;/span&gt;/* main
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When this is achieved, then you have a quite clean binary when it comes to
+dependencies. In the example code in &lt;code&gt;simple_libcurl&lt;/code&gt; I now have these
+dependencies on a machine running Debian (Lenny).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ldd main
+    linux-vdso.so.1 &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt;  &lt;span class="o"&gt;(&lt;/span&gt;0x00007f157db66000&lt;span class="o"&gt;)&lt;/span&gt;
+    libc.so.6 &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; /lib/libc.so.6 &lt;span class="o"&gt;(&lt;/span&gt;0x00007f157d5f9000&lt;span class="o"&gt;)&lt;/span&gt;
+    /lib64/ld-linux-x86-64.so.2 &lt;span class="o"&gt;(&lt;/span&gt;0x00007f157d94c000&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Have fun with libcurl!&lt;/p&gt;</content></entry><entry><title>My coming iPhone application</title><link href="https://jyx.github.io/blog/2010/04/25/my-coming-iphone-application/" rel="alternate"></link><published>2010-04-25T00:11:17+02:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2010-04-25:/blog/2010/04/25/my-coming-iphone-application/</id><summary type="html">&lt;p&gt;I just want to show an early screenshot of my coming iPhone application that
+I'm currently is writing. I do not want to say to much about what purpose it
+should fulfill, but it's kind of a maths / algorithm / practice application.
+Below is screenshot of how it (most likely) will …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I just want to show an early screenshot of my coming iPhone application that
+I'm currently is writing. I do not want to say to much about what purpose it
+should fulfill, but it's kind of a maths / algorithm / practice application.
+Below is screenshot of how it (most likely) will look.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="iPhone" src="https://jyx.github.io/images/iphonebd/bd_preview.jpg" align="left"&gt;&lt;/p&gt;</content></entry></feed>
