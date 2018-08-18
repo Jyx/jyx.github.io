@@ -1,10 +1,10 @@
 ---
 layout: post
-title: AEG TS 250 K - Table Saw review
+title: AEG TS 250 K - Table Saw
 date: 2015-03-11 20:47:16
 comments: true
 category: Woodworking
-authors:Joakim Bech
+authors: Joakim Bech
 modified: 2018-08-18
 ---
 <img alt="TS 250 K logo" src="{filename}/images/ts250k/ts_logo.jpg" align="right">
