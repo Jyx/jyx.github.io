@@ -41,4 +41,3 @@ DEFAULT_PAGINATION = 10
 THEME = 'pelican-themes/blueidea'
 
 #LOAD_CONTENT_CACHE = False
-DISQUS_SITENAME = "https://disqus.com/by/jyxxan"
