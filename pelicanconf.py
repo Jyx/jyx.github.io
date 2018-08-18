@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 AUTHOR = 'Joakim Bech'
-SITENAME = 'joakimbech.com - A trash can full of ideas'
+SITENAME = 'joakimbech.com'
 SITEURL = ''
 
 PATH = 'content'
@@ -40,6 +40,4 @@ DEFAULT_PAGINATION = 10
 #RELATIVE_URLS = True
 THEME = 'pelican-themes/blueidea'
 
-LOAD_CONTENT_CACHE = False
-
-
+#LOAD_CONTENT_CACHE = False
