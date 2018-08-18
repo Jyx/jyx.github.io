@@ -2,7 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom"><title>joakimbech.com - Hacking</title><link href="https://jyx.github.io/" rel="alternate"></link><link href="https://jyx.github.io/feeds/hacking.atom.xml" rel="self"></link><id>https://jyx.github.io/</id><updated>2018-08-18T00:00:00+02:00</updated><entry><title>Timing Attack - Proof of Concept</title><link href="https://jyx.github.io/blog/2014/02/02/timing-attack-proof-of-concept/" rel="alternate"></link><published>2014-02-02T10:38:37+01:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2014-02-02:/blog/2014/02/02/timing-attack-proof-of-concept/</id><summary type="html">&lt;p&gt;You might have heard about timing attacks, but either thought it sounded
 too complicated to understand or that it is too complicated to actually do such
 an attack. In this post I'm going to give a brief overview of a timing attack
-and also provide some example code that you …&lt;/p&gt;</summary><content type="html">&lt;p&gt;You might have heard about timing attacks, but either thought it sounded
+and also provide some example code that you can play with on your own. Hopefully
+after reading this post you will understand that you cannot neglect this if you
+are creating a system where security is needed.&lt;/p&gt;
+&lt;h1&gt;What …&lt;/h1&gt;</summary><content type="html">&lt;p&gt;You might have heard about timing attacks, but either thought it sounded
 too complicated to understand or that it is too complicated to actually do such
 an attack. In this post I'm going to give a brief overview of a timing attack
 and also provide some example code that you can play with on your own. Hopefully

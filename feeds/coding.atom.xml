@@ -6,7 +6,12 @@ plaintext in your configuration file (&lt;code&gt;.muttrc&lt;/code&gt;), see
 &lt;a href="https://wiki.archlinux.org/index.php/Mutt#Passwords_management"&gt;ArchWiki&lt;/a&gt; how
 to do that.&lt;/p&gt;
 &lt;p&gt;However, if you consider using &lt;code&gt;POP3&lt;/code&gt;, then you will also need to install and
-enable &lt;a href="http://msmtp.sourceforge.net"&gt;msmtp&lt;/a&gt; (not …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When using &lt;a href="http://en.wikipedia.org/wiki/Internet_Message_Access_Protocol"&gt;imap&lt;/a&gt;
+enable &lt;a href="http://msmtp.sourceforge.net"&gt;msmtp&lt;/a&gt; (not strictly needed),
+&lt;a href="http://www.fetchmail.info"&gt;fetchmail&lt;/a&gt; and
+&lt;a href="http://www.procmail.org"&gt;procmail&lt;/a&gt;. Ubuntu have created a quite nice
+&lt;a href="https://help.ubuntu.com/community/MuttAndGmail"&gt;guide&lt;/a&gt; of
+the steps involved.&lt;/p&gt;
+&lt;p&gt;Just as &lt;code&gt;mutt&lt;/code&gt; also &lt;code&gt;msmtp&lt;/code&gt; have the possibility to use &lt;code&gt;gpg&lt;/code&gt; in runtime instead …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When using &lt;a href="http://en.wikipedia.org/wiki/Internet_Message_Access_Protocol"&gt;imap&lt;/a&gt;
 in &lt;a href="http://en.wikipedia.org/wiki/Mutt_(email_client)"&gt;mutt&lt;/a&gt; you have the
 possibility to use &lt;code&gt;gpg&lt;/code&gt; to decrypt your password instead of having it as
 plaintext in your configuration file (&lt;code&gt;.muttrc&lt;/code&gt;), see
@@ -44,7 +49,9 @@ rebuild.&lt;/p&gt;
 When you have to read and write binary data using Perl, then you preferably use
 the built in functions pack and unpack. With the pack function you will create
 a string which will be different depending on what kind of template you provide
-to the pack function (the unpack does …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="Perl logo" src="https://jyx.github.io/images/perlpap/logo_perl.jpg" align="right"&gt;
+to the pack function (the unpack does the same, but in the opposite direction).&lt;/p&gt;
+&lt;p&gt;I was writing a simple Perl script that was reading a binary file which
+contained data that originated from a c &lt;code&gt;struct&lt;/code&gt;. I …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="Perl logo" src="https://jyx.github.io/images/perlpap/logo_perl.jpg" align="right"&gt;
 When you have to read and write binary data using Perl, then you preferably use
 the built in functions pack and unpack. With the pack function you will create
 a string which will be different depending on what kind of template you provide
@@ -124,7 +131,10 @@ from the file and print the values both in decimal and hex.&lt;/p&gt;
 For an ongoing project I needed to retrieve webpages from my C-program and
 first I used sockets directly, but then I thought why not try use libcurl? If I
 could use libcurl and link it statically then I would get the good features
-from libcurl, but still could make my …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="LibCURL logo" src="https://jyx.github.io/images/libcurldep/logo_curl-200x150.jpg" align="right"&gt;
+from libcurl, but still could make my application stand alone.&lt;/p&gt;
+&lt;p&gt;With my current setup running Debian (Lenny), I tried to just apt-get the libraries
+(&lt;code&gt;libcurl4-openssl-dev&lt;/code&gt;) and build using those libraries That went fine until I
+tried to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="LibCURL logo" src="https://jyx.github.io/images/libcurldep/logo_curl-200x150.jpg" align="right"&gt;
 For an ongoing project I needed to retrieve webpages from my C-program and
 first I used sockets directly, but then I thought why not try use libcurl? If I
 could use libcurl and link it statically then I would get the good features
@@ -225,7 +235,8 @@ dependencies on a machine running Debian (Lenny).&lt;/p&gt;
 &lt;p&gt;Have fun with libcurl!&lt;/p&gt;</content></entry><entry><title>My coming iPhone application</title><link href="https://jyx.github.io/blog/2010/04/25/my-coming-iphone-application/" rel="alternate"></link><published>2010-04-25T00:11:17+02:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2010-04-25:/blog/2010/04/25/my-coming-iphone-application/</id><summary type="html">&lt;p&gt;I just want to show an early screenshot of my coming iPhone application that
 I'm currently is writing. I do not want to say to much about what purpose it
 should fulfill, but it's kind of a maths / algorithm / practice application.
-Below is screenshot of how it (most likely) will …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I just want to show an early screenshot of my coming iPhone application that
+Below is screenshot of how it (most likely) will look.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="iPhone" src="https://jyx.github.io/images/iphonebd/bd_preview.jpg" align="left"&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;I just want to show an early screenshot of my coming iPhone application that
 I'm currently is writing. I do not want to say to much about what purpose it
 should fulfill, but it's kind of a maths / algorithm / practice application.
 Below is screenshot of how it (most likely) will look.&lt;/p&gt;

@@ -4,7 +4,17 @@ A common task for a developer has is to apply a patch in Git. I have a simple
 scheme that I've been using for a long time and it is very seldom that I get
 into problem nowadays when I'm doing patch work.&lt;/p&gt;
 &lt;h1&gt;The short version for the impatient&lt;/h1&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="git logo" src="https://jyx.github.io/images/git/logo_git.gif" align="right"&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git am &amp;lt; my_new_feature.patch
+$ git apply --reject --whitespace&lt;span class="o"&gt;=&lt;/span&gt;fix my_new_feature.patch
+$ git status
+$ vim my_conflicting_file.c*
+$ find . -name &lt;span class="s2"&gt;&amp;quot;*.rej&amp;quot;&lt;/span&gt; -exec rm -f &lt;span class="o"&gt;{}&lt;/span&gt; &lt;span class="se"&gt;\;&lt;/span&gt;
+$ git add .
+$ git am --resolved
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Long version for the …&lt;/h1&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="git logo" src="https://jyx.github.io/images/git/logo_git.gif" align="right"&gt;
 A common task for a developer has is to apply a patch in Git. I have a simple
 scheme that I've been using for a long time and it is very seldom that I get
 into problem nowadays when I'm doing patch work.&lt;/p&gt;

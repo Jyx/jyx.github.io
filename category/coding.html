@@ -12,6 +12,9 @@
 </head>
 
 <body id="index" class="home">
+<a href="https://github.com/jbech-linaro/">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" />
+</a>
         <header id="banner" class="body">
                 <h1><a href="https://jyx.github.io/">joakimbech.com </a></h1>
                 <nav><ul>
@@ -19,22 +22,29 @@
                         <li><a href="https://jyx.github.io/pages/about.html">About</a></li>
     
                         <li><a href="https://jyx.github.io/pages/projects.html">Projects</a></li>
-                    <li class="active"><a href="https://jyx.github.io/category/coding.html">Coding</a></li>
-                    <li><a href="https://jyx.github.io/category/git.html">Git</a></li>
-                    <li><a href="https://jyx.github.io/category/hacking.html">Hacking</a></li>
-                    <li><a href="https://jyx.github.io/category/tools.html">Tools</a></li>
-                    <li><a href="https://jyx.github.io/category/woodworking.html">Woodworking</a></li>
                 </ul>
                 </nav>
+<div id="submenu">
+                    <ul>
+                            <li class="active"><a href="https://jyx.github.io/category/coding.html">Coding</a></li>
+                            <li><a href="https://jyx.github.io/category/git.html">Git</a></li>
+                            <li><a href="https://jyx.github.io/category/hacking.html">Hacking</a></li>
+                            <li><a href="https://jyx.github.io/category/tools.html">Tools</a></li>
+                            <li><a href="https://jyx.github.io/category/woodworking.html">Woodworking</a></li>
+                    </ul>
+                <div>
         </header><!-- /#banner -->
 
             <aside id="featured" class="body">
                 <article>
                     <h1 class="entry-title"><a href="https://jyx.github.io/blog/2014/11/01/fetchmail-and-gnupg/">Fetchmail and GnuPG</a></h1>
+                <div class="entry-content">
 <footer class="post-info">
         <span>Sat 01 November 2014</span>
+        	<span>| by <a class="url fn" href="https://jyx.github.io/author/joakim-bech.html">Joakim Bech</a></span>
+	        <span>| in <a href="https://jyx.github.io/category/coding.html">Coding</a></span>
 
-</footer><!-- /.post-info --><p>When using <a href="http://en.wikipedia.org/wiki/Internet_Message_Access_Protocol">imap</a>
+</footer><!-- /.post-info -->                <p>When using <a href="http://en.wikipedia.org/wiki/Internet_Message_Access_Protocol">imap</a>
 in <a href="http://en.wikipedia.org/wiki/Mutt_(email_client)">mutt</a> you have the
 possibility to use <code>gpg</code> to decrypt your password instead of having it as
 plaintext in your configuration file (<code>.muttrc</code>), see
@@ -46,29 +56,10 @@ enable <a href="http://msmtp.sourceforge.net">msmtp</a> (not strictly needed),
 <a href="http://www.procmail.org">procmail</a>. Ubuntu have created a quite nice
 <a href="https://help.ubuntu.com/community/MuttAndGmail">guide</a> of
 the steps involved.</p>
-<p>Just as <code>mutt</code> also <code>msmtp</code> have the possibility to use <code>gpg</code> in runtime instead
-of having the password stored in plaintext. The way to do that in <code>msmtp</code> is to
-put a line mention <code>gpg</code> in your <code>$HOME/.msmtprc file</code>.</p>
-<div class="highlight"><pre><span></span>passwordeval    <span class="s2">&quot;gpg --quiet --for-your-eyes-only --no-tty --decrypt ~/.msmtp-gmail.gpg&quot;</span>
-</pre></div>
-
-
-<p>However, <code>fetchmail</code> doesn't have the same option. So, <code>mutt</code> and <code>msmtp</code> is
-fine, but you still have to put your password in a cleartext file when
-configuring <code>fetchmail</code>. Clearly there must be a better way to handle this? I
-downloaded the source code
-(<a href="http://sourceforge.net/projects/fetchmail/files/branch_6.3/fetchmail-6.3.26.tar.xz/download">fetchmail-6.3.26</a>)
-and did a quick and dirty hack. I just modified the main function in the file
-<code>fetchmail.c</code>, so that instead of having to provide the password on command line
-(when password is not set in <code>$HOME/.fetchmailrc</code>) it makes use of <code>gpg</code> similar to how
-both mutt and <code>msmtp</code> does. It isn't pretty ... but it works (tested on Arch Linux
-on a Raspberry PI). To try it out, use the same <code>gpg</code> encrypted file as you use
-for <code>msmtp</code>, i.e, <code>$HOME/msmtp-gmail.gpg</code> and patch <code>fetchmail</code> using this patch and
-rebuild.</p>
-<h1>Source</h1>
-<ul>
-<li><a href="/downloads/patch/fetchmail_gpg.patch">fetchmail_gpg.patch</a></li>
-</ul><p><a href="https://jyx.github.io/blog/2014/11/01/fetchmail-and-gnupg/#disqus_thread">comments</a></p>                </article>
+<p>Just as <code>mutt</code> also <code>msmtp</code> have the possibility to use <code>gpg</code> in runtime instead …</p>
+                <a class="readmore" href="https://jyx.github.io/blog/2014/11/01/fetchmail-and-gnupg/">read more</a>
+<p><a href="https://jyx.github.io/blog/2014/11/01/fetchmail-and-gnupg/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1>Other articles</h1>
@@ -83,12 +74,16 @@ rebuild.</p>
                 <div class="entry-content">
 <footer class="post-info">
         <span>Sun 04 March 2012</span>
+        	<span>| by <a class="url fn" href="https://jyx.github.io/author/joakim-bech.html">Joakim Bech</a></span>
+	        <span>| in <a href="https://jyx.github.io/category/coding.html">Coding</a></span>
 
 </footer><!-- /.post-info -->                <p><img alt="Perl logo" src="https://jyx.github.io/images/perlpap/logo_perl.jpg" align="right">
 When you have to read and write binary data using Perl, then you preferably use
 the built in functions pack and unpack. With the pack function you will create
 a string which will be different depending on what kind of template you provide
-to the pack function (the unpack does …</p>
+to the pack function (the unpack does the same, but in the opposite direction).</p>
+<p>I was writing a simple Perl script that was reading a binary file which
+contained data that originated from a c <code>struct</code>. I …</p>
                 <a class="readmore" href="https://jyx.github.io/blog/2012/03/04/perl-pack-and-unpack/">read more</a>
 <p><a href="https://jyx.github.io/blog/2012/03/04/perl-pack-and-unpack/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
@@ -102,12 +97,17 @@ to the pack function (the unpack does …</p>
                 <div class="entry-content">
 <footer class="post-info">
         <span>Thu 05 August 2010</span>
+        	<span>| by <a class="url fn" href="https://jyx.github.io/author/joakim-bech.html">Joakim Bech</a></span>
+	        <span>| in <a href="https://jyx.github.io/category/coding.html">Coding</a></span>
 
 </footer><!-- /.post-info -->                <p><img alt="LibCURL logo" src="https://jyx.github.io/images/libcurldep/logo_curl-200x150.jpg" align="right">
 For an ongoing project I needed to retrieve webpages from my C-program and
 first I used sockets directly, but then I thought why not try use libcurl? If I
 could use libcurl and link it statically then I would get the good features
-from libcurl, but still could make my …</p>
+from libcurl, but still could make my application stand alone.</p>
+<p>With my current setup running Debian (Lenny), I tried to just apt-get the libraries
+(<code>libcurl4-openssl-dev</code>) and build using those libraries That went fine until I
+tried to …</p>
                 <a class="readmore" href="https://jyx.github.io/blog/2010/08/05/using-libcurl-with-minimal-dependencies/">read more</a>
 <p><a href="https://jyx.github.io/blog/2010/08/05/using-libcurl-with-minimal-dependencies/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
@@ -121,11 +121,14 @@ from libcurl, but still could make my …</p>
                 <div class="entry-content">
 <footer class="post-info">
         <span>Sun 25 April 2010</span>
+        	<span>| by <a class="url fn" href="https://jyx.github.io/author/joakim-bech.html">Joakim Bech</a></span>
+	        <span>| in <a href="https://jyx.github.io/category/coding.html">Coding</a></span>
 
 </footer><!-- /.post-info -->                <p>I just want to show an early screenshot of my coming iPhone application that
 I'm currently is writing. I do not want to say to much about what purpose it
 should fulfill, but it's kind of a maths / algorithm / practice application.
-Below is screenshot of how it (most likely) will …</p>
+Below is screenshot of how it (most likely) will look.</p>
+<p><img alt="iPhone" src="https://jyx.github.io/images/iphonebd/bd_preview.jpg" align="left"></p>
                 <a class="readmore" href="https://jyx.github.io/blog/2010/04/25/my-coming-iphone-application/">read more</a>
 <p><a href="https://jyx.github.io/blog/2010/04/25/my-coming-iphone-application/#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
             </article></li>
@@ -147,10 +150,10 @@ Below is screenshot of how it (most likely) will …</p>
                         <ul>
                             <li><a href="https://jyx.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
-                            <li><a href="https://www.facebook.com/Jyxxan">Jyxxan @ Facebook</a></li>
-                            <li><a href="https://twitter.com/Jyxxan">Jyxxan @ Twitter</a></li>
-                            <li><a href="https://www.linkedin.com/in/jbech">Joakim @ LinkedIn</a></li>
-                            <li><a href="https://github.com/jbech-linaro">Joakim @ GitHub</a></li>
+                            <li><a href="https://www.linkedin.com/in/jbech">linkedin</a></li>
+                            <li><a href="https://github.com/jbech-linaro">github</a></li>
+                            <li><a href="https://twitter.com/Jyxxan">twitter</a></li>
+                            <li><a href="https://www.facebook.com/Jyxxan">facebook</a></li>
                         </ul>
                 </div><!-- /.social -->
         </section><!-- /#extras -->
