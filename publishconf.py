@@ -23,7 +23,7 @@ DELETE_OUTPUT_DIRECTORY = True
 DISQUS_SITENAME = "joakimbech"
 #GOOGLE_ANALYTICS = ""
 
-GITHUB_URL = "https://github.com/jbech-linaro/"
+#GITHUB_URL = "https://github.com/jbech-linaro/"
 TWITTER_USERNAME = "Jyxxan"
 
 SUMMARY_MAX_LENGTH = 80
