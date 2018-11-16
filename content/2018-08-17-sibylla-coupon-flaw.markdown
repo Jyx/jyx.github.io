@@ -6,7 +6,6 @@ comments: true
 category: Hacking
 authors:Joakim Bech
 modified: 2018-08-19
-status: draft
 ---
 # tl;dr
 - The Sibylla app uses plain `HTTP`.
