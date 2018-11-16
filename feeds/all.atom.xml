@@ -1,5 +1,218 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>joakimbech.com</title><link href="https://jyx.github.io/" rel="alternate"></link><link href="https://jyx.github.io/feeds/all.atom.xml" rel="self"></link><id>https://jyx.github.io/</id><updated>2018-08-18T00:00:00+02:00</updated><entry><title>AEG TS 250 K - Table Saw</title><link href="https://jyx.github.io/blog/2015/03/11/aeg-ts-250-k-table-saw/" rel="alternate"></link><published>2015-03-11T20:47:16+01:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2015-03-11:/blog/2015/03/11/aeg-ts-250-k-table-saw/</id><summary type="html">&lt;p&gt;&lt;img alt="TS 250 K logo" src="https://jyx.github.io/images/ts250k/ts_logo.jpg" align="right"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>joakimbech.com</title><link href="https://jyx.github.io/" rel="alternate"></link><link href="https://jyx.github.io/feeds/all.atom.xml" rel="self"></link><id>https://jyx.github.io/</id><updated>2018-08-19T00:00:00+02:00</updated><entry><title>Sibylla - Unlimited discount coupons</title><link href="https://jyx.github.io/blog/2018/08/19/sibylla-unlimited-discount-coupons/" rel="alternate"></link><published>2018-08-19T00:00:00+02:00</published><updated>2018-08-19T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2018-08-19:/blog/2018/08/19/sibylla-unlimited-discount-coupons/</id><summary type="html">&lt;h1&gt;tl;dr&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;The Sibylla app uses plain &lt;code&gt;HTTP&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Not any verification of email used when logging into the app.&lt;/li&gt;
+&lt;li&gt;The Sibylla server stores whether a coupon has been consumed or not for a
+  certain email address.&lt;/li&gt;
+&lt;li&gt;The app doesn't use the stored information at the server to decide whether a
+  coupon has been used or not for a certain email.&lt;/li&gt;
+&lt;li&gt;The "consumed" value seems to be stored locally in the app.&lt;/li&gt;
+&lt;li&gt;Wiping the data/cache in Android's app settings will …&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;h1&gt;tl;dr&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;The Sibylla app uses plain &lt;code&gt;HTTP&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Not any verification of email used when logging into the app.&lt;/li&gt;
+&lt;li&gt;The Sibylla server stores whether a coupon has been consumed or not for a
+  certain email address.&lt;/li&gt;
+&lt;li&gt;The app doesn't use the stored information at the server to decide whether a
+  coupon has been used or not for a certain email.&lt;/li&gt;
+&lt;li&gt;The "consumed" value seems to be stored locally in the app.&lt;/li&gt;
+&lt;li&gt;Wiping the data/cache in Android's app settings will clear everything and
+  will enable the coupons again. I.e., it is possible to use the same
+  discount/offer as many times you wish.&lt;/li&gt;
+&lt;li&gt;A rouge person can "use up" all coupons for any email (from a server point of view).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;h1&gt;The long version&lt;/h1&gt;
+&lt;p&gt;Sibylla is a company who has been serving fast food for decades in Sweden. I'm
+just back from &lt;a href="https://www.defcon.org/html/defcon-26/dc-26-index.html"&gt;DEF CON 26&lt;/a&gt; where I picked up a
+&lt;a href="https://wifipineapple.com/nano"&gt;WiFi Pineapple Nano&lt;/a&gt;. When playing with the
+pineapple I enabled the &lt;a href="https://www.wifipineapple.com/modules"&gt;DWall&lt;/a&gt; module,
+which basically sniffs plain HTTP traffic (i.e., non-encrypted). As a side
+effect of Google deciding to marking plain &lt;code&gt;HTTP&lt;/code&gt; as insecure in Google Chrome,
+more and more sites have switched to use &lt;code&gt;HTTPS&lt;/code&gt; only, but there are still
+plenty of un-encrypted traffic on the net. Out of curiosity I connected my
+mobile to the WLAN shared by the pineapple and watched for traffic on DWall. I
+tried a couple of different apps, some where dead silent and some showed some
+&lt;code&gt;URLs&lt;/code&gt;, cookies and images. The Sibylla app seemed to communicate using plain
+&lt;code&gt;HTTP&lt;/code&gt; and this is what can be seen when starting the app.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;http://www.sibylla.se/ui/services/CampaignService.ashx?requestType&lt;span class="o"&gt;=&lt;/span&gt;getAllCoupons
+http://www.sibylla.se/ui/services/CampaignService.ashx?requestType&lt;span class="o"&gt;=&lt;/span&gt;getAllCampaigns
+http://www.sibylla.se/ui/services/CampaignService.ashx?requestType&lt;span class="o"&gt;=&lt;/span&gt;getAllCouponsForUser&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nv"&gt;userId&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;email_foo.bar@moo.com
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;All calls here gets a &lt;a href="https://en.wikipedia.org/wiki/JSON"&gt;JSON&lt;/a&gt; encoded payload
+in return, looking something like this.&lt;/p&gt;
+&lt;p&gt;getAllCoupons query returns:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;pageId&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1969&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;created&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2018-06-28 09:16&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;stoppublish&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2018-09-03 00:00&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Super Meal 2 för 99kr&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;description&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Super Meal 2 för 99kr&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;imageUrl&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;http://sibylla.se/PageFiles/6301/2_st_Super_Meal_99kr.png&amp;quot;&lt;/span&gt;
+  &lt;span class="p"&gt;},&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;pageId&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1970&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;created&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2018-06-28 09:16&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;stoppublish&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2018-09-03 00:00&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;10kr rabatt mjukglass&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;description&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;10kr rabatt mjukglass&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;imageUrl&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;http://sibylla.se/PageFiles/6305/10kr_rabatt_mjukglass.png&amp;quot;&lt;/span&gt;
+  &lt;span class="p"&gt;},&lt;/span&gt;
+&lt;span class="err"&gt;//&lt;/span&gt; &lt;span class="err"&gt;...&lt;/span&gt; &lt;span class="err"&gt;and&lt;/span&gt; &lt;span class="err"&gt;so&lt;/span&gt; &lt;span class="err"&gt;on&lt;/span&gt;
+&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And the user specific query (getAllCouponsForUser) returns something like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;pageId&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1969&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;created&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2018-06-28 09:16&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;stoppublish&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2018-09-03 00:00&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Super Meal 2 för 99kr&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;description&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Super Meal 2 för 99kr&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;imageUrl&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;http://sibylla.se/PageFiles/6301/2_st_Super_Meal_99kr.png&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;consumed&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;
+  &lt;span class="p"&gt;},&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;pageId&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1970&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;created&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2018-06-28 09:16&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;stoppublish&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2018-09-03 00:00&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;10kr rabatt mjukglass&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;description&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;10kr rabatt mjukglass&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;imageUrl&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;http://sibylla.se/PageFiles/6305/10kr_rabatt_mjukglass.png&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;consumed&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;
+  &lt;span class="p"&gt;},&lt;/span&gt;
+&lt;span class="err"&gt;//&lt;/span&gt; &lt;span class="err"&gt;...&lt;/span&gt; &lt;span class="err"&gt;and&lt;/span&gt; &lt;span class="err"&gt;so&lt;/span&gt; &lt;span class="err"&gt;on&lt;/span&gt;
+&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Basically the only difference is the &lt;code&gt;consumed&lt;/code&gt; attribute.&lt;/p&gt;
+&lt;h1&gt;Coupons&lt;/h1&gt;
+&lt;p&gt;In the app, Sibylla from time to time offer deals on various meals. They way it
+works is that you go the "deals" in the app, where you are presented a couple of
+different coupons. When you are buying corresponding meal you let the clerk
+press the "use coupon" button and then you don't have to pay the full price,
+simple and easy!&lt;/p&gt;
+&lt;h1&gt;What happens under the hood?&lt;/h1&gt;
+&lt;p&gt;When I played around with it and used up a coupon I could see the following
+message was sent to &lt;a href="http://sibylla.se"&gt;sibylla.se&lt;/a&gt;: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;http://www.sibylla.se/ui/services/CampaignService.ashx?requestType&lt;span class="o"&gt;=&lt;/span&gt;consumeCoupon&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nv"&gt;pageId&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1975&lt;/span&gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nv"&gt;userId&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;410daeeb1b350a86defb583e08ebbf15
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I.e., something is sent back to their servers indicating that a coupon has been
+used and indeed when checking in the app it says that coupon already has been
+used and it stays like that even if you kill / restart the app. Two things
+caught my attention here.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;pageId&lt;/code&gt;: This is the id for the coupon. Replacing this any other valid
+   &lt;code&gt;pageId&lt;/code&gt; from the query posted further up will mark the coupon as used in the
+   Sibylla server for a certain user.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;userId&lt;/code&gt;: What is that? It looks like a hash of some sort. Is it a has of
+   the &lt;code&gt;userId&lt;/code&gt; for the app? Or the hash of the email? Or something else?&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;I decompiled the apk-file (using zip,
+&lt;a href="https://github.com/pxb1988/dex2jar"&gt;dex2jar&lt;/a&gt; and &lt;a href="http://jd.benow.ca"&gt;jd-gui&lt;/a&gt;)
+and then looked up the keyword &lt;code&gt;consumeCoupon&lt;/code&gt;, which revealed:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;UsedDealResponse&lt;/span&gt; &lt;span class="nf"&gt;loadDataFromNetwork&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="kd"&gt;throws&lt;/span&gt; &lt;span class="n"&gt;Exception&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;Builder&lt;/span&gt; &lt;span class="n"&gt;campaignUriBuilder&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Uri&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;parse&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Constants&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;campaignService&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;buildUpon&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;campaignUriBuilder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appendQueryParameter&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;requestType&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;consumeCoupon&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;campaignUriBuilder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appendQueryParameter&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;pageId&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;pageId&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;campaignUriBuilder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appendQueryParameter&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;userId&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;userId&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;campaignUriBuilder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;build&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;toString&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;Log&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;m17i&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;URL &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;UsedDealResponse&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="n"&gt;getRestTemplate&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;getForObject&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;UsedDealResponse&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;Object&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;]);&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and where &lt;code&gt;userId&lt;/code&gt; seems to come from&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="nf"&gt;UseDealsRequest&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;userId&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;pageId&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;UsedDealResponse&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;userId&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;md5&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;userId&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;Log&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;m17i&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;MD5 &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;userId&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;pageId&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pageId&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;There we have it, the &lt;code&gt;userId&lt;/code&gt; is a &lt;code&gt;MD5&lt;/code&gt; sum of something. After some fiddling
+I understood that is comes from the string if you used email when logging into
+the app. I guess it would be slightly different when using Facebook or Google
+login.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    md5&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;email_foo.bar@moo.com&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 410daeeb1b350a86defb583e08ebbf15
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So, let's recap:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The app queries the server on start.&lt;/li&gt;
+&lt;li&gt;The app sends a &lt;code&gt;consumeCoupon&lt;/code&gt; message to the server when using a coupon,
+  but instead of plain email it is using the &lt;code&gt;MD5&lt;/code&gt; of the string "&lt;code&gt;email_...&lt;/code&gt;" as
+  the &lt;code&gt;userId&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;h1&gt;Re-use a coupon?&lt;/h1&gt;
+&lt;p&gt;I wondered how they protected against using a coupon more than once. I searched
+the decompiled code for other &lt;code&gt;requestType&lt;/code&gt;. But I couldn't find anything
+indicating that it was possible to revert a used coupon (server side). But at
+the same time, I've noticed that the app uses the email string when starting
+the app, but using an &lt;code&gt;MD5&lt;/code&gt; sum of the app when using a coupon. Something
+doesn't seem right here. Calling:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;http://www.sibylla.se/ui/services/CampaignService.ashx?requestType&lt;span class="o"&gt;=&lt;/span&gt;getAllCouponsForUser&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nv"&gt;userId&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;email_foo.bar@moo.com
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;http://www.sibylla.se/ui/services/CampaignService.ashx?requestType&lt;span class="o"&gt;=&lt;/span&gt;getAllCouponsForUser&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nv"&gt;userId&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;410daeeb1b350a86defb583e08ebbf15
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;gives different result. The former tells you that no coupon has been used, but
+the latter will indeed tell you that the ones you've used up indeed are marked
+as &lt;code&gt;consumed: true&lt;/code&gt;. So, how can the app know that a coupon has been used?
+Could it be stored locally? Said and done, I cleared the Sibylla apps data and
+cache. Restarted the app, logged in with the same email and voilá, the app
+tells me that the coupon hasn't been used. This must mean that the app is
+indeed storing data locally.&lt;/p&gt;
+&lt;h1&gt;Reflections&lt;/h1&gt;
+&lt;p&gt;I guess a company like Sibylla probably doesn't care too much about this. Since
+in the end they're probably happy as long as they sell their fast food and they
+probably makes a nice profit even when their customers are using a discount
+code or something similar. But, since they walked the extra mile of letting
+someone create an app like this, I guess there is some interest of having e
+genuine app behaving as expected. There are mainly three things that seems
+wrong here:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The app stores data at a server, but the app doesn't seem to make use of this
+  information. I cannot say whether that is a bug due to using a plain string
+  when starting the app and using the &lt;code&gt;MD5&lt;/code&gt; of the string when using a coupon or
+  if all this is intentional and the server part is just there for statistics for
+  Sibylla marketing.&lt;/li&gt;
+&lt;li&gt;It is possible to re-use coupons by just clear the data/cache for the app.&lt;/li&gt;
+&lt;li&gt;Since there is no authentication, it is possible to exploit and put false
+  information at their server, by just use any combination with &lt;code&gt;userId/pageId&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;h1&gt;What could and should be done?&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;The app should use &lt;code&gt;HTTPS&lt;/code&gt; instead of plain &lt;code&gt;HTTP&lt;/code&gt;. If that would have been
+  the case, then this would never caught my attention.&lt;/li&gt;
+&lt;li&gt;The email used then logging into the app should be authenticated.&lt;/li&gt;
+&lt;li&gt;The server should only accept requests from authenticated users.&lt;/li&gt;
+&lt;li&gt;The app should use the data from the server to decide whether a user already
+  has used a coupon or not.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This doesn't seem like a super serious issue, but I've given Sibylla knowledge
+about it 2018-08-19 and as common practice I'll give them a 90 days to fix the
+issues I've found. I.e., somewhere after the 17th November 2018 I'll publish
+this article on my site.&lt;/p&gt;</content></entry><entry><title>AEG TS 250 K - Table Saw</title><link href="https://jyx.github.io/blog/2015/03/11/aeg-ts-250-k-table-saw/" rel="alternate"></link><published>2015-03-11T20:47:16+01:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2015-03-11:/blog/2015/03/11/aeg-ts-250-k-table-saw/</id><summary type="html">&lt;p&gt;&lt;img alt="TS 250 K logo" src="https://jyx.github.io/images/ts250k/ts_logo.jpg" align="right"&gt;
 Last year we built a workshop/shed/depot. Since I planned to build a lot of
 stuff (in wood) I decided to buy a table saw. My criteria was that it should be
 portable and rather easy to put aside when not in use. I'm new to woodworking so
