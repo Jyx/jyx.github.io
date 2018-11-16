@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>joakimbech.com - Git</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="joakimbech.com Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">joakimbech.com </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/pages/about.html">About</a></li>
+    
+                        <li><a href="/pages/projects.html">Projects</a></li>
+                </ul>
+                </nav>
+<div id="submenu">
+                    <ul>
+                            <li><a href="/category/coding.html">Coding</a></li>
+                            <li class="active"><a href="/category/git.html">Git</a></li>
+                            <li><a href="/category/hacking.html">Hacking</a></li>
+                            <li><a href="/category/tools.html">Tools</a></li>
+                            <li><a href="/category/woodworking.html">Woodworking</a></li>
+                    </ul>
+                <div>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/blog/2012/03/09/apply-patches-in-git/">Apply patches in Git</a></h1>
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Fri 09 March 2012</span>
+        	<span>| by <a class="url fn" href="/author/joakim-bech.html">Joakim Bech</a></span>
+	        <span>| in <a href="/category/git.html">Git</a></span>
+
+</footer><!-- /.post-info -->                <p><img alt="git logo" src="/images/git/logo_git.gif" align="right">
+A common task for a developer has is to apply a patch in Git. I have a simple
+scheme that I've been using for a long time and it is very seldom that I get
+into problem nowadays when I'm doing patch work.</p>
+<h1>The short version for the impatient</h1>
+<div class="highlight"><pre><span></span>$ git am &lt; my_new_feature.patch
+$ git apply --reject --whitespace<span class="o">=</span>fix my_new_feature.patch
+$ git status
+$ vim my_conflicting_file.c*
+$ find . -name <span class="s2">&quot;*.rej&quot;</span> -exec rm -f <span class="o">{}</span> <span class="se">\;</span>
+$ git add .
+$ git am --resolved
+</pre></div>
+
+
+<h1>Long version for the …</h1>
+                <a class="readmore" href="/blog/2012/03/09/apply-patches-in-git/">read more</a>
+                </div><!-- /.entry-content -->
+                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com">Pelican</a></li>
+                            <li><a href="https://linaro.org">Linaro</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="https://www.linkedin.com/in/jbech">linkedin</a></li>
+                            <li><a href="https://github.com/jbech-linaro">github</a></li>
+                            <li><a href="https://twitter.com/Jyxxan">twitter</a></li>
+                            <li><a href="https://www.facebook.com/Jyxxan">facebook</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

@@ -1,0 +1,968 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>joakimbech.com</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2018-08-19T00:00:00+02:00</updated><entry><title>Sibylla - Unlimited discount coupons</title><link href="/blog/2018/08/19/sibylla-unlimited-discount-coupons/" rel="alternate"></link><published>2018-08-19T00:00:00+02:00</published><updated>2018-08-19T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:None,2018-08-19:/blog/2018/08/19/sibylla-unlimited-discount-coupons/</id><summary type="html">&lt;h1&gt;tl;dr&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;The Sibylla app uses plain &lt;code&gt;HTTP&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Not any verification of email used when logging into the app.&lt;/li&gt;
+&lt;li&gt;The Sibylla server stores whether a coupon has been consumed or not for a
+  certain email address.&lt;/li&gt;
+&lt;li&gt;The app doesn't use the stored information at the server to decide whether a
+  coupon has been used or not for a certain email.&lt;/li&gt;
+&lt;li&gt;The "consumed" value seems to be stored locally in the app.&lt;/li&gt;
+&lt;li&gt;Wiping the data/cache in Android's app settings will …&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;h1&gt;tl;dr&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;The Sibylla app uses plain &lt;code&gt;HTTP&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Not any verification of email used when logging into the app.&lt;/li&gt;
+&lt;li&gt;The Sibylla server stores whether a coupon has been consumed or not for a
+  certain email address.&lt;/li&gt;
+&lt;li&gt;The app doesn't use the stored information at the server to decide whether a
+  coupon has been used or not for a certain email.&lt;/li&gt;
+&lt;li&gt;The "consumed" value seems to be stored locally in the app.&lt;/li&gt;
+&lt;li&gt;Wiping the data/cache in Android's app settings will clear everything and
+  will enable the coupons again. I.e., it is possible to use the same
+  discount/offer as many times you wish.&lt;/li&gt;
+&lt;li&gt;A rouge person can "use up" all coupons for any email (from a server point of view).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;h1&gt;The long version&lt;/h1&gt;
+&lt;p&gt;Sibylla is a company who has been serving fast food for decades in Sweden. I'm
+just back from &lt;a href="https://www.defcon.org/html/defcon-26/dc-26-index.html"&gt;DEF CON 26&lt;/a&gt; where I picked up a
+&lt;a href="https://wifipineapple.com/nano"&gt;WiFi Pineapple Nano&lt;/a&gt;. When playing with the
+pineapple I enabled the &lt;a href="https://www.wifipineapple.com/modules"&gt;DWall&lt;/a&gt; module,
+which basically sniffs plain HTTP traffic (i.e., non-encrypted). As a side
+effect of Google deciding to marking plain &lt;code&gt;HTTP&lt;/code&gt; as insecure in Google Chrome,
+more and more sites have switched to use &lt;code&gt;HTTPS&lt;/code&gt; only, but there are still
+plenty of un-encrypted traffic on the net. Out of curiosity I connected my
+mobile to the WLAN shared by the pineapple and watched for traffic on DWall. I
+tried a couple of different apps, some where dead silent and some showed some
+&lt;code&gt;URLs&lt;/code&gt;, cookies and images. The Sibylla app seemed to communicate using plain
+&lt;code&gt;HTTP&lt;/code&gt; and this is what can be seen when starting the app.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;http://www.sibylla.se/ui/services/CampaignService.ashx?requestType&lt;span class="o"&gt;=&lt;/span&gt;getAllCoupons
+http://www.sibylla.se/ui/services/CampaignService.ashx?requestType&lt;span class="o"&gt;=&lt;/span&gt;getAllCampaigns
+http://www.sibylla.se/ui/services/CampaignService.ashx?requestType&lt;span class="o"&gt;=&lt;/span&gt;getAllCouponsForUser&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nv"&gt;userId&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;email_foo.bar@moo.com
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;All calls here gets a &lt;a href="https://en.wikipedia.org/wiki/JSON"&gt;JSON&lt;/a&gt; encoded payload
+in return, looking something like this.&lt;/p&gt;
+&lt;p&gt;getAllCoupons query returns:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;pageId&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1969&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;created&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2018-06-28 09:16&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;stoppublish&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2018-09-03 00:00&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Super Meal 2 för 99kr&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;description&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Super Meal 2 för 99kr&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;imageUrl&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;http://sibylla.se/PageFiles/6301/2_st_Super_Meal_99kr.png&amp;quot;&lt;/span&gt;
+  &lt;span class="p"&gt;},&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;pageId&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1970&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;created&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2018-06-28 09:16&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;stoppublish&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2018-09-03 00:00&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;10kr rabatt mjukglass&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;description&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;10kr rabatt mjukglass&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;imageUrl&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;http://sibylla.se/PageFiles/6305/10kr_rabatt_mjukglass.png&amp;quot;&lt;/span&gt;
+  &lt;span class="p"&gt;},&lt;/span&gt;
+&lt;span class="err"&gt;//&lt;/span&gt; &lt;span class="err"&gt;...&lt;/span&gt; &lt;span class="err"&gt;and&lt;/span&gt; &lt;span class="err"&gt;so&lt;/span&gt; &lt;span class="err"&gt;on&lt;/span&gt;
+&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And the user specific query (getAllCouponsForUser) returns something like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;pageId&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1969&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;created&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2018-06-28 09:16&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;stoppublish&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2018-09-03 00:00&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Super Meal 2 för 99kr&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;description&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Super Meal 2 för 99kr&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;imageUrl&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;http://sibylla.se/PageFiles/6301/2_st_Super_Meal_99kr.png&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;consumed&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;
+  &lt;span class="p"&gt;},&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;pageId&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1970&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;created&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2018-06-28 09:16&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;stoppublish&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2018-09-03 00:00&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;10kr rabatt mjukglass&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;description&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;10kr rabatt mjukglass&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;imageUrl&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;http://sibylla.se/PageFiles/6305/10kr_rabatt_mjukglass.png&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nt"&gt;&amp;quot;consumed&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;
+  &lt;span class="p"&gt;},&lt;/span&gt;
+&lt;span class="err"&gt;//&lt;/span&gt; &lt;span class="err"&gt;...&lt;/span&gt; &lt;span class="err"&gt;and&lt;/span&gt; &lt;span class="err"&gt;so&lt;/span&gt; &lt;span class="err"&gt;on&lt;/span&gt;
+&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Basically the only difference is the &lt;code&gt;consumed&lt;/code&gt; attribute.&lt;/p&gt;
+&lt;h1&gt;Coupons&lt;/h1&gt;
+&lt;p&gt;In the app, Sibylla from time to time offer deals on various meals. They way it
+works is that you go the "deals" in the app, where you are presented a couple of
+different coupons. When you are buying corresponding meal you let the clerk
+press the "use coupon" button and then you don't have to pay the full price,
+simple and easy!&lt;/p&gt;
+&lt;h1&gt;What happens under the hood?&lt;/h1&gt;
+&lt;p&gt;When I played around with it and used up a coupon I could see the following
+message was sent to &lt;a href="http://sibylla.se"&gt;sibylla.se&lt;/a&gt;: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;http://www.sibylla.se/ui/services/CampaignService.ashx?requestType&lt;span class="o"&gt;=&lt;/span&gt;consumeCoupon&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nv"&gt;pageId&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1975&lt;/span&gt;&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nv"&gt;userId&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;410daeeb1b350a86defb583e08ebbf15
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I.e., something is sent back to their servers indicating that a coupon has been
+used and indeed when checking in the app it says that coupon already has been
+used and it stays like that even if you kill / restart the app. Two things
+caught my attention here.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;pageId&lt;/code&gt;: This is the id for the coupon. Replacing this any other valid
+   &lt;code&gt;pageId&lt;/code&gt; from the query posted further up will mark the coupon as used in the
+   Sibylla server for a certain user.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;userId&lt;/code&gt;: What is that? It looks like a hash of some sort. Is it a has of
+   the &lt;code&gt;userId&lt;/code&gt; for the app? Or the hash of the email? Or something else?&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;I decompiled the apk-file (using zip,
+&lt;a href="https://github.com/pxb1988/dex2jar"&gt;dex2jar&lt;/a&gt; and &lt;a href="http://jd.benow.ca"&gt;jd-gui&lt;/a&gt;)
+and then looked up the keyword &lt;code&gt;consumeCoupon&lt;/code&gt;, which revealed:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;UsedDealResponse&lt;/span&gt; &lt;span class="nf"&gt;loadDataFromNetwork&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="kd"&gt;throws&lt;/span&gt; &lt;span class="n"&gt;Exception&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;Builder&lt;/span&gt; &lt;span class="n"&gt;campaignUriBuilder&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Uri&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;parse&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Constants&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;campaignService&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;buildUpon&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;campaignUriBuilder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appendQueryParameter&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;requestType&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;consumeCoupon&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;campaignUriBuilder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appendQueryParameter&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;pageId&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;pageId&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;campaignUriBuilder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appendQueryParameter&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;userId&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;userId&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;campaignUriBuilder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;build&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;toString&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;Log&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;m17i&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;URL &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;UsedDealResponse&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="n"&gt;getRestTemplate&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;getForObject&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;UsedDealResponse&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;Object&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;]);&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and where &lt;code&gt;userId&lt;/code&gt; seems to come from&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="nf"&gt;UseDealsRequest&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;userId&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;pageId&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;UsedDealResponse&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;userId&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;md5&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;userId&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;Log&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;m17i&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;MD5 &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;userId&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;pageId&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pageId&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;There we have it, the &lt;code&gt;userId&lt;/code&gt; is a &lt;code&gt;MD5&lt;/code&gt; sum of something. After some fiddling
+I understood that is comes from the string if you used email when logging into
+the app. I guess it would be slightly different when using Facebook or Google
+login.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    md5&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;email_foo.bar@moo.com&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 410daeeb1b350a86defb583e08ebbf15
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So, let's recap:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The app queries the server on start.&lt;/li&gt;
+&lt;li&gt;The app sends a &lt;code&gt;consumeCoupon&lt;/code&gt; message to the server when using a coupon,
+  but instead of plain email it is using the &lt;code&gt;MD5&lt;/code&gt; of the string "&lt;code&gt;email_...&lt;/code&gt;" as
+  the &lt;code&gt;userId&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;h1&gt;Re-use a coupon?&lt;/h1&gt;
+&lt;p&gt;I wondered how they protected against using a coupon more than once. I searched
+the decompiled code for other &lt;code&gt;requestType&lt;/code&gt;. But I couldn't find anything
+indicating that it was possible to revert a used coupon (server side). But at
+the same time, I've noticed that the app uses the email string when starting
+the app, but using an &lt;code&gt;MD5&lt;/code&gt; sum of the app when using a coupon. Something
+doesn't seem right here. Calling:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;http://www.sibylla.se/ui/services/CampaignService.ashx?requestType&lt;span class="o"&gt;=&lt;/span&gt;getAllCouponsForUser&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nv"&gt;userId&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;email_foo.bar@moo.com
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;http://www.sibylla.se/ui/services/CampaignService.ashx?requestType&lt;span class="o"&gt;=&lt;/span&gt;getAllCouponsForUser&lt;span class="p"&gt;&amp;amp;&lt;/span&gt;&lt;span class="nv"&gt;userId&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;410daeeb1b350a86defb583e08ebbf15
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;gives different result. The former tells you that no coupon has been used, but
+the latter will indeed tell you that the ones you've used up indeed are marked
+as &lt;code&gt;consumed: true&lt;/code&gt;. So, how can the app know that a coupon has been used?
+Could it be stored locally? Said and done, I cleared the Sibylla apps data and
+cache. Restarted the app, logged in with the same email and voilá, the app
+tells me that the coupon hasn't been used. This must mean that the app is
+indeed storing data locally.&lt;/p&gt;
+&lt;h1&gt;Reflections&lt;/h1&gt;
+&lt;p&gt;I guess a company like Sibylla probably doesn't care too much about this. Since
+in the end they're probably happy as long as they sell their fast food and they
+probably makes a nice profit even when their customers are using a discount
+code or something similar. But, since they walked the extra mile of letting
+someone create an app like this, I guess there is some interest of having e
+genuine app behaving as expected. There are mainly three things that seems
+wrong here:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The app stores data at a server, but the app doesn't seem to make use of this
+  information. I cannot say whether that is a bug due to using a plain string
+  when starting the app and using the &lt;code&gt;MD5&lt;/code&gt; of the string when using a coupon or
+  if all this is intentional and the server part is just there for statistics for
+  Sibylla marketing.&lt;/li&gt;
+&lt;li&gt;It is possible to re-use coupons by just clear the data/cache for the app.&lt;/li&gt;
+&lt;li&gt;Since there is no authentication, it is possible to exploit and put false
+  information at their server, by just use any combination with &lt;code&gt;userId/pageId&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;h1&gt;What could and should be done?&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;The app should use &lt;code&gt;HTTPS&lt;/code&gt; instead of plain &lt;code&gt;HTTP&lt;/code&gt;. If that would have been
+  the case, then this would never caught my attention.&lt;/li&gt;
+&lt;li&gt;The email used then logging into the app should be authenticated.&lt;/li&gt;
+&lt;li&gt;The server should only accept requests from authenticated users.&lt;/li&gt;
+&lt;li&gt;The app should use the data from the server to decide whether a user already
+  has used a coupon or not.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This doesn't seem like a super serious issue, but I've given Sibylla knowledge
+about it 2018-08-19 and as common practice I'll give them a 90 days to fix the
+issues I've found. I.e., somewhere after the 17th November 2018 I'll publish
+this article on my site.&lt;/p&gt;</content></entry><entry><title>AEG TS 250 K - Table Saw</title><link href="/blog/2015/03/11/aeg-ts-250-k-table-saw/" rel="alternate"></link><published>2015-03-11T20:47:16+01:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:None,2015-03-11:/blog/2015/03/11/aeg-ts-250-k-table-saw/</id><summary type="html">&lt;p&gt;&lt;img alt="TS 250 K logo" src="/images/ts250k/ts_logo.jpg" align="right"&gt;
+Last year we built a workshop/shed/depot. Since I planned to build a lot of
+stuff (in wood) I decided to buy a table saw. My criteria was that it should be
+portable and rather easy to put aside when not in use. I'm new to woodworking so
+I didn't have any experience and therefore it was a bit hard to know exactly
+what to look for when buying a table saw. After looking around a little bit my …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="TS 250 K logo" src="/images/ts250k/ts_logo.jpg" align="right"&gt;
+Last year we built a workshop/shed/depot. Since I planned to build a lot of
+stuff (in wood) I decided to buy a table saw. My criteria was that it should be
+portable and rather easy to put aside when not in use. I'm new to woodworking so
+I didn't have any experience and therefore it was a bit hard to know exactly
+what to look for when buying a table saw. After looking around a little bit my
+choice fell on the table saw from AEG called &lt;a href="http://www.aeg-powertools.eu/woodworking/ts-250-k/ts-250-k/"&gt;AEG TS 250 K&lt;/a&gt;.
+This was a chance I took, since I couldn't really find any good review for this
+table saw on the net. The table saw itself comes with foldable stand, a 254mm
+saw blade which is capable of cutting 90mm in 90 degree cuts and 62 mm at 45
+degree cuts. It has soft start and the fence looked quite good. So on paper this
+seems like a quite good table ... and it is, but there are some quirks.&lt;/p&gt;
+&lt;p&gt;The last couple of months I've read an endless amount of woodworking pages on
+the net and I've also watched a substantial amount of woodworking clips on
+YouTube, so by now I think I have a pretty good understanding of cross cut
+sleds, router fences, drill press tables, cyclone dust collectors etc, you name
+it! Quite early on I realized that a cross cut sled would be quite useful. With
+a cross cut sled you can get very accurate 90 degree cuts, you can easily
+incorporate stop blocks etc and due to this I could most likely also put my
+miter saw somewhere so it doesn't occupy my valuable space in the workshop.
+Ideally I'd like to have all tools ready to be used, but I simply don't have
+that much space. Anyhow, cross cut sled is a key thing to make.&lt;/p&gt;
+&lt;h1&gt;Ingredients for a cross cut sled&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;12-18mm thick plywood, MDF or something similar that is hard enough to use for
+  the sled base.&lt;/li&gt;
+&lt;li&gt;Sled runners made from hardwood (oak, maple, beech etc).&lt;/li&gt;
+&lt;li&gt;And some straight pieces of wood for the front and back fence.&lt;/li&gt;
+&lt;li&gt;Preferable a routed slot for mounting a t-slot on the back fence.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In principle that's it, sounds simple? It is quite simple, or I should say, it
+&lt;em&gt;should&lt;/em&gt; be quite simple.&lt;/p&gt;
+&lt;h1&gt;Cutting the sled base&lt;/h1&gt;
+&lt;p&gt;Since it's a bit messy in the workshop right now and my plywood sheet was full
+size (&lt;code&gt;2450 x 1200&lt;/code&gt;mm) I had to use another saw, my track saw, that is a cheap
+copy of &lt;a href="http://www.festoolusa.com/power-tools/track-saws/ts-55-req-plunge-cut-track-saw-561556"&gt;Festools' TS 55 REQ Track Saw&lt;/a&gt;.
+It did a good job, so here I didn't really use the AEG table saw. In any case
+even if you have the space to handle a full sheet of plywood I think it's pretty
+hard to maneuver such a big piece on a table saw that small.&lt;/p&gt;
+&lt;h1&gt;Cutting the sled runners&lt;/h1&gt;
+&lt;p&gt;The sled runners are the strips of hardwood (preferable) that you put in the
+slots in the table saw base. I.e, these are the ones that guides the sled base
+when moving it back and forth when cutting your wood pieces.&lt;/p&gt;
+&lt;h2&gt;Problem 1 - no standard miter slots!&lt;/h2&gt;
+&lt;p&gt;The miter gauge slots on AES TS 250 K are no standard slots! They are almost
+19mm wide, but only 6mm deep. What makes this even worse is that the slots
+themselves are not really squared. In the bottom, in the middle of the slot,
+there is a stripe that is very thin, but still big enough that it makes the slot
+non-flat. I guess the intention is to take care of the tiny dust that falls into
+the slots that in some cases prevents miter gauges etc so slide easily.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Mitre slots" src="/images/ts250k/ts_mitre_slots.jpg" width="760" align="middle"&gt;&lt;/p&gt;
+&lt;p&gt;Also at the top, the last 1-2mm of the slot are rounded, which effectively means
+that you only have straight side "walls" in the slot that are about 4mm. So, you
+don't have much material in the slot when you want to tighten sled runners. On
+top of this bad design choice, AEG decided to make three tabs, which I call
+"inverted t-slots" see the image above and below and you will understand what
+I'm talking about.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Mitre slots closeup" src="/images/ts250k/ts_mitre_slot_closeup.jpg" align="middle" width="760"&gt;&lt;/p&gt;
+&lt;p&gt;The idea behind this "genius" design is to support the included miter gauge,
+which by the way is a piece of crap. There is at least 1mm play when using the
+included miter gauge in the slots, which means that it is totally impossible to
+get accurate cuts using this gauge regardless how you try to adjust it. The
+height of the inverted t-slots are roughly 2-3mm, which leads to you only have
+3-4mm between them and the bottom of the miter slot.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Mitre gauge gap" src="/images/ts250k/ts_mitre_gauge_gap.jpg" align="middle" width="760"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Mitre gauge gap 2" src="/images/ts250k/ts_mitre_gauge_gap2.jpg" align="middle" width="760"&gt;&lt;/p&gt;
+&lt;p&gt;Anyhow, I have also been able to make a quite good router table with a router
+fence and micro adjustment capabilities for my router, which means that in
+theory, I should be able to route 1mm wide and 3mm deep slots on the side of my
+sled runners. But first I needed to do a rough cut of my oak piece that I
+intended to use as sled runners in my miter slots.&lt;/p&gt;
+&lt;h2&gt;Problem 2 - sloppy, non flat table saw insert&lt;/h2&gt;
+&lt;p&gt;The &lt;a href="https://www.google.se/#q=table+saw+insert"&gt;insert&lt;/a&gt; is made out of thin
+plastic and seems quite fragile. Also it's made so you should be able to do 45
+degree cuts without having the blade nudging the insert. This is good ... and
+bad. It's bad because you cannot cut thin strips, since if you try to do this,
+they will simply fall down into the table saw in this rather big hole.  Another
+thing with this insert that it's not dead flat with the top of the table saw,
+which means that thin pieces could tilt a little bit and as an end result you
+will get non squared cuts.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Stock insert" src="/images/ts250k/ts_default_insert.jpg" align="middle" width="760"&gt;
+&lt;img alt="Insert with bad height" src="/images/ts250k/ts_insert_bad_height.jpg" align="middle" width="760"&gt;
+&lt;img alt="Zero insert" src="/images/ts250k/ts_zero_insert.jpg" align="middle" width="760"&gt;&lt;/p&gt;
+&lt;p&gt;As seen in the image above, my solution to this problem was to simply create a
+new zero play insert made out of plywood instead. It took an hour or so to make
+it fit and get the correct height. When that was done I could go back working
+on my oak sled runners.&lt;/p&gt;
+&lt;h2&gt;Problem 3 - hard to make straight cuts using the fence&lt;/h2&gt;
+&lt;p&gt;I still haven't been able to figure out why I cannot make complete straight
+cuts. I think it's because of a couple of different reasons. First reason is
+probably because I'm a beginner, secondly it seems like the table saw fence have
+some play before tightening it and lastly I'm pretty sure that the blade isn't
+square to either the slots and/or the fence, more on that later.&lt;/p&gt;
+&lt;p&gt;Anyhow, I managed to get the strips to a fairly good size and I also managed to
+route the tiny "slots" for the inverted t-slots. So far so good.
+&lt;img alt="Oak sled runners" src="/images/ts250k/ts_oak_runners.jpg" align="middle" width="760"&gt;&lt;/p&gt;
+&lt;h1&gt;Mounting the sled runners on the sled base&lt;/h1&gt;
+&lt;p&gt;This is pretty straight forward, put the runners in the slots, put the sled base
+on top of them and the table saw table. Use some screws and/or glue to put them
+together. I did that and after doing so I noticed that I barely could move my
+sled. So, what was wrong? After some investigation I realized that my sled
+runners was a bit too thick in some areas of the slots. So after some fine
+tuning and moving the sled back and forth it started to move a little smoother
+(but still not as good as I wanted it to be).&lt;/p&gt;
+&lt;p&gt;Side note: Later on when creating another sled I realized that the stupid
+inverted t-slots are not the same size. Some of them are bigger than others.
+After some sanding on the inverted t-slots, directly on the aluminium (both the
+height and the width), to make them more equal, things are suddenly running even
+more smoothly now.&lt;/p&gt;
+&lt;h2&gt;Problem 4 - saw blade and slots are not parallel&lt;/h2&gt;
+&lt;p&gt;The rest of the cross cut sled build was pretty straight forward, just "Google"
+"how to make a cross cut sled" and you will find several guides of how to do it.
+I did walk the extra mile and were using the &lt;a href="https://youtu.be/UbG-n--LFgQ"&gt;5 cut method&lt;/a&gt;
+to get the back fence of the sled (almost) perfectly perpendicular to the cut.
+Note that I'm saying "the cut", because the cut is not perpendicular to the
+table saw blade (see image below). My take is that the table saw slots are not
+parallel with the table saw blade. I doesn't really matter when using a cross
+cut sled, it's just that the cut will be a little bit wider than the kerf of the
+saw blade. However I would prefer having the sleds parallel.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Unaligned blade" src="/images/ts250k/ts_blade_unaligned.jpg" width="760"&gt;&lt;/p&gt;
+&lt;h1&gt;Other things that a potential buyer has to be aware of&lt;/h1&gt;
+&lt;h2&gt;The Table Top&lt;/h2&gt;
+&lt;p&gt;The top of the table is made out of aluminium and the surface is a little bit
+rough. It's not a big problem, but you have to be aware of that you cannot use
+magnetic tools like the ones used together with a dial indicator. I also don't
+think it's very common to have an iron surface on portable table top saws.&lt;/p&gt;
+&lt;h2&gt;The Riving knife&lt;/h2&gt;
+&lt;p&gt;&lt;img alt="Riving knife height" src="/images/ts250k/ts_riving_height.jpg" align="right" width="399"&gt;&lt;/p&gt;
+&lt;p&gt;The riving knife is quite big and follows the saw blade when you raise and lower
+your saw blade. That is really good. The downside is that the riving knife also
+goes above the saw blade which means that you cannot cut grooves/slots when
+having the riving knife mounted. You &lt;em&gt;cannot&lt;/em&gt; adjust this. Either the riving
+knife is mounted or it has to be removed. Since I'm really concerned about
+safety when it comes to using my table saw, my plan is to cut the riving knife
+so it stays just below the height of the saw blade (see the image above).
+However by doing so I cannot mount the dust collector / kickback protection
+again. This is not a big deal for me, since that is to big and bulky anyway and
+having a riving knife is the critical thing to have mounted to prevent kickback.&lt;/p&gt;
+&lt;p&gt;The riving knife doesn't come with any quick mount. To remove it you need to
+first remove the insert and then you need to unscrew the two hex bolts that
+tightens the riving knife. It would be nice if it had the same type of quick
+mount that you can find on other table saws.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Riving knife mount" src="/images/ts250k/ts_riving_mount.jpg" width="760"&gt;&lt;/p&gt;
+&lt;h1&gt;AEG support&lt;/h1&gt;
+&lt;p&gt;Since I planned to modify my riving knife I wanted to ask AEG if and where I
+could buy another riving knife, so that I could have one modified riving knife
+and one that is as when I bought the saw. I think I've tried to contact them 2
+or 3 times using the "Contact US" link on table saw page. However without
+success, I haven't seen any response at all. This is bad AEG!&lt;/p&gt;
+&lt;h1&gt;Summary&lt;/h1&gt;
+&lt;h2&gt;Pros&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Rather cheap table saw, I bought it when they had some kind of campaign and
+  without shipping it costed, I think 3995:- SEK which is roughly USD $460 with
+  todays exchange rate. Normally it's a little bit more expensive.&lt;/li&gt;
+&lt;li&gt;Well built. It feels sturdy.&lt;/li&gt;
+&lt;li&gt;Quite good cutting depth, 90mm for straight cuts and 62mm for 45 degree cuts
+  is quite good.&lt;/li&gt;
+&lt;li&gt;Integrated table side extension up to 645 mm.&lt;/li&gt;
+&lt;li&gt;Makes quite clean cuts.&lt;/li&gt;
+&lt;li&gt;Soft start: Nice to have even though not necessary.&lt;/li&gt;
+&lt;li&gt;Foldable stand which is very easy to use.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;h2&gt;Cons&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Hard to make perfect straight cuts using the fence.&lt;/li&gt;
+&lt;li&gt;The miter gauge slots in the table is a joke. Why the heck didn't they go for
+  standard 3/4" (wide) x 3/8" (deep) miter gauge slots?&lt;/li&gt;
+&lt;li&gt;The included miter gauge is just crap.&lt;/li&gt;
+&lt;li&gt;Riving knife is too high.&lt;/li&gt;
+&lt;li&gt;No quick mount/release of the riving knife. It's mounted using normal
+  hex-bolts.&lt;/li&gt;
+&lt;li&gt;The insert is not so well made and this is also a non-standard format, which
+  means that you cannot buy standards inserts, which you otherwise easily can
+  buy from eBay or woodworking shops.&lt;/li&gt;
+&lt;li&gt;AEG support doesn't answer when using the "&lt;a href="http://www.aeg-powertools.eu/header/contact-us/"&gt;Contact US&lt;/a&gt;" page on their site.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;h2&gt;Is it worth buying?&lt;/h2&gt;
+&lt;p&gt;If you're a beginner and plan to mainly use it to rip wood and doesn't care too
+much about accuracy, then I think this is a good table saw. However, if you are
+more into accuracy and care about micrometer instead of millimeter and if you
+plan to use various tools attached to the slots, then I'd not recommend you to
+buy this table saw. It's simply too much hassle to create and or modify existing
+runners to make them usable. For me it is working now after the tweaks I've
+done. But if I would have known what I know now I would have looked for another
+table saw instead, like &lt;a href="http://www.bosch-professional.com/gb/en/gts-10-xc-26179-ocs-p/"&gt;GTS 10 XC Professional&lt;/a&gt;, 
+&lt;a href="http://www.amazon.com/DEWALT-DW744XRS-10-inch-Table-Rolling/dp/B0014GD3HQ"&gt;Dewalt DW744XRS&lt;/a&gt; or &lt;a href="http://www.amazon.com/DEWALT-DW745-10-Inch-Job-Site-Capacity/dp/B000HXT2N6"&gt;DEWALT DW745&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;I hope this review was useful, in case you have questions, please use the
+comment field below and I'll try to answer your questions.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;EDIT&lt;/strong&gt; 2016: I've sold this table saw and I did end up buying a Dewalt DW745 instead.&lt;/p&gt;
+&lt;p&gt;// Joakim&lt;/p&gt;</content></entry><entry><title>Fetchmail and GnuPG</title><link href="/blog/2014/11/01/fetchmail-and-gnupg/" rel="alternate"></link><published>2014-11-01T23:02:03+01:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:None,2014-11-01:/blog/2014/11/01/fetchmail-and-gnupg/</id><summary type="html">&lt;p&gt;When using &lt;a href="http://en.wikipedia.org/wiki/Internet_Message_Access_Protocol"&gt;imap&lt;/a&gt;
+in &lt;a href="http://en.wikipedia.org/wiki/Mutt_(email_client)"&gt;mutt&lt;/a&gt; you have the
+possibility to use &lt;code&gt;gpg&lt;/code&gt; to decrypt your password instead of having it as
+plaintext in your configuration file (&lt;code&gt;.muttrc&lt;/code&gt;), see
+&lt;a href="https://wiki.archlinux.org/index.php/Mutt#Passwords_management"&gt;ArchWiki&lt;/a&gt; how
+to do that.&lt;/p&gt;
+&lt;p&gt;However, if you consider using &lt;code&gt;POP3&lt;/code&gt;, then you will also need to install and
+enable &lt;a href="http://msmtp.sourceforge.net"&gt;msmtp&lt;/a&gt; (not strictly needed),
+&lt;a href="http://www.fetchmail.info"&gt;fetchmail&lt;/a&gt; and
+&lt;a href="http://www.procmail.org"&gt;procmail&lt;/a&gt;. Ubuntu have created a quite nice
+&lt;a href="https://help.ubuntu.com/community/MuttAndGmail"&gt;guide&lt;/a&gt; of
+the steps involved.&lt;/p&gt;
+&lt;p&gt;Just as &lt;code&gt;mutt&lt;/code&gt; also &lt;code&gt;msmtp&lt;/code&gt; have the possibility to use &lt;code&gt;gpg&lt;/code&gt; in runtime instead …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When using &lt;a href="http://en.wikipedia.org/wiki/Internet_Message_Access_Protocol"&gt;imap&lt;/a&gt;
+in &lt;a href="http://en.wikipedia.org/wiki/Mutt_(email_client)"&gt;mutt&lt;/a&gt; you have the
+possibility to use &lt;code&gt;gpg&lt;/code&gt; to decrypt your password instead of having it as
+plaintext in your configuration file (&lt;code&gt;.muttrc&lt;/code&gt;), see
+&lt;a href="https://wiki.archlinux.org/index.php/Mutt#Passwords_management"&gt;ArchWiki&lt;/a&gt; how
+to do that.&lt;/p&gt;
+&lt;p&gt;However, if you consider using &lt;code&gt;POP3&lt;/code&gt;, then you will also need to install and
+enable &lt;a href="http://msmtp.sourceforge.net"&gt;msmtp&lt;/a&gt; (not strictly needed),
+&lt;a href="http://www.fetchmail.info"&gt;fetchmail&lt;/a&gt; and
+&lt;a href="http://www.procmail.org"&gt;procmail&lt;/a&gt;. Ubuntu have created a quite nice
+&lt;a href="https://help.ubuntu.com/community/MuttAndGmail"&gt;guide&lt;/a&gt; of
+the steps involved.&lt;/p&gt;
+&lt;p&gt;Just as &lt;code&gt;mutt&lt;/code&gt; also &lt;code&gt;msmtp&lt;/code&gt; have the possibility to use &lt;code&gt;gpg&lt;/code&gt; in runtime instead
+of having the password stored in plaintext. The way to do that in &lt;code&gt;msmtp&lt;/code&gt; is to
+put a line mention &lt;code&gt;gpg&lt;/code&gt; in your &lt;code&gt;$HOME/.msmtprc file&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;passwordeval    &lt;span class="s2"&gt;&amp;quot;gpg --quiet --for-your-eyes-only --no-tty --decrypt ~/.msmtp-gmail.gpg&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;However, &lt;code&gt;fetchmail&lt;/code&gt; doesn't have the same option. So, &lt;code&gt;mutt&lt;/code&gt; and &lt;code&gt;msmtp&lt;/code&gt; is
+fine, but you still have to put your password in a cleartext file when
+configuring &lt;code&gt;fetchmail&lt;/code&gt;. Clearly there must be a better way to handle this? I
+downloaded the source code
+(&lt;a href="http://sourceforge.net/projects/fetchmail/files/branch_6.3/fetchmail-6.3.26.tar.xz/download"&gt;fetchmail-6.3.26&lt;/a&gt;)
+and did a quick and dirty hack. I just modified the main function in the file
+&lt;code&gt;fetchmail.c&lt;/code&gt;, so that instead of having to provide the password on command line
+(when password is not set in &lt;code&gt;$HOME/.fetchmailrc&lt;/code&gt;) it makes use of &lt;code&gt;gpg&lt;/code&gt; similar to how
+both mutt and &lt;code&gt;msmtp&lt;/code&gt; does. It isn't pretty ... but it works (tested on Arch Linux
+on a Raspberry PI). To try it out, use the same &lt;code&gt;gpg&lt;/code&gt; encrypted file as you use
+for &lt;code&gt;msmtp&lt;/code&gt;, i.e, &lt;code&gt;$HOME/msmtp-gmail.gpg&lt;/code&gt; and patch &lt;code&gt;fetchmail&lt;/code&gt; using this patch and
+rebuild.&lt;/p&gt;
+&lt;h1&gt;Source&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="/downloads/patch/fetchmail_gpg.patch"&gt;fetchmail_gpg.patch&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content></entry><entry><title>Timing Attack - Proof of Concept</title><link href="/blog/2014/02/02/timing-attack-proof-of-concept/" rel="alternate"></link><published>2014-02-02T10:38:37+01:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:None,2014-02-02:/blog/2014/02/02/timing-attack-proof-of-concept/</id><summary type="html">&lt;p&gt;You might have heard about timing attacks, but either thought it sounded
+too complicated to understand or that it is too complicated to actually do such
+an attack. In this post I'm going to give a brief overview of a timing attack
+and also provide some example code that you can play with on your own. Hopefully
+after reading this post you will understand that you cannot neglect this if you
+are creating a system where security is needed.&lt;/p&gt;
+&lt;h1&gt;What …&lt;/h1&gt;</summary><content type="html">&lt;p&gt;You might have heard about timing attacks, but either thought it sounded
+too complicated to understand or that it is too complicated to actually do such
+an attack. In this post I'm going to give a brief overview of a timing attack
+and also provide some example code that you can play with on your own. Hopefully
+after reading this post you will understand that you cannot neglect this if you
+are creating a system where security is needed.&lt;/p&gt;
+&lt;h1&gt;What is a timing attack&lt;/h1&gt;
+&lt;p&gt;A &lt;a href="http://en.wikipedia.org/wiki/Timing_attack"&gt;timing attack&lt;/a&gt; is a so called
+&lt;a href="http://en.wikipedia.org/wiki/Side_channel_attack"&gt;side channel attack&lt;/a&gt;
+where you analyze the timing information on a system is such a way that it
+allows to break the protection of the system or a program running on it.&lt;/p&gt;
+&lt;h1&gt;How is a timing attack performed?&lt;/h1&gt;
+&lt;p&gt;Typically you need to measure the amount of time needed to do operations of some
+kind. You can do this in several ways, for example you could hook up a set of
+probes on a chip or a PCB and watch the result on an oscilloscope or a logical
+analyzer. Another option is to simply leverage features from the
+CPU/architecture itself. On a normal PC running Intel (or AMD) you can use the
+time stamp counter &lt;a href="http://en.wikipedia.org/wiki/Time_Stamp_Counter"&gt;rdtsc&lt;/a&gt;
+or a High Precision Event Timer
+&lt;a href="http://en.wikipedia.org/wiki/High_Precision_Event_Timer"&gt;hpet&lt;/a&gt;. Be aware that
+the time stamp counter isn't reliable any longer, since process speeds can
+change (due to power management), you have context switches etc. But just for
+testing it can be good enough.&lt;/p&gt;
+&lt;p&gt;So you have found a way of taking time measures, what next? The easy answer is,
+start measure the execution time of sensitive functions. For example when
+calling functions that verifies password, functions that does encryption and
+such. Measuring the time needed for &lt;code&gt;strcmp&lt;/code&gt; as exemplified in the proof of
+concept code below is easy. It becomes more complicated if you want to do the
+same when doing
+&lt;a href="http://en.wikipedia.org/wiki/Advanced_Encryption_Standard#Side-channel_attacks"&gt;AES&lt;/a&gt;
+encryption for example. It is still doable, but you also need to know the
+algorithm to know where to look and how to interpret the leaked information.&lt;/p&gt;
+&lt;h1&gt;Countermeasures&lt;/h1&gt;
+&lt;p&gt;Main idea is that you need balance the string compare functions so that it
+always takes the same amount of time to perform.&lt;/p&gt;
+&lt;h1&gt;Proof of concept&lt;/h1&gt;
+&lt;p&gt;I have put together a small proof of concept / testing program to show that it
+is actually not that complicated to do a timing attack. It is unlikely that it
+is as easy as this, but still, it gives the idea and shows that you can
+actually use timing to guess password, guesses that are fairly good. The main
+idea is to show how execution time actually varies when doing string
+comparison. The by using this information leakage we show that we can guess
+pretty good what we believe the correct character is in the correct
+password/string.&lt;/p&gt;
+&lt;h1&gt;The algorithm&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Loop over all characters, one by one in the string that we want to check
+   (&lt;code&gt;thisisalongstring&lt;/code&gt; in this case).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;For every character in the string, do an inner loop, where you are looping
+   from &lt;code&gt;'a'&lt;/code&gt; to &lt;code&gt;'z'&lt;/code&gt;. For every call to the string comparison function record
+   the amount of time it took. The letter that had longest execution time is
+   most likely the correct character. Hence save that character in the in the
+   array that contains guessed character.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Lastly compare the correct string with guessed string to see if we got all
+   timing based guesses correct or not.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;Results&lt;/h2&gt;
+&lt;p&gt;Here are the test result of a test run with debug information enabled&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ make &lt;span class="nv"&gt;DEBUG&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;
+$ ./main &lt;span class="m"&gt;10&lt;/span&gt;
+Shows a couple of examples of the &lt;span class="nb"&gt;time&lt;/span&gt; it takes to make string comparison
+avg &lt;span class="nb"&gt;time&lt;/span&gt; long string &lt;span class="o"&gt;(&lt;/span&gt;thisisalongstring&lt;span class="o"&gt;)&lt;/span&gt;: &lt;span class="m"&gt;821&lt;/span&gt;
+avg &lt;span class="nb"&gt;time&lt;/span&gt; short string &lt;span class="o"&gt;(&lt;/span&gt;foo&lt;span class="o"&gt;)&lt;/span&gt;: &lt;span class="m"&gt;532&lt;/span&gt;
+avg &lt;span class="nb"&gt;time&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt; char correct &lt;span class="o"&gt;(&lt;/span&gt;XXX/foo&lt;span class="o"&gt;)&lt;/span&gt;: &lt;span class="m"&gt;486&lt;/span&gt;
+avg &lt;span class="nb"&gt;time&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt; char correct &lt;span class="o"&gt;(&lt;/span&gt;fXX/foo&lt;span class="o"&gt;)&lt;/span&gt;: &lt;span class="m"&gt;495&lt;/span&gt;
+avg &lt;span class="nb"&gt;time&lt;/span&gt; &lt;span class="m"&gt;2&lt;/span&gt; char correct &lt;span class="o"&gt;(&lt;/span&gt;foX/foo&lt;span class="o"&gt;)&lt;/span&gt;: &lt;span class="m"&gt;540&lt;/span&gt;
+avg &lt;span class="nb"&gt;time&lt;/span&gt; &lt;span class="m"&gt;3&lt;/span&gt; char correct &lt;span class="o"&gt;(&lt;/span&gt;foo/foo&lt;span class="o"&gt;)&lt;/span&gt;: &lt;span class="m"&gt;561&lt;/span&gt;
+Guessed that pw should be: thisisalongshring
+Guessed that pw should be: thisisalongstring
+Guessed that pw should be: thisisalongstring
+Guessed that pw should be: thhbisalongstring
+Guessed that pw should be: thisisalongstring
+Guessed that pw should be: thisisalongstring
+Guessed that pw should be: thisisalongstring
+Guessed that pw should be: thisisalongstring
+Guessed that pw should be: thisimalongstrimf
+Guessed that pw should be: thisisalongstrhng
+&lt;span class="m"&gt;6&lt;/span&gt; successful timing attacks
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The figures will vary, but they are almost always in the same region. Looking
+at:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Line 3&lt;/strong&gt;: we can see that it takes &lt;code&gt;821&lt;/code&gt; time units for a full and correct string
+compare of the string &lt;code&gt;thisisalongstring&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Line 4&lt;/strong&gt;: we can see that it takes &lt;code&gt;532&lt;/code&gt; time units to correctly match the
+string &lt;code&gt;foo&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Line 5-8&lt;/strong&gt;: for every test run, we add a correct matching character and as
+expected we can see that the time increases for every correct character. This
+is because the string compare function as said before has a timing linear to
+the correct number of characters.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Line 9-19&lt;/strong&gt;: shows the result when trying to guess the string
+&lt;code&gt;thisisalongstring&lt;/code&gt; based on the time it takes to guess &lt;code&gt;'a'&lt;/code&gt;, &lt;code&gt;'b'&lt;/code&gt;, &lt;code&gt;'c'&lt;/code&gt;,
+... &lt;code&gt;'z'&lt;/code&gt;, for every character. This particular run we guessed correct 6 out or
+10 times. Not that bad, it takes roughly 0.002 seconds to run everything above.
+According to Steve Gibson's &lt;a href="https://www.grc.com/haystack.htm"&gt;Password Haystack&lt;/a&gt;
+page, it takes approximately 3.75 centuries to brute force that password
+&lt;strong&gt;once&lt;/strong&gt; using a what he calls a "massive cracking array scenario (assuming one
+hundred trillion guesses per second)".&lt;/p&gt;
+&lt;h1&gt;A couple of interesting things I've noticed&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;If I increase the &lt;code&gt;TEST_LOOPS&lt;/code&gt; define I actually get much worse result?&lt;/li&gt;
+&lt;li&gt;If I turn on all optimizations, i.e. &lt;code&gt;-O3&lt;/code&gt;, it doesn't work at all.&lt;/li&gt;
+&lt;li&gt;The last character was always incorrectly guessed and that is the reason why
+  I've added a space at the end of the string '&lt;code&gt;thisisalongstring&lt;/code&gt;', which I
+  later on strip away. I believe the reason for this problem is inaccuracy
+  using &lt;code&gt;rdtsc&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If any reader of this post knows the answer to my reflections above, please
+leave a comment.&lt;/p&gt;
+&lt;h1&gt;Source code&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="/downloads/timing/time_attack_strcmp.c"&gt;time_attack_strcmp.c&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="/downloads/timing/Makefile"&gt;Makefile&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content></entry><entry><title>Apply patches in Git</title><link href="/blog/2012/03/09/apply-patches-in-git/" rel="alternate"></link><published>2012-03-09T00:16:48+01:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:None,2012-03-09:/blog/2012/03/09/apply-patches-in-git/</id><summary type="html">&lt;p&gt;&lt;img alt="git logo" src="/images/git/logo_git.gif" align="right"&gt;
+A common task for a developer has is to apply a patch in Git. I have a simple
+scheme that I've been using for a long time and it is very seldom that I get
+into problem nowadays when I'm doing patch work.&lt;/p&gt;
+&lt;h1&gt;The short version for the impatient&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git am &amp;lt; my_new_feature.patch
+$ git apply --reject --whitespace&lt;span class="o"&gt;=&lt;/span&gt;fix my_new_feature.patch
+$ git status
+$ vim my_conflicting_file.c*
+$ find . -name &lt;span class="s2"&gt;&amp;quot;*.rej&amp;quot;&lt;/span&gt; -exec rm -f &lt;span class="o"&gt;{}&lt;/span&gt; &lt;span class="se"&gt;\;&lt;/span&gt;
+$ git add .
+$ git am --resolved
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Long version for the …&lt;/h1&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="git logo" src="/images/git/logo_git.gif" align="right"&gt;
+A common task for a developer has is to apply a patch in Git. I have a simple
+scheme that I've been using for a long time and it is very seldom that I get
+into problem nowadays when I'm doing patch work.&lt;/p&gt;
+&lt;h1&gt;The short version for the impatient&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git am &amp;lt; my_new_feature.patch
+$ git apply --reject --whitespace&lt;span class="o"&gt;=&lt;/span&gt;fix my_new_feature.patch
+$ git status
+$ vim my_conflicting_file.c*
+$ find . -name &lt;span class="s2"&gt;&amp;quot;*.rej&amp;quot;&lt;/span&gt; -exec rm -f &lt;span class="o"&gt;{}&lt;/span&gt; &lt;span class="se"&gt;\;&lt;/span&gt;
+$ git add .
+$ git am --resolved
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Long version for the one needing explanations to the steps&lt;/h1&gt;
+&lt;p&gt;To start with I always first try applying the patch with git am, i.e.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git am &amp;lt; my_new_feature.patch
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Sometimes this is enough and the patch simply applies, however when it fails to
+apply I just continue writing.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git apply --reject --whitespace&lt;span class="o"&gt;=&lt;/span&gt;fix my_new_feature.patch
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This will force Git to apply as much as it can and for the rest of the hunks
+that it cannot merge it will produce files ending with .rej. So the next step I
+do after git apply is just to run&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git status
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And notice the untracked files ending in .rej. Now I know what files Git
+couldn't merge when applying the patch, so let's say that I have a file called
+my_conflicting_file.c which Git couldn't merge. To solve this I open it in my
+favorite editor by doing like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ vim my_conflicting_file.c*
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This will open both my_conflicting_file.c and my_conflicting_file.c.rej. I will
+split the window in vim (CTRL+W V), and then open the other file by typing :bp
+in vim. Now it is up to you as a developer to decicde what changes in the &lt;em&gt;.rej
+file should go into the conflicting file. I.e, what changes in
+my_conflicting_file.c.rej, should be in my_conflicting_file.c. Sometimes you
+will notice that you don't have to change anything at all and sometimes you will
+notice that you have to add or remove lines in the conflicting file. Don't
+forget to remove the + and/or - at the start of the lines in the &lt;/em&gt;.rej file!
+When this step is done I delete all the *.rej files and then add the changes
+files to the index in Git. I.e:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ find . -name &lt;span class="s2"&gt;&amp;quot;*.rej&amp;quot;&lt;/span&gt; -exec rm -f &lt;span class="o"&gt;{}&lt;/span&gt; &lt;span class="se"&gt;\;&lt;/span&gt;
+$ git add .
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The last step you have to do before the patch have been merged is to tell git
+that the "am" that you started have been resolved.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git am --resolved
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Patch work done! If you follow this scheme I'm pretty sure that you will do fine
+in the future when applying patches.&lt;/p&gt;</content></entry><entry><title>Perl pack and unpack</title><link href="/blog/2012/03/04/perl-pack-and-unpack/" rel="alternate"></link><published>2012-03-04T00:15:48+01:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:None,2012-03-04:/blog/2012/03/04/perl-pack-and-unpack/</id><summary type="html">&lt;p&gt;&lt;img alt="Perl logo" src="/images/perlpap/logo_perl.jpg" align="right"&gt;
+When you have to read and write binary data using Perl, then you preferably use
+the built in functions pack and unpack. With the pack function you will create
+a string which will be different depending on what kind of template you provide
+to the pack function (the unpack does the same, but in the opposite direction).&lt;/p&gt;
+&lt;p&gt;I was writing a simple Perl script that was reading a binary file which
+contained data that originated from a c &lt;code&gt;struct&lt;/code&gt;. I …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="Perl logo" src="/images/perlpap/logo_perl.jpg" align="right"&gt;
+When you have to read and write binary data using Perl, then you preferably use
+the built in functions pack and unpack. With the pack function you will create
+a string which will be different depending on what kind of template you provide
+to the pack function (the unpack does the same, but in the opposite direction).&lt;/p&gt;
+&lt;p&gt;I was writing a simple Perl script that was reading a binary file which
+contained data that originated from a c &lt;code&gt;struct&lt;/code&gt;. I.e., I wanted to parse the
+binary file and print what the values would be if the binary file was read into
+the c struct.&lt;/p&gt;
+&lt;p&gt;Let's say that the struct is on the format:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;binary_data&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="kt"&gt;uint32_t&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="kt"&gt;uint32_t&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I.e, we have data consisting of 4 bytes of &lt;code&gt;a&lt;/code&gt;, 4 bytes of &lt;code&gt;b&lt;/code&gt; and 1 byte of
+&lt;code&gt;c&lt;/code&gt;. Let us say that the binary files consist of the following values&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;a = 196 dec (0xC4 hex)
+b = 4293844428 dec (0xFFEEDDCC hex)
+c = 75 dec (0x4B hex)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;then our binary file, &lt;code&gt;binary_data.bin&lt;/code&gt; would contain this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;c4 00 00 00 cc dd ee ff 4b
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To be able to read this back and print the values in decimal or hex, you simply
+start by reading the size of each element in the struct one by one and for each
+item you unpack the data according to the size of the element in the struct.
+For &lt;code&gt;uint32_t&lt;/code&gt; you use &lt;code&gt;L&lt;/code&gt; and for &lt;code&gt;uint8_t&lt;/code&gt; &lt;code&gt;C&lt;/code&gt;. A complete listing of the
+different templates (as they are called in Perl) could be found in the Perl
+documentation. Be careful about little- vs big-endian when you select template.&lt;/p&gt;
+&lt;p&gt;Below is a Perl script that creates the binary file, then read the data back
+from the file and print the values both in decimal and hex.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/perl&lt;/span&gt;
+&lt;span class="k"&gt;use&lt;/span&gt; &lt;span class="nn"&gt;strict&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;use&lt;/span&gt; &lt;span class="nn"&gt;warnings&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="nb"&gt;binmode&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;my&lt;/span&gt; &lt;span class="nv"&gt;$buf&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Write decimal values as binary data.&lt;/span&gt;
+&lt;span class="nb"&gt;open&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;&amp;gt;binary_data.bin&amp;quot;&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="nb"&gt;die&lt;/span&gt; &lt;span class="vg"&gt;$!&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="k"&gt;my&lt;/span&gt; &lt;span class="nv"&gt;$data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;pack&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;L&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;196&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt; &lt;span class="nv"&gt;$data&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="nv"&gt;$data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;pack&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;L&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;4293844428&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt; &lt;span class="nv"&gt;$data&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="nv"&gt;$data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;pack&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;C&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;75&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt; &lt;span class="nv"&gt;$data&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="nb"&gt;close&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Read back binary data to decimal value.&lt;/span&gt;
+&lt;span class="nb"&gt;open&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;binary_data.bin&amp;quot;&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="nb"&gt;die&lt;/span&gt; &lt;span class="vg"&gt;$!&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="nb"&gt;read&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$buf&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nv"&gt;$data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;unpack&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;L&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$buf&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="nv"&gt;$data&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="s"&gt;&amp;quot; - &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="nb"&gt;sprintf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;%x&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;\n&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="nb"&gt;read&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$buf&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nv"&gt;$data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;unpack&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;L&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$buf&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="nv"&gt;$data&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="s"&gt;&amp;quot; - &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="nb"&gt;sprintf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;%x&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;\n&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="nb"&gt;read&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$buf&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nv"&gt;$data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;unpack&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;C&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$buf&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="nv"&gt;$data&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="s"&gt;&amp;quot; - &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="nb"&gt;sprintf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;%x&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;\n&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="nb"&gt;close&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</content></entry><entry><title>Using libcurl with minimal dependencies</title><link href="/blog/2010/08/05/using-libcurl-with-minimal-dependencies/" rel="alternate"></link><published>2010-08-05T00:13:15+02:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:None,2010-08-05:/blog/2010/08/05/using-libcurl-with-minimal-dependencies/</id><summary type="html">&lt;p&gt;&lt;img alt="LibCURL logo" src="/images/libcurldep/logo_curl-200x150.jpg" align="right"&gt;
+For an ongoing project I needed to retrieve webpages from my C-program and
+first I used sockets directly, but then I thought why not try use libcurl? If I
+could use libcurl and link it statically then I would get the good features
+from libcurl, but still could make my application stand alone.&lt;/p&gt;
+&lt;p&gt;With my current setup running Debian (Lenny), I tried to just apt-get the libraries
+(&lt;code&gt;libcurl4-openssl-dev&lt;/code&gt;) and build using those libraries That went fine until I
+tried to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="LibCURL logo" src="/images/libcurldep/logo_curl-200x150.jpg" align="right"&gt;
+For an ongoing project I needed to retrieve webpages from my C-program and
+first I used sockets directly, but then I thought why not try use libcurl? If I
+could use libcurl and link it statically then I would get the good features
+from libcurl, but still could make my application stand alone.&lt;/p&gt;
+&lt;p&gt;With my current setup running Debian (Lenny), I tried to just apt-get the libraries
+(&lt;code&gt;libcurl4-openssl-dev&lt;/code&gt;) and build using those libraries That went fine until I
+tried to link them statically with my application. After reading different mail
+archives, forum and tried on my own I got my application to link (static) with
+libcurl. Basically what I needed to do was.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Download libcurl source&lt;/li&gt;
+&lt;li&gt;Compile libcurl myself (disable one define, more about that below).&lt;/li&gt;
+&lt;li&gt;Point to my own built libcurl.a library when building my own application.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;So to save some headache for myself next time I want to do it or for someone
+else reading this I've listed the steps I had to do to get this to work.&lt;/p&gt;
+&lt;h1&gt;Download libcurl source&lt;/h1&gt;
+&lt;p&gt;As of writing this, the latest version of libcurl was 7.21.0 so I downloaded
+and unpacked the source.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;wget http://curl.haxx.se/download/curl-7.21.0.tar.bz2
+tar xjvf curl-7.21.0.tar.bz2
+&lt;span class="o"&gt;{&lt;/span&gt;% endcodeblock %&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Compile libcurl&lt;/h1&gt;
+&lt;p&gt;Next it was time to run &lt;code&gt;./configure&lt;/code&gt; and &lt;code&gt;make&lt;/code&gt;. Here I basically disabled
+everything for libcurl except &lt;code&gt;HTTP&lt;/code&gt; and &lt;code&gt;FILE&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./configure --prefix&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$HOME&lt;/span&gt;/devel/libcurl --disable-dict --disable-ftp --disable-imap --disable-ldap --disable-ldaps --disable-pop3 --disable-proxy --disable-rtsp --disable-shared --disable-smtp --disable-telnet --disable-tftp --disable-zlib --without-ca-bundle --without-gnutls --without-libidn --without-librtmp --without-libssh2 --without-nss --without-ssl --without-zlib
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Edit the file &lt;code&gt;lib/curl_config.h&lt;/code&gt; which is generated during the configure step.
+In this file we uncomment the line saying&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;/* Define to &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; you have the clock_gettime &lt;span class="k"&gt;function&lt;/span&gt; and monotonic timer. */
+//#define HAVE_CLOCK_GETTIME_MONOTONIC &lt;span class="m"&gt;1&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If I didn't do this, then I would have a dependency to &lt;code&gt;librt&lt;/code&gt; which I didn't want to.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;make
+make install
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now I was done with libcurl, next I should use this library in my application.&lt;/p&gt;
+&lt;h1&gt;Build the application using libcurl&lt;/h1&gt;
+&lt;p&gt;To make things simple when describing this I instead use the file
+&lt;a href="http://curl.haxx.se/libcurl/c/simple.html"&gt;simple.c&lt;/a&gt;
+which is found on &lt;a href="http://curl.haxx.se/libcurl"&gt;libcurl's&lt;/a&gt; site.&lt;/p&gt;
+&lt;p&gt;In &lt;a href="/downloads/libcurldep/simple_libcurl.tar.gz"&gt;simple_libcurl.tar.gz&lt;/a&gt; I've
+put together the source and a Makefile which builds using the library just
+created. The magic is the &lt;code&gt;LDFLAGS&lt;/code&gt; line used in the linking step on line 12
+and 24 below. I.e. on line 12 I had have to point the folder where the
+library is located that I had built myself (&lt;code&gt;-L/path/to/my/libcurl.a&lt;/code&gt;) and I
+still needed to tell the linker that I wanted to use libcurl, hence the
+&lt;code&gt;-lcurl&lt;/code&gt; parameter.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;SRCDIR&lt;/span&gt;  &lt;span class="o"&gt;:=&lt;/span&gt; src
+&lt;span class="nv"&gt;OBJDIR&lt;/span&gt;  &lt;span class="o"&gt;:=&lt;/span&gt; obj
+&lt;span class="nv"&gt;SRC&lt;/span&gt;     &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;patsubst &lt;span class="k"&gt;$(&lt;/span&gt;SRCDIR&lt;span class="k"&gt;)&lt;/span&gt;/%.c, %.c, &lt;span class="k"&gt;$(&lt;/span&gt;wildcard &lt;span class="k"&gt;$(&lt;/span&gt;SRCDIR&lt;span class="k"&gt;)&lt;/span&gt;/*.c&lt;span class="k"&gt;))&lt;/span&gt;
+&lt;span class="nv"&gt;OBJS&lt;/span&gt;    &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;addprefix &lt;span class="k"&gt;$(&lt;/span&gt;OBJDIR&lt;span class="k"&gt;)&lt;/span&gt;/, &lt;span class="k"&gt;$(&lt;/span&gt;patsubst %.c, %.o, &lt;span class="k"&gt;$(&lt;/span&gt;SRC&lt;span class="k"&gt;)))&lt;/span&gt;
+
+&lt;span class="nv"&gt;INCDIR&lt;/span&gt;  &lt;span class="o"&gt;:=&lt;/span&gt; inc
+
+&lt;span class="nv"&gt;CC&lt;/span&gt;      &lt;span class="o"&gt;:=&lt;/span&gt; gcc
+&lt;span class="nv"&gt;CFLAGS&lt;/span&gt;  &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;addprefix -I, &lt;span class="k"&gt;$(&lt;/span&gt;INCDIR&lt;span class="k"&gt;))&lt;/span&gt;
+&lt;span class="nv"&gt;CFLAGS&lt;/span&gt;  &lt;span class="o"&gt;+=&lt;/span&gt; -I/home/jyx/devel/libcurl/include
+
+&lt;span class="nv"&gt;LDFLAGS&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; -L/home/jyx/devel/libcurl/lib -lcurl
+
+&lt;span class="nf"&gt;.PHONY &lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;all&lt;/span&gt; &lt;span class="n"&gt;clean&lt;/span&gt;
+
+&lt;span class="nf"&gt;all&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;main&lt;/span&gt;
+
+&lt;span class="nf"&gt;$(OBJDIR)/%.o&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nv"&gt;SRCDIR&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;/%.&lt;span class="n"&gt;c&lt;/span&gt;
+    @echo &lt;span class="s2"&gt;&amp;quot; (CC)    &lt;/span&gt;$&lt;span class="s2"&gt;&amp;lt;&amp;quot;&lt;/span&gt;
+    @&lt;span class="k"&gt;$(&lt;/span&gt;CC&lt;span class="k"&gt;)&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;CFLAGS&lt;span class="k"&gt;)&lt;/span&gt; -c $&amp;lt; -o &lt;span class="nv"&gt;$@&lt;/span&gt;
+
+&lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nv"&gt;OBJS&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+    @echo &lt;span class="s2"&gt;&amp;quot;Create binary: &lt;/span&gt;&lt;span class="nv"&gt;$@&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+    @&lt;span class="k"&gt;$(&lt;/span&gt;CC&lt;span class="k"&gt;)&lt;/span&gt; -o main $+ &lt;span class="k"&gt;$(&lt;/span&gt;LDFLAGS&lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="nf"&gt;clean&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    rm -f &lt;span class="k"&gt;$(&lt;/span&gt;OBJDIR&lt;span class="k"&gt;)&lt;/span&gt;/* main
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When this is achieved, then you have a quite clean binary when it comes to
+dependencies. In the example code in &lt;code&gt;simple_libcurl&lt;/code&gt; I now have these
+dependencies on a machine running Debian (Lenny).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ldd main
+    linux-vdso.so.1 &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt;  &lt;span class="o"&gt;(&lt;/span&gt;0x00007f157db66000&lt;span class="o"&gt;)&lt;/span&gt;
+    libc.so.6 &lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; /lib/libc.so.6 &lt;span class="o"&gt;(&lt;/span&gt;0x00007f157d5f9000&lt;span class="o"&gt;)&lt;/span&gt;
+    /lib64/ld-linux-x86-64.so.2 &lt;span class="o"&gt;(&lt;/span&gt;0x00007f157d94c000&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Have fun with libcurl!&lt;/p&gt;</content></entry><entry><title>My coming iPhone application</title><link href="/blog/2010/04/25/my-coming-iphone-application/" rel="alternate"></link><published>2010-04-25T00:11:17+02:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:None,2010-04-25:/blog/2010/04/25/my-coming-iphone-application/</id><summary type="html">&lt;p&gt;I just want to show an early screenshot of my coming iPhone application that
+I'm currently is writing. I do not want to say to much about what purpose it
+should fulfill, but it's kind of a maths / algorithm / practice application.
+Below is screenshot of how it (most likely) will look.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="iPhone" src="/images/iphonebd/bd_preview.jpg" align="left"&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;I just want to show an early screenshot of my coming iPhone application that
+I'm currently is writing. I do not want to say to much about what purpose it
+should fulfill, but it's kind of a maths / algorithm / practice application.
+Below is screenshot of how it (most likely) will look.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="iPhone" src="/images/iphonebd/bd_preview.jpg" align="left"&gt;&lt;/p&gt;</content></entry><entry><title>What about Total Commander?</title><link href="/blog/2010/03/12/what-about-total-commander/" rel="alternate"></link><published>2010-03-12T06:26:00+01:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:None,2010-03-12:/blog/2010/03/12/what-about-total-commander/</id><summary type="html">&lt;p&gt;&lt;img alt="Total Commander logo" src="/images/logo_tc.jpg" align="right"&gt;
+As my first post on my new site I'll start by talking about Total Commander. I
+have been using this wonderful tools since I think I got my first PC. Back then
+it was called Windows Commander. So what is it that makes this tool so
+wonderful?&lt;/p&gt;
+&lt;p&gt;Well, if you just install it and start it you maybe won't be that
+impressed. It has a quite old and perhaps boring look. But, if I can choose
+between good looking tool …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;img alt="Total Commander logo" src="/images/logo_tc.jpg" align="right"&gt;
+As my first post on my new site I'll start by talking about Total Commander. I
+have been using this wonderful tools since I think I got my first PC. Back then
+it was called Windows Commander. So what is it that makes this tool so
+wonderful?&lt;/p&gt;
+&lt;p&gt;Well, if you just install it and start it you maybe won't be that
+impressed. It has a quite old and perhaps boring look. But, if I can choose
+between good looking tool without any features (Windows Explorer) and a not so
+good looking tool with almost any features you can think of that is needed or
+could be nice to have when it comes to file handling on a computer. Then I
+choose the latter one. Which, in this case is Total Commander.&lt;/p&gt;
+&lt;p&gt;So, what do you normally do with your files on your computer? For a normal user
+you open files and maybe move files. That might be it for a big part of the
+population. But if you are a slightly more advanced user? Then you might need to
+duplicate files, pack/unpack files. You maybe want to filter the files so you
+only will see files matching a certain pattern. You maybe want to synchronize
+your files on a backup drive? Want to syntax hi-light files with certain name?
+Copy file names with or without full path to clipboard? All of this and much
+more you can do with Total Commander and as a good bonus there are quite easy
+keyboard shortcuts for doing that. So you don't have to move one of you hands
+between the keyboard and the mouse all the time.&lt;/p&gt;
+&lt;h1&gt;The look&lt;/h1&gt;
+&lt;p&gt;Total Commander is composed as one main window with a split pane. First time I
+saw this was back in time when Amiga 500 was a popular computer. I'm thinking of
+the file manager &lt;a href="http://en.wikipedia.org/wiki/Directory_Opus"&gt;Directory Opus&lt;/a&gt;.
+Is this a good or a bad thing? Well, since it still exists and seems to be quite
+popular among people that have some higher demand on file exploring tool than
+the average user have, then I think we can say, yes it's a good thing. To be
+honest it's actually very good. You have two panes open all the time within the
+same program, so you can very easy move, copy files etc. Since quite some time
+ago Total Commander also supports tabs. Hence you can have multiple tabs for
+both panes. You jump between the panes by simply pressing TAB and you jump
+between tabs in the panes by pressing &lt;code&gt;CTRL + TAB&lt;/code&gt;.&lt;/p&gt;
+&lt;h1&gt;Renaming on steroids&lt;/h1&gt;
+&lt;p&gt;There's something called Multi-Rename Tool in Total Commander which is quite
+handy. It can rename a lot of files for you in very few clicks. Imagine you have
+a folder with following files:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    a_foo.zip
+    b_foo.zip
+    c_foo.zip
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now you want to rename those to:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    01_a.zip
+    02_b.zip
+    03_c.zip
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In Total Commander you simply mark the files and press &lt;code&gt;CTRL + M&lt;/code&gt; and the
+Multi-Rename Tool will launch. In this particular example you prepend the
+&lt;code&gt;Rename mask: file name&lt;/code&gt; with &lt;code&gt;01_&lt;/code&gt; and in the &lt;code&gt;Search &amp;amp; Replace&lt;/code&gt; you write
+&lt;code&gt;\_foo&lt;/code&gt; in the &lt;code&gt;Search For&lt;/code&gt;, like shown in the screenshot below.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Total Commander multi rename tool" src="/images/tc_multi_rename_tool.png" align="center"&gt;&lt;/p&gt;
+&lt;p&gt;You can just imagine how helpful this is when you are renaming a couple of
+hundred jpg files snapped with your digital camera where you often have quite
+cryptic naming as default.&lt;/p&gt;
+&lt;h1&gt;Shortcuts and some more features&lt;/h1&gt;
+&lt;p&gt;I could explain a bunch of features like the Multi-Rename Tool in detail. But
+some features are very simple to use, so I list a couple of my daily things I do
+using Total Commander.&lt;/p&gt;
+&lt;p&gt;Let's say you have &lt;code&gt;c:\a&lt;/code&gt; in the left pane and &lt;code&gt;c:\b&lt;/code&gt; in the right pane.&lt;/p&gt;
+&lt;p&gt;Mark files? Use &lt;code&gt;space&lt;/code&gt; or &lt;code&gt;SHIFT + PgUp/PgDown&lt;/code&gt; or &lt;code&gt;CTRL + plus&lt;/code&gt; or simply
+press plus and make a filter out the files.&lt;/p&gt;
+&lt;p&gt;Want to move files from folder &lt;code&gt;a&lt;/code&gt; to &lt;code&gt;b&lt;/code&gt;? Mark the files you want to move and
+press &lt;code&gt;F6&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Rename a file? &lt;code&gt;SHIFT + F6&lt;/code&gt;. This is a bit odd, since most other program have
+&lt;code&gt;F2&lt;/code&gt; as rename button.&lt;/p&gt;
+&lt;p&gt;Pack files? Mark the files, &lt;code&gt;ALT + F5&lt;/code&gt;, then &lt;code&gt;ENTER&lt;/code&gt;. Files are now packed and
+put into the folder on the other pane.&lt;/p&gt;
+&lt;p&gt;Unpack files? Mark the files, &lt;code&gt;ALT + F9&lt;/code&gt; then &lt;code&gt;ENTER&lt;/code&gt;. Files are unpacked to
+the other pane.&lt;/p&gt;
+&lt;p&gt;Browse packed files? Simply press &lt;code&gt;ENTER&lt;/code&gt; on a zip file for example and you will
+see the content immediately without unpacking it. Very useful! Note that you can
+copy single files when in this state. This is also very useful.&lt;/p&gt;
+&lt;p&gt;Find files? &lt;code&gt;Alt + F7&lt;/code&gt;, then just search. Note the &lt;code&gt;Search subdirectories&lt;/code&gt; which
+is very useful of you have a big project with a lot of subfolder but you know
+that the file you are searching is not that deep down into the folder structure.
+Then you use this to select how many subdirectories you want to traverse. Very
+useful, especially in combination with the &lt;code&gt;Find text&lt;/code&gt; in the same window.&lt;/p&gt;
+&lt;p&gt;Go to folders that you have been in? Press &lt;code&gt;ALT + down&lt;/code&gt; and you get a neat list
+for the last ~30 folders you have been in. Note that this is unique for the
+pane. I.e. one for the left pane and one for the right pane.&lt;/p&gt;
+&lt;p&gt;Run a command? Just type it and press &lt;code&gt;ENTER&lt;/code&gt;. For example I want command
+prompt. I simply type &lt;code&gt;cmd&lt;/code&gt; then press enter. Voila I get a command prompt
+which have the path same to my current folder in my pane.&lt;/p&gt;
+&lt;p&gt;Mark a folder as favorite? Press &lt;code&gt;CTRL + d&lt;/code&gt; then &lt;code&gt;a&lt;/code&gt;. Type any name you like to
+refer to this folder.&lt;/p&gt;
+&lt;p&gt;Go to a favorite folder? Press &lt;code&gt;CTRL + d&lt;/code&gt; and select your favorite folder.&lt;/p&gt;
+&lt;p&gt;Do a mouse right click? Press &lt;code&gt;SHIFT + F10&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;View content of a file? Press &lt;code&gt;F3&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Edit a file? Press &lt;code&gt;F4&lt;/code&gt;.&lt;/p&gt;
+&lt;h1&gt;Should you buy Total Commander?&lt;/h1&gt;
+&lt;p&gt;Well, at least download it asap and start using it. If you just want to try it,
+you will only get one(!) nag screen when starting the program. Then you can
+leave it running for hours, days, weeks, years with full functionality and no
+more nag screens. But, when you notice that you cannot really live without this
+tool, then I think you should register the program. Christian Ghisler (the
+author) deserves money for this great tool and he has given free updates since I
+registered it, which was quite long time ago. As the headline says, I think
+Microsoft should buy this tool/company and replace Windows Explorer with Total
+Commander. Thanks!&lt;/p&gt;
+&lt;p&gt;Link to the official site: http://www.ghisler.com&lt;/p&gt;</content></entry></feed>

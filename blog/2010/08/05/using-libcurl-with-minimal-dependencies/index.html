@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Using libcurl with minimal dependencies</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="joakimbech.com Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">joakimbech.com </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/pages/about.html">About</a></li>
+    
+                        <li><a href="/pages/projects.html">Projects</a></li>
+                </ul>
+                </nav>
+<div id="submenu">
+                    <ul>
+                            <li class="active"><a href="/category/coding.html">Coding</a></li>
+                            <li><a href="/category/git.html">Git</a></li>
+                            <li><a href="/category/hacking.html">Hacking</a></li>
+                            <li><a href="/category/tools.html">Tools</a></li>
+                            <li><a href="/category/woodworking.html">Woodworking</a></li>
+                    </ul>
+                <div>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/blog/2010/08/05/using-libcurl-with-minimal-dependencies/" rel="bookmark"
+           title="Permalink to Using libcurl with minimal dependencies">Using libcurl with minimal dependencies</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 05 August 2010</span>
+        	<span>| by <a class="url fn" href="/author/joakim-bech.html">Joakim Bech</a></span>
+	        <span>| in <a href="/category/coding.html">Coding</a></span>
+
+</footer><!-- /.post-info -->      <p><img alt="LibCURL logo" src="/images/libcurldep/logo_curl-200x150.jpg" align="right">
+For an ongoing project I needed to retrieve webpages from my C-program and
+first I used sockets directly, but then I thought why not try use libcurl? If I
+could use libcurl and link it statically then I would get the good features
+from libcurl, but still could make my application stand alone.</p>
+<p>With my current setup running Debian (Lenny), I tried to just apt-get the libraries
+(<code>libcurl4-openssl-dev</code>) and build using those libraries That went fine until I
+tried to link them statically with my application. After reading different mail
+archives, forum and tried on my own I got my application to link (static) with
+libcurl. Basically what I needed to do was.</p>
+<ul>
+<li>Download libcurl source</li>
+<li>Compile libcurl myself (disable one define, more about that below).</li>
+<li>Point to my own built libcurl.a library when building my own application.</li>
+</ul>
+<p>So to save some headache for myself next time I want to do it or for someone
+else reading this I've listed the steps I had to do to get this to work.</p>
+<h1>Download libcurl source</h1>
+<p>As of writing this, the latest version of libcurl was 7.21.0 so I downloaded
+and unpacked the source.</p>
+<div class="highlight"><pre><span></span>wget http://curl.haxx.se/download/curl-7.21.0.tar.bz2
+tar xjvf curl-7.21.0.tar.bz2
+<span class="o">{</span>% endcodeblock %<span class="o">}</span>
+</pre></div>
+
+
+<h1>Compile libcurl</h1>
+<p>Next it was time to run <code>./configure</code> and <code>make</code>. Here I basically disabled
+everything for libcurl except <code>HTTP</code> and <code>FILE</code>.</p>
+<div class="highlight"><pre><span></span>./configure --prefix<span class="o">=</span><span class="nv">$HOME</span>/devel/libcurl --disable-dict --disable-ftp --disable-imap --disable-ldap --disable-ldaps --disable-pop3 --disable-proxy --disable-rtsp --disable-shared --disable-smtp --disable-telnet --disable-tftp --disable-zlib --without-ca-bundle --without-gnutls --without-libidn --without-librtmp --without-libssh2 --without-nss --without-ssl --without-zlib
+</pre></div>
+
+
+<p>Edit the file <code>lib/curl_config.h</code> which is generated during the configure step.
+In this file we uncomment the line saying</p>
+<div class="highlight"><pre><span></span>/* Define to <span class="m">1</span> <span class="k">if</span> you have the clock_gettime <span class="k">function</span> and monotonic timer. */
+//#define HAVE_CLOCK_GETTIME_MONOTONIC <span class="m">1</span>
+</pre></div>
+
+
+<p>If I didn't do this, then I would have a dependency to <code>librt</code> which I didn't want to.</p>
+<div class="highlight"><pre><span></span>make
+make install
+</pre></div>
+
+
+<p>Now I was done with libcurl, next I should use this library in my application.</p>
+<h1>Build the application using libcurl</h1>
+<p>To make things simple when describing this I instead use the file
+<a href="http://curl.haxx.se/libcurl/c/simple.html">simple.c</a>
+which is found on <a href="http://curl.haxx.se/libcurl">libcurl's</a> site.</p>
+<p>In <a href="/downloads/libcurldep/simple_libcurl.tar.gz">simple_libcurl.tar.gz</a> I've
+put together the source and a Makefile which builds using the library just
+created. The magic is the <code>LDFLAGS</code> line used in the linking step on line 12
+and 24 below. I.e. on line 12 I had have to point the folder where the
+library is located that I had built myself (<code>-L/path/to/my/libcurl.a</code>) and I
+still needed to tell the linker that I wanted to use libcurl, hence the
+<code>-lcurl</code> parameter.</p>
+<div class="highlight"><pre><span></span><span class="nv">SRCDIR</span>  <span class="o">:=</span> src
+<span class="nv">OBJDIR</span>  <span class="o">:=</span> obj
+<span class="nv">SRC</span>     <span class="o">:=</span> <span class="k">$(</span>patsubst <span class="k">$(</span>SRCDIR<span class="k">)</span>/%.c, %.c, <span class="k">$(</span>wildcard <span class="k">$(</span>SRCDIR<span class="k">)</span>/*.c<span class="k">))</span>
+<span class="nv">OBJS</span>    <span class="o">:=</span> <span class="k">$(</span>addprefix <span class="k">$(</span>OBJDIR<span class="k">)</span>/, <span class="k">$(</span>patsubst %.c, %.o, <span class="k">$(</span>SRC<span class="k">)))</span>
+
+<span class="nv">INCDIR</span>  <span class="o">:=</span> inc
+
+<span class="nv">CC</span>      <span class="o">:=</span> gcc
+<span class="nv">CFLAGS</span>  <span class="o">+=</span> <span class="k">$(</span>addprefix -I, <span class="k">$(</span>INCDIR<span class="k">))</span>
+<span class="nv">CFLAGS</span>  <span class="o">+=</span> -I/home/jyx/devel/libcurl/include
+
+<span class="nv">LDFLAGS</span> <span class="o">:=</span> -L/home/jyx/devel/libcurl/lib -lcurl
+
+<span class="nf">.PHONY </span><span class="o">:</span> <span class="n">all</span> <span class="n">clean</span>
+
+<span class="nf">all</span><span class="o">:</span> <span class="n">main</span>
+
+<span class="nf">$(OBJDIR)/%.o</span><span class="o">:</span> <span class="k">$(</span><span class="nv">SRCDIR</span><span class="k">)</span>/%.<span class="n">c</span>
+    @echo <span class="s2">&quot; (CC)    </span>$<span class="s2">&lt;&quot;</span>
+    @<span class="k">$(</span>CC<span class="k">)</span> <span class="k">$(</span>CFLAGS<span class="k">)</span> -c $&lt; -o <span class="nv">$@</span>
+
+<span class="nf">main</span><span class="o">:</span> <span class="k">$(</span><span class="nv">OBJS</span><span class="k">)</span>
+    @echo <span class="s2">&quot;Create binary: </span><span class="nv">$@</span><span class="s2">&quot;</span>
+    @<span class="k">$(</span>CC<span class="k">)</span> -o main $+ <span class="k">$(</span>LDFLAGS<span class="k">)</span>
+
+<span class="nf">clean</span><span class="o">:</span>
+    rm -f <span class="k">$(</span>OBJDIR<span class="k">)</span>/* main
+</pre></div>
+
+
+<p>When this is achieved, then you have a quite clean binary when it comes to
+dependencies. In the example code in <code>simple_libcurl</code> I now have these
+dependencies on a machine running Debian (Lenny).</p>
+<div class="highlight"><pre><span></span>$ ldd main
+    linux-vdso.so.1 <span class="o">=</span>&gt;  <span class="o">(</span>0x00007f157db66000<span class="o">)</span>
+    libc.so.6 <span class="o">=</span>&gt; /lib/libc.so.6 <span class="o">(</span>0x00007f157d5f9000<span class="o">)</span>
+    /lib64/ld-linux-x86-64.so.2 <span class="o">(</span>0x00007f157d94c000<span class="o">)</span>
+</pre></div>
+
+
+<p>Have fun with libcurl!</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com">Pelican</a></li>
+                            <li><a href="https://linaro.org">Linaro</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="https://www.linkedin.com/in/jbech">linkedin</a></li>
+                            <li><a href="https://github.com/jbech-linaro">github</a></li>
+                            <li><a href="https://twitter.com/Jyxxan">twitter</a></li>
+                            <li><a href="https://www.facebook.com/Jyxxan">facebook</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

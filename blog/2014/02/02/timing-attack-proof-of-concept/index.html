@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Timing Attack - Proof of Concept</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="joakimbech.com Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">joakimbech.com </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/pages/about.html">About</a></li>
+    
+                        <li><a href="/pages/projects.html">Projects</a></li>
+                </ul>
+                </nav>
+<div id="submenu">
+                    <ul>
+                            <li><a href="/category/coding.html">Coding</a></li>
+                            <li><a href="/category/git.html">Git</a></li>
+                            <li class="active"><a href="/category/hacking.html">Hacking</a></li>
+                            <li><a href="/category/tools.html">Tools</a></li>
+                            <li><a href="/category/woodworking.html">Woodworking</a></li>
+                    </ul>
+                <div>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/blog/2014/02/02/timing-attack-proof-of-concept/" rel="bookmark"
+           title="Permalink to Timing Attack - Proof of Concept">Timing Attack - Proof of Concept</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 02 February 2014</span>
+        	<span>| by <a class="url fn" href="/author/joakim-bech.html">Joakim Bech</a></span>
+	        <span>| in <a href="/category/hacking.html">Hacking</a></span>
+
+</footer><!-- /.post-info -->      <p>You might have heard about timing attacks, but either thought it sounded
+too complicated to understand or that it is too complicated to actually do such
+an attack. In this post I'm going to give a brief overview of a timing attack
+and also provide some example code that you can play with on your own. Hopefully
+after reading this post you will understand that you cannot neglect this if you
+are creating a system where security is needed.</p>
+<h1>What is a timing attack</h1>
+<p>A <a href="http://en.wikipedia.org/wiki/Timing_attack">timing attack</a> is a so called
+<a href="http://en.wikipedia.org/wiki/Side_channel_attack">side channel attack</a>
+where you analyze the timing information on a system is such a way that it
+allows to break the protection of the system or a program running on it.</p>
+<h1>How is a timing attack performed?</h1>
+<p>Typically you need to measure the amount of time needed to do operations of some
+kind. You can do this in several ways, for example you could hook up a set of
+probes on a chip or a PCB and watch the result on an oscilloscope or a logical
+analyzer. Another option is to simply leverage features from the
+CPU/architecture itself. On a normal PC running Intel (or AMD) you can use the
+time stamp counter <a href="http://en.wikipedia.org/wiki/Time_Stamp_Counter">rdtsc</a>
+or a High Precision Event Timer
+<a href="http://en.wikipedia.org/wiki/High_Precision_Event_Timer">hpet</a>. Be aware that
+the time stamp counter isn't reliable any longer, since process speeds can
+change (due to power management), you have context switches etc. But just for
+testing it can be good enough.</p>
+<p>So you have found a way of taking time measures, what next? The easy answer is,
+start measure the execution time of sensitive functions. For example when
+calling functions that verifies password, functions that does encryption and
+such. Measuring the time needed for <code>strcmp</code> as exemplified in the proof of
+concept code below is easy. It becomes more complicated if you want to do the
+same when doing
+<a href="http://en.wikipedia.org/wiki/Advanced_Encryption_Standard#Side-channel_attacks">AES</a>
+encryption for example. It is still doable, but you also need to know the
+algorithm to know where to look and how to interpret the leaked information.</p>
+<h1>Countermeasures</h1>
+<p>Main idea is that you need balance the string compare functions so that it
+always takes the same amount of time to perform.</p>
+<h1>Proof of concept</h1>
+<p>I have put together a small proof of concept / testing program to show that it
+is actually not that complicated to do a timing attack. It is unlikely that it
+is as easy as this, but still, it gives the idea and shows that you can
+actually use timing to guess password, guesses that are fairly good. The main
+idea is to show how execution time actually varies when doing string
+comparison. The by using this information leakage we show that we can guess
+pretty good what we believe the correct character is in the correct
+password/string.</p>
+<h1>The algorithm</h1>
+<ol>
+<li>
+<p>Loop over all characters, one by one in the string that we want to check
+   (<code>thisisalongstring</code> in this case).</p>
+</li>
+<li>
+<p>For every character in the string, do an inner loop, where you are looping
+   from <code>'a'</code> to <code>'z'</code>. For every call to the string comparison function record
+   the amount of time it took. The letter that had longest execution time is
+   most likely the correct character. Hence save that character in the in the
+   array that contains guessed character.</p>
+</li>
+<li>
+<p>Lastly compare the correct string with guessed string to see if we got all
+   timing based guesses correct or not.</p>
+</li>
+</ol>
+<h2>Results</h2>
+<p>Here are the test result of a test run with debug information enabled</p>
+<div class="highlight"><pre><span></span>$ make <span class="nv">DEBUG</span><span class="o">=</span><span class="m">1</span>
+$ ./main <span class="m">10</span>
+Shows a couple of examples of the <span class="nb">time</span> it takes to make string comparison
+avg <span class="nb">time</span> long string <span class="o">(</span>thisisalongstring<span class="o">)</span>: <span class="m">821</span>
+avg <span class="nb">time</span> short string <span class="o">(</span>foo<span class="o">)</span>: <span class="m">532</span>
+avg <span class="nb">time</span> <span class="m">0</span> char correct <span class="o">(</span>XXX/foo<span class="o">)</span>: <span class="m">486</span>
+avg <span class="nb">time</span> <span class="m">1</span> char correct <span class="o">(</span>fXX/foo<span class="o">)</span>: <span class="m">495</span>
+avg <span class="nb">time</span> <span class="m">2</span> char correct <span class="o">(</span>foX/foo<span class="o">)</span>: <span class="m">540</span>
+avg <span class="nb">time</span> <span class="m">3</span> char correct <span class="o">(</span>foo/foo<span class="o">)</span>: <span class="m">561</span>
+Guessed that pw should be: thisisalongshring
+Guessed that pw should be: thisisalongstring
+Guessed that pw should be: thisisalongstring
+Guessed that pw should be: thhbisalongstring
+Guessed that pw should be: thisisalongstring
+Guessed that pw should be: thisisalongstring
+Guessed that pw should be: thisisalongstring
+Guessed that pw should be: thisisalongstring
+Guessed that pw should be: thisimalongstrimf
+Guessed that pw should be: thisisalongstrhng
+<span class="m">6</span> successful timing attacks
+</pre></div>
+
+
+<p>The figures will vary, but they are almost always in the same region. Looking
+at:</p>
+<p><strong>Line 3</strong>: we can see that it takes <code>821</code> time units for a full and correct string
+compare of the string <code>thisisalongstring</code>.</p>
+<p><strong>Line 4</strong>: we can see that it takes <code>532</code> time units to correctly match the
+string <code>foo</code>.</p>
+<p><strong>Line 5-8</strong>: for every test run, we add a correct matching character and as
+expected we can see that the time increases for every correct character. This
+is because the string compare function as said before has a timing linear to
+the correct number of characters.</p>
+<p><strong>Line 9-19</strong>: shows the result when trying to guess the string
+<code>thisisalongstring</code> based on the time it takes to guess <code>'a'</code>, <code>'b'</code>, <code>'c'</code>,
+... <code>'z'</code>, for every character. This particular run we guessed correct 6 out or
+10 times. Not that bad, it takes roughly 0.002 seconds to run everything above.
+According to Steve Gibson's <a href="https://www.grc.com/haystack.htm">Password Haystack</a>
+page, it takes approximately 3.75 centuries to brute force that password
+<strong>once</strong> using a what he calls a "massive cracking array scenario (assuming one
+hundred trillion guesses per second)".</p>
+<h1>A couple of interesting things I've noticed</h1>
+<ul>
+<li>If I increase the <code>TEST_LOOPS</code> define I actually get much worse result?</li>
+<li>If I turn on all optimizations, i.e. <code>-O3</code>, it doesn't work at all.</li>
+<li>The last character was always incorrectly guessed and that is the reason why
+  I've added a space at the end of the string '<code>thisisalongstring</code>', which I
+  later on strip away. I believe the reason for this problem is inaccuracy
+  using <code>rdtsc</code>.</li>
+</ul>
+<p>If any reader of this post knows the answer to my reflections above, please
+leave a comment.</p>
+<h1>Source code</h1>
+<ul>
+<li><a href="/downloads/timing/time_attack_strcmp.c">time_attack_strcmp.c</a></li>
+<li><a href="/downloads/timing/Makefile">Makefile</a></li>
+</ul>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com">Pelican</a></li>
+                            <li><a href="https://linaro.org">Linaro</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="https://www.linkedin.com/in/jbech">linkedin</a></li>
+                            <li><a href="https://github.com/jbech-linaro">github</a></li>
+                            <li><a href="https://twitter.com/Jyxxan">twitter</a></li>
+                            <li><a href="https://www.facebook.com/Jyxxan">facebook</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

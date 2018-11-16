@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>ATschjoo</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+        <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="joakimbech.com Atom Feed" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">joakimbech.com </a></h1>
+                <nav><ul>
+    
+                        <li><a href="/pages/about.html">About</a></li>
+    
+                        <li><a href="/pages/projects.html">Projects</a></li>
+                </ul>
+                </nav>
+<div id="submenu">
+                    <ul>
+                            <li><a href="/category/coding.html">Coding</a></li>
+                            <li><a href="/category/git.html">Git</a></li>
+                            <li><a href="/category/hacking.html">Hacking</a></li>
+                            <li><a href="/category/tools.html">Tools</a></li>
+                            <li><a href="/category/woodworking.html">Woodworking</a></li>
+                    </ul>
+                <div>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+    <h1 class="entry-title">ATschjoo</h1>
+    
+    <p>During my ~2.5 years at Sony Ericsson I worked most of the time with AT
+commands. You maybe remember those commands from late -80 / early -90? You
+could change baud rate, etc etc on your 9600, 14.4 28.8 modem. Could anybody
+still use these? Oh yes, the AT commands are still used a lot in mobile phones.
+In principle you could achieve the same things using AT commands as you could
+do by sitting and holding the phone in your hand (actually when thinking I
+believe that you can do more).</p>
+<p>Accessories use AT commands a lot, for example portable handsfree and a lot of
+other gadgets that you can connect to your phone in any way, cable, Bluetooth,
+IrDA.</p>
+<p>So what is ATschjoo? As you probably understand it has something to do with AT
+commands. It’s a tool where the user can send AT commands and receive the
+response from them. Think of it like the
+<a href="http://www.hilgraeve.com/hyperterminal.html">hyperterminal</a> that has been
+shipped with all Windows versions (except Windows 7), but this is a little bit
+more useful. It’s actually one of the reasons why I wrote this. Most of the
+people at work seemed to use hyperterminal. But I got tired of copy pasting or
+writing AT commands a zillion times.</p>
+<p>Unfortunately usual I didn’t got any spare time on work to code something like
+this, so I had to do it on my spare time at home and therefore it’s only half
+finished as many of my projects (I always have many projects and ideas). But
+still it was working quite good and according to people I know at Sony Ericsson
+it is still in use there.</p>
+<h2>Features?</h2>
+<p>Finished features are:</p>
+<ul>
+<li>A drop down with available COM-ports – This might sound silly, but a lot of
+  terminal programs out there shows only <code>COM1</code> to <code>COM4</code>. Some shows a big
+  list of a big range and so on. ATschjoo shows only the available ports.</li>
+<li>Auto complete list – In ATschjoo you can store commands in a file
+ (autocomplete.txt) which would be used in auto-completion when typing commands.
+  This list can also be used to populate the command window.</li>
+<li>Character counter – When you want to test limits you want to now how many
+  character you send. Nothing fancy, but very handy.</li>
+<li>Loop mode – When you want to test a bunch of AT commands over and over you
+  can tick a check box so the command you have entered will be called one by one
+  over and over again.</li>
+<li>Delay – You can set the delay between the commands sent.</li>
+</ul>
+<p>Planned features were:</p>
+<ul>
+<li>Logging window – A window where you could log traffic on another port.</li>
+<li>Syntax highlight support – The idea was that you should be able to setup
+  syntax highlighting based on regular expressions, so that you could filter out
+  response messages easily.</li>
+<li>Integrate it to the phone emulator at work – Since I did all development on
+  ATschjoo at home I couldn’t really test this, therefore this feature was put
+  into a sealed box.</li>
+</ul>
+<h2>Screenshots</h2>
+<p>The first version looked like this.</p>
+<p><img alt="ATschjoo first version" src="/images/atschjoo/atschjoo_old.png" width="760"></p>
+<p>And the last version I did looked like this:</p>
+<p><img alt="ATschjoo current version" src="/images/atschjoo/atschjoo.png" width="760"></p>
+<h2>Further work on ATschjoo?</h2>
+<p>Do I plan to do more work on ATschjoo? No I don’t. Sure there is a need for a
+program like this, but doing terminal program isn’t high up in my prio list for
+the moment. But! if you are a programmer and want to make some money then start
+code something like this. There isn’t many good tools for this out there and
+demonstrate it for companies. Don’t think that they have much better in-house
+tools. That is not the case most of the time I guess.</p>
+<h2>Language: C# (using .NET framework 2.0)</h2>
+<p>Status: Main features is working, but there are still quite much to do to get
+this in a good shape. I remeber that there was some bug that caused the program
+to hang if you didn’t disconnect before remove the USB cable for example.</p>
+<h2>Binaries:</h2>
+<ul>
+<li><a href="/downloads/atschjoo/ATschjoo.exe">ATschjoo</a> (SHA1: 391285b7c0b24f752573b1fb93cde62a39766c4d)</li>
+<li><a href="/downloads/atschjoo/ATschjoo_old1.exe">(oldest)</a> (SHA1: 9e97d13349855024b9ce38b43680956be646ae94)</li>
+</ul>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com">Pelican</a></li>
+                            <li><a href="https://linaro.org">Linaro</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="https://www.linkedin.com/in/jbech">linkedin</a></li>
+                            <li><a href="https://github.com/jbech-linaro">github</a></li>
+                            <li><a href="https://twitter.com/Jyxxan">twitter</a></li>
+                            <li><a href="https://www.facebook.com/Jyxxan">facebook</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
