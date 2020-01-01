@@ -1,5 +1,355 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>joakimbech.com - Hacking</title><link href="https://jyx.github.io/" rel="alternate"></link><link href="https://jyx.github.io/feeds/hacking.atom.xml" rel="self"></link><id>https://jyx.github.io/</id><updated>2018-08-19T00:00:00+02:00</updated><entry><title>Sibylla - Unlimited discount coupons</title><link href="https://jyx.github.io/blog/2018/08/19/sibylla-unlimited-discount-coupons/" rel="alternate"></link><published>2018-08-19T00:00:00+02:00</published><updated>2018-08-19T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2018-08-19:/blog/2018/08/19/sibylla-unlimited-discount-coupons/</id><summary type="html">&lt;h1&gt;tl;dr&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>joakimbech.com - Hacking</title><link href="https://jyx.github.io/" rel="alternate"></link><link href="https://jyx.github.io/feeds/hacking.atom.xml" rel="self"></link><id>https://jyx.github.io/</id><updated>2020-01-02T12:01:00+01:00</updated><entry><title>Alert Alarm SMS exploit - English version</title><link href="https://jyx.github.io/alert-alarm-exploit.html" rel="alternate"></link><published>2020-01-02T12:01:00+01:00</published><updated>2020-01-02T12:01:00+01:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2020-01-02:/alert-alarm-exploit.html</id><summary type="html">&lt;p&gt;For Swedish translation of the article please go &lt;a class="reference external" href="alert-alarm-exploit-se.html"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="section" id="tl-dr"&gt;
+&lt;h2&gt;tl;dr;&lt;/h2&gt;
+&lt;p&gt;For less tech savvy people or people just bored about all the details, this
+tl;dr; and the &lt;a class="reference internal" href="#summary"&gt;summary&lt;/a&gt; section at the end should be enough to read to get an
+understanding of the issues.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;As of today, 2020-01-02, the issues presented here still haven't been fixed
+even though initial report date was July 3rd 2019.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.alertalarm.se"&gt;Alert Alarm&lt;/a&gt; is a Swedish company selling burglar alarms (with various
+possibilities for …&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;For Swedish translation of the article please go &lt;a class="reference external" href="alert-alarm-exploit-se.html"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="section" id="tl-dr"&gt;
+&lt;h2&gt;tl;dr;&lt;/h2&gt;
+&lt;p&gt;For less tech savvy people or people just bored about all the details, this
+tl;dr; and the &lt;a class="reference internal" href="#summary"&gt;summary&lt;/a&gt; section at the end should be enough to read to get an
+understanding of the issues.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;As of today, 2020-01-02, the issues presented here still haven't been fixed
+even though initial report date was July 3rd 2019.&lt;/li&gt;
+&lt;li&gt;&lt;a class="reference external" href="https://www.alertalarm.se"&gt;Alert Alarm&lt;/a&gt; is a Swedish company selling burglar alarms (with various
+possibilities for extensions) to home owners. At one of their pages [&lt;a class="reference external" href="https://www.alertalarm.se/hemlarm/garanti-och-funktion.html#1"&gt;1&lt;/a&gt;],
+they are saying that: &amp;quot;Our burglar alarms for home owners communicate using
+an encrypted channel primarily using GSM and secondarily using SMS&amp;quot;.
+Apparently there is also some collaboration with &lt;a class="reference external" href="https://www.verisure.se/"&gt;Verisure&lt;/a&gt; since the people
+that I've been in contact with after reporting the issue to Alert Alarm are
+coming from Verisure.&lt;/li&gt;
+&lt;li&gt;It all started out one morning in June 2019 when I noticed that when turning
+of the alarm from the App, a SMS was generated where the content was a long
+(hex-)string with random characters. After doing some reverse engineering I
+found out that Alert Alarm have multiple weaknesses in their SMS
+implementation that are used when turning on/off alarms from their Alert Alarm
+app (tested on Android). The weaknesses can be summaries in:&lt;ul&gt;
+&lt;li&gt;Crypto algorithm in use is plain AES-CBC which is &lt;a class="reference external" href="https://en.wikipedia.org/wiki/Malleability_(cryptography)"&gt;malleable&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;No integrity protection of the encrypted messages.&lt;/li&gt;
+&lt;li&gt;Heavily reduced key space, from 128-bits to 9999 keys.&lt;/li&gt;
+&lt;li&gt;Doesn't use any device unique values/properties in the data being sent to
+the Alert Alarm server.&lt;/li&gt;
+&lt;li&gt;No key derivation function in use (KDF).&lt;/li&gt;
+&lt;li&gt;No key exchange protocol in use (like Diffie Hellman for example).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;This makes the security of the implementation very fragile, since all it
+takes for a rouge user is to get hold of a &lt;strong&gt;single&lt;/strong&gt; SMS generated by the
+Alert Alarm app to be able to gain access to someones house. I.e., when the
+attacker got that he can easily figure out the code used to turn on/off the
+burglar alarm. Using free services one can send &lt;a class="reference external" href="https://www.google.com/search?q=send+spoofed+sms&amp;amp;oq=send+spoofed+sms"&gt;spoofed SMS&lt;/a&gt; with manually
+crafted data and then it's just to enter the victims house and no alarm will
+go off. Alternatively a thief can break into the house and just simply enter
+the code to turn off the alarm as the homeowner would do.&lt;/li&gt;
+&lt;li&gt;On this page, one can find examples and a script that can decrypt Alert Alarm
+SMSes and also create valid Alert Alarm SMSes. The script is also capable of
+finding a key using a brute force attack and it's also possible to flip bits
+to change the original intention of the SMS.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="line-block"&gt;
+&lt;div class="line"&gt;&lt;br /&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="observation"&gt;
+&lt;h2&gt;Observation&lt;/h2&gt;
+&lt;p&gt;As mentioned, this caught my attention when I noticed that when turning off an
+active alarm (&lt;tt class="docutils literal"&gt;ARMED_HOME&lt;/tt&gt;) using the Android app, a SMS is created similar to
+this (had to blur parts of it, otherwise anyone could figure out my own code by
+just running the scripts presented here).&lt;/p&gt;
+&lt;div class="align-center figure"&gt;
+&lt;img alt="SMS image" src="/images/alert/aa_initial_sms.png" /&gt;
+&lt;/div&gt;
+&lt;p&gt;After spending the rest of the morning reverse engineering the app I could see
+that the 64 bytes hex string is made up of two parts. The first part is the IV,
+which is a random number (coming from &lt;tt class="docutils literal"&gt;SHA1PRNG&lt;/tt&gt;) and the second part is the
+actual message.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;   32 bytes   32 bytes
++-----------+----------+
+| IV        | Message  |
++-----------+----------+
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;It uses a 128-bit key, however the key used for encryption are made up of
+strings like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;000000000000xxxx
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Where &amp;quot;xxxx&amp;quot; is the pin code that is used to turn on and off the burglar alarm.
+This means the key space is heavily reduced from 128-bits, to only 9999
+combinations instead of 340282366920938463463374607431768211455 combinations as
+it would have been if they had used a proper key!&lt;/p&gt;
+&lt;p&gt;The message it self is encrypted using plain &lt;a class="reference external" href="https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Cipher_Block_Chaining_(CBC)"&gt;AES-CBC&lt;/a&gt;, so no integrity
+protection or anything. What that means is that although the SMS is encrypted
+anyone can still modify it without the receiver noticing that. I'll talk more
+about that further down in the examples about flipping bits (see the section:
+&amp;quot;Flip a bit in the encrypted message&amp;quot;).&lt;/p&gt;
+&lt;div class="line-block"&gt;
+&lt;div class="line"&gt;&lt;br /&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="message-format"&gt;
+&lt;h3&gt;Message format&lt;/h3&gt;
+&lt;p&gt;The format of the decrypted message is as follows:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Bytes:            1   1   1      2       1     2        2        2         2          2   = 16 bytes
+        +-----------+---+---+------+---------+-----+------+--------+---------+----------+
+        |SMS Version| i | j | year | month-1 | day | hour | minute | user id | \x00\x00 |
+        +-----------+---+---+------+---------+-----+------+--------+---------+----------+
+                                      (hex)
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Here &amp;quot;&lt;tt class="docutils literal"&gt;i&lt;/tt&gt;&amp;quot; seems to represent the &amp;quot;&lt;cite&gt;alarm off (0)&lt;/cite&gt;&amp;quot; and &amp;quot;&lt;cite&gt;alarm on (1)&lt;/cite&gt;&amp;quot; and
+&amp;quot;&lt;tt class="docutils literal"&gt;j&lt;/tt&gt;&amp;quot; is probably whether it is &amp;quot;&lt;cite&gt;armed home&lt;/cite&gt;&amp;quot; or &amp;quot;&lt;cite&gt;armed away&lt;/cite&gt;&amp;quot;.&lt;/p&gt;
+&lt;div class="line-block"&gt;
+&lt;div class="line"&gt;&lt;br /&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="script"&gt;
+&lt;h2&gt;Script&lt;/h2&gt;
+&lt;p&gt;On my GitHub page, you'll find a Python script (&lt;a class="reference external" href="https://github.com/Jyx/alert_alarm_xploit/blob/master/aaxploit.py"&gt;aaxploit.py&lt;/a&gt;) that I wrote as
+a proof of concept script. With that script you can generate valid Alert Alarm
+SMSes, brute force SMS to get the code to the burglar alarm and a couple of other
+things that I'll go more into detail separately below. Calling the script with
+no arguments lists all possible parameters. But to make it easier to follow
+along, we've put together a couple of examples below.&lt;/p&gt;
+&lt;div class="line-block"&gt;
+&lt;div class="line"&gt;&lt;br /&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="generate-a-sms-from-scratch"&gt;
+&lt;h3&gt;Generate a SMS from scratch&lt;/h3&gt;
+&lt;p&gt;This creates a valid SMS message (hex string), i.e, a real usable string that
+can be sent as an SMS and that will either turn on or turn off the alarm. &amp;quot;-p&amp;quot;
+here is the code that you want to use. If you own an Alert Alarm system, then
+you can try this, put your own and known code after &amp;quot;-p&amp;quot; and use either &amp;quot;--on&amp;quot;
+or &amp;quot;--off&amp;quot; to arm or disarm the alarm. Then take the crafted SMS and send it as
+an SMS to +467190009972713.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ./aaxploit.py -e -p &lt;span class="m"&gt;1234&lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Msg:              &lt;span class="m"&gt;32303131393630333038343830310000&lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: IV:               d244e98aed6f2dfbf991485e5e43cd56
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Key:              &lt;span class="m"&gt;30303030303030303030303031323334&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;0000000000001234&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Mode: encryption
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Crafted SMS:      d244e98aed6f2dfbf991485e5e43cd56ee184c8e49d04a468eabd14aee04079b
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="line-block"&gt;
+&lt;div class="line"&gt;&lt;br /&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="decrypt-a-sms-from-the-phone"&gt;
+&lt;span id="decrypt-sms"&gt;&lt;/span&gt;&lt;h3&gt;Decrypt a SMS from the phone&lt;/h3&gt;
+&lt;p&gt;As an example, take the crafted SMS from the example above (having that said,
+copy a SMS string from a phone, generated by the Alert Alarm app works just as
+well). In this example we already know the pin code to turn on/off the alarm,
+so we provide that as a parameter.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ./aaxploit.py --input d244e98aed6f2dfbf991485e5e43cd56ee184c8e49d04a468eabd14aee04079b -d -p &lt;span class="m"&gt;1234&lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Original SMS:     d244e98aed6f2dfbf991485e5e43cd56ee184c8e49d04a468eabd14aee04079b
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Msg:              ee184c8e49d04a468eabd14aee04079b
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: IV:               d244e98aed6f2dfbf991485e5e43cd56
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Key:              &lt;span class="m"&gt;30303030303030303030303031323334&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;0000000000001234&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Mode: decryption
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: &lt;span class="p"&gt;|&lt;/span&gt; sms_v &lt;span class="p"&gt;|&lt;/span&gt; i &lt;span class="p"&gt;|&lt;/span&gt; j &lt;span class="p"&gt;|&lt;/span&gt; year &lt;span class="p"&gt;|&lt;/span&gt; month &lt;span class="p"&gt;|&lt;/span&gt; day &lt;span class="p"&gt;|&lt;/span&gt; hour &lt;span class="p"&gt;|&lt;/span&gt; minute &lt;span class="p"&gt;|&lt;/span&gt; user_id &lt;span class="p"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;:       &lt;span class="m"&gt;2&lt;/span&gt;   &lt;span class="m"&gt;0&lt;/span&gt;   &lt;span class="m"&gt;1&lt;/span&gt;     &lt;span class="m"&gt;19&lt;/span&gt;     0x6    &lt;span class="m"&gt;03&lt;/span&gt;     &lt;span class="m"&gt;08&lt;/span&gt;       &lt;span class="m"&gt;48&lt;/span&gt;        &lt;span class="m"&gt;01&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="line-block"&gt;
+&lt;div class="line"&gt;&lt;br /&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="brute-force-an-encrypted-sms"&gt;
+&lt;h3&gt;Brute force an encrypted SMS&lt;/h3&gt;
+&lt;p&gt;Here we pretend that we &lt;strong&gt;don't&lt;/strong&gt; know the key (i.e., the pin code to turn
+on/off the alarm), but we somehow have gotten hold of the encrypted SMS. By
+running the brute force attack we try to find the correct key and pin to turn
+on/off the alarm. Due to the nature of how the message is encoded, this always
+seems to work and since the key space is very small, it finds the key/pin in
+less than a second.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ./aaxploit.py --input d244e98aed6f2dfbf991485e5e43cd56ee184c8e49d04a468eabd14aee04079b -b
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Original SMS:     d244e98aed6f2dfbf991485e5e43cd56ee184c8e49d04a468eabd14aee04079b
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Msg:              ee184c8e49d04a468eabd14aee04079b
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: IV:               d244e98aed6f2dfbf991485e5e43cd56
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Key:              None &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;0000000000000000&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Mode: bruteforce
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: &lt;span class="o"&gt;(&lt;/span&gt;Probably&lt;span class="o"&gt;)&lt;/span&gt; found the correct ...
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;:    encryption key: &lt;span class="m"&gt;30303030303030303030303031323334&lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;:    pin:            &lt;span class="m"&gt;1234&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;As we can see, we found the correct key/pin code! Note that the pin code is the
+same as used on the real physical burglar alarm at the alarm owners house. I.e.,
+if a thief breaks in, he can enter this pin code and the alarm never goes off.&lt;/p&gt;
+&lt;div class="line-block" id="flip-bits"&gt;
+&lt;div class="line"&gt;&lt;br /&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="flip-a-bit-in-the-encrypted-message"&gt;
+&lt;h3&gt;Flip a bit in the encrypted message&lt;/h3&gt;
+&lt;p&gt;Since AES-CBC is &lt;a class="reference external" href="https://en.wikipedia.org/wiki/Malleability_(cryptography)"&gt;malleable&lt;/a&gt;, we can flip a bit in the IV which will be directly
+reflected on the decrypted message. I.e., a man in the middle can use this to
+either change a message from &amp;quot;Turn on alarm&amp;quot; to a &amp;quot;Turn off alarm&amp;quot; or vice
+versa. Notice that here one doesn't even have to decrypt the message, i.e, by
+just taking the original message and flip a bit and use the modified SMS is
+enough to turn off (or turn on) the alarm. In the example below we flip the
+meaning of the &amp;quot;&lt;tt class="docutils literal"&gt;i&lt;/tt&gt;&amp;quot; bit.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ./aaxploit.py --input d244e98aed6f2dfbf991485e5e43cd56ee184c8e49d04a468eabd14aee04079b --flip &lt;span class="m"&gt;112&lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Original SMS:     d244e98aed6f2dfbf991485e5e43cd56ee184c8e49d04a468eabd14aee04079b
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Msg:              ee184c8e49d04a468eabd14aee04079b
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: IV:               d244e98aed6f2dfbf991485e5e43cd56
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Key:              None &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;0000000000000000&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Mode: flip bits
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Modified IV:      d245e98aed6f2dfbf991485e5e43cd56
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Modified SMS:     d245e98aed6f2dfbf991485e5e43cd56ee184c8e49d04a468eabd14aee04079b
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;If we take the &amp;quot;Modified SMS&amp;quot; and decrypt it, we can see that the &amp;quot;i&amp;quot; field has
+been changed (from &amp;quot;0&amp;quot; to &amp;quot;1&amp;quot;, compare with message above, see the section
+&amp;quot;Decrypt a SMS from the phone&amp;quot;).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ./aaxploit.py --input d245e98aed6f2dfbf991485e5e43cd56ee184c8e49d04a468eabd14aee04079b -d -p &lt;span class="m"&gt;1234&lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Original SMS:     d245e98aed6f2dfbf991485e5e43cd56ee184c8e49d04a468eabd14aee04079b
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Msg:              ee184c8e49d04a468eabd14aee04079b
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: IV:               d245e98aed6f2dfbf991485e5e43cd56
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Key:              &lt;span class="m"&gt;30303030303030303030303031323334&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="m"&gt;0000000000001234&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Mode: decryption
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: &lt;span class="p"&gt;|&lt;/span&gt; sms_v &lt;span class="p"&gt;|&lt;/span&gt; i &lt;span class="p"&gt;|&lt;/span&gt; j &lt;span class="p"&gt;|&lt;/span&gt; year &lt;span class="p"&gt;|&lt;/span&gt; month &lt;span class="p"&gt;|&lt;/span&gt; day &lt;span class="p"&gt;|&lt;/span&gt; hour &lt;span class="p"&gt;|&lt;/span&gt; minute &lt;span class="p"&gt;|&lt;/span&gt; user_id &lt;span class="p"&gt;|&lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;:       &lt;span class="m"&gt;2&lt;/span&gt;   &lt;span class="m"&gt;1&lt;/span&gt;   &lt;span class="m"&gt;1&lt;/span&gt;     &lt;span class="m"&gt;19&lt;/span&gt;     0x6    &lt;span class="m"&gt;03&lt;/span&gt;     &lt;span class="m"&gt;08&lt;/span&gt;       &lt;span class="m"&gt;48&lt;/span&gt;        &lt;span class="m"&gt;01&lt;/span&gt;
+                  /&lt;span class="se"&gt;\&lt;/span&gt;
+                  &lt;span class="p"&gt;|&lt;/span&gt;----- changed from &lt;span class="m"&gt;0&lt;/span&gt; to &lt;span class="m"&gt;1&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Note that bit-flipping can be done to anything in the data, i.e., it would
+probably work to trick the system by taking an old valid SMS created by the
+Alert Alarm app and then just flip the date and/or hour bits and resend the
+modified SMS.&lt;/p&gt;
+&lt;div class="line-block"&gt;
+&lt;div class="line"&gt;&lt;br /&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="other-attacks"&gt;
+&lt;h2&gt;Other attacks?&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Is the Alert Alarm solution susceptible to &lt;a class="reference external" href="https://en.wikipedia.org/wiki/Replay_attack"&gt;replay attacks&lt;/a&gt;? Is is possible
+to send the same message more than once?&lt;ul&gt;
+&lt;li&gt;No it's not, sending the same SMS twice makes the main control unit say
+&amp;quot;Fjärrkontroll, felkod 2&amp;quot;. Also by adding for example +1 to minute still
+doesn't work. So, probably Alert Alarm on the server side are checking
+either a hash of all messages coming in and/or simply just check that the
+data in the SMS isn't too old.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Will the Alert Alarm server detect brute force attacks. I.e., can one send
+9999 SMS in a short amount of time and thereby gain access to someones house?&lt;ul&gt;
+&lt;li&gt;I haven't got this confirmed, but it's certainly something one easily could
+try.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="line-block"&gt;
+&lt;div class="line"&gt;&lt;br /&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="open-questions"&gt;
+&lt;h2&gt;Open questions&lt;/h2&gt;
+&lt;p&gt;Why did Alert Alarm decide to use SMS from the app, when there already must be a
+data connection with the app? This means that it probably works something like
+this.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;The SMS is sent to the server.&lt;/li&gt;
+&lt;li&gt;The server decrypts the SMS, checks the parameters, record the action
+and send out a request (using the data connection over GSM) to the home
+owners main unit controlling the alarm.&lt;/li&gt;
+&lt;li&gt;When the alarm has been armed/disarmed, the Android app gets a
+notification of the updated status.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Why on earth use SMS at all? Doesn't all mobile phone / users have a data
+connection in 2019?&lt;/p&gt;
+&lt;div class="line-block"&gt;
+&lt;div class="line"&gt;&lt;br /&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- summary_: --&gt;
+&lt;/div&gt;
+&lt;div class="section" id="contact-with-alert-alarm-verisure"&gt;
+&lt;h2&gt;Contact with Alert Alarm / Verisure&lt;/h2&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;July 3rd 2019&lt;/strong&gt;: I'm reporting to the support page that I want to disclose a
+security issue.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;July 9th 2019&lt;/strong&gt;: Using a private Facebook message to Alert Alarm I once
+again try to say that I have a security issue that I want to report.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;July 10th 2019&lt;/strong&gt;:&lt;ul&gt;
+&lt;li&gt;Alert Alarm responds at Facebook that they've sent my contact details to the
+people developing the app.&lt;/li&gt;
+&lt;li&gt;Verisure's Information Security Manager try to contact me using first phone
+and then email.&lt;/li&gt;
+&lt;li&gt;I send over the report (basically this blog post) together with proof of
+concept scripts.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Augusti 12th 2019&lt;/strong&gt;: Phone meeting with Verisure, I get a status update and
+Verisure mentions that they need more time than standard 90-day disclosure
+time, something that I'm fine with.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;October 2nd 2019&lt;/strong&gt;: I reach out to Verisure asking for an update. Message is that
+they are still working on a solution, testing &amp;quot;something&amp;quot; that should work and
+that they soon will let me know more about it. I also ask about CVE number and
+when we can go public with this. No answer to that.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;November 4th 2019&lt;/strong&gt;: I reach out once again asking for an update.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;November 7th 2019&lt;/strong&gt;: Verisure replies with more or less the same message as
+October 2nd. Again promises to get back to me soon.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;2:nd January 2020&lt;/strong&gt;: I'm cleaning up the write-up and publish all this. The
+reason for doing it today is because today it's half a year ago since I
+initially reported the issues to Alert Alarm. If they would have been serious
+about this, it should all have been fixed by now and they should have
+reconnected better with me.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="line-block"&gt;
+&lt;div class="line"&gt;&lt;br /&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="summary"&gt;
+&lt;h2&gt;Summary&lt;/h2&gt;
+&lt;p&gt;The security of the solution relies on&lt;/p&gt;
+&lt;ol class="arabic simple"&gt;
+&lt;li&gt;the pin code and&lt;/li&gt;
+&lt;li&gt;the SMS senders phone number and&lt;/li&gt;
+&lt;li&gt;that no-one is able to get hold of the SMS sent.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;In fact, one can argue that &lt;strong&gt;the security only relies on &amp;quot;3&amp;quot;&lt;/strong&gt;, since if one
+gets hold of &amp;quot;3&amp;quot;, then it's trivial to figure out &amp;quot;1&amp;quot;, that is basically what
+the script &lt;a class="reference external" href="https://github.com/Jyx/alert_alarm_xploit/blob/master/aaxploit.py"&gt;aaxploit.py&lt;/a&gt; does. &amp;quot;2&amp;quot; on the other hand is typically available
+in phone books etc, i.e., it's usually not hard to figure out the phone numbers
+to the owner of a house.&lt;/p&gt;
+&lt;p&gt;Alert Alarm seems to have tried to &amp;quot;lock&amp;quot; the SMS service to a set of users.
+i.e., the first user have to add additional phone numbers before these people
+can use the app. So at first glance, one might believe that it's only the
+owners of these phone numbers who can send the SMS. But the fact is that there
+are many services out there that allow you to send &lt;a class="reference external" href="https://www.google.com/search?q=send+spoofed+sms&amp;amp;oq=send+spoofed+sms"&gt;spoofed SMS&lt;/a&gt; so it looks
+like they were sent from a certain phone number. I.e., it's totally possible to
+craft a SMS using &lt;a class="reference external" href="https://github.com/Jyx/alert_alarm_xploit/blob/master/aaxploit.py"&gt;aaxploit.py&lt;/a&gt; and then use one of these services to send a
+rouge SMS. I.e., any user can turn off the alarm without the alarm owner knowing
+about it.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Should the owners of this alarm be worried?&lt;/strong&gt; Getting an SMS from the home
+owner is probably a bit challenging, so it's probably a bit hard to actually do
+the attack (don't leave your phone unattended!). On the other hand if Alert
+Alarm &lt;strong&gt;doesn't&lt;/strong&gt; notice brute force attacks on the receiving side of the SMS,
+then it's fairly easy to put this attack into practice.&lt;/p&gt;
+&lt;p&gt;No matter, the flaws identified are quite severe and gives an attacker several
+ways to attack the system. Attacks that shouldn't be possible to do that easy on
+a system meant to protect our homes. Me and the other customers of Alert Alarm
+don't want our burglar alarms to have these kind of weaknesses. Right now it's
+more &lt;a class="reference external" href="https://en.wikipedia.org/wiki/Security_through_obscurity"&gt;Security by Obscurity&lt;/a&gt; than real security.&lt;/p&gt;
+&lt;div class="line-block"&gt;
+&lt;div class="line"&gt;&lt;br /&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="about-me"&gt;
+&lt;h2&gt;About me&lt;/h2&gt;
+&lt;p&gt;I'm Joakim Bech, a guy who has been working with Security on embedded devices
+for the last 12 years. I did the work above on my spare time, but otherwise I
+head the security team at a company called &lt;a class="reference external" href="https://www.linaro.org/"&gt;Linaro&lt;/a&gt; where I've been working for
+a little bit more than 6 years.&lt;/p&gt;
+&lt;/div&gt;
+</content><category term="Hacking"></category></entry><entry><title>Sibylla - Unlimited discount coupons</title><link href="https://jyx.github.io/sibylla-unlimited-discount-coupons.html" rel="alternate"></link><published>2018-08-19T00:00:00+02:00</published><updated>2018-08-19T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2018-08-19:/sibylla-unlimited-discount-coupons.html</id><summary type="html">&lt;h1&gt;tl;dr&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;The Sibylla app uses plain &lt;code&gt;HTTP&lt;/code&gt;.&lt;/li&gt;
 &lt;li&gt;Not any verification of email used when logging into the app.&lt;/li&gt;
@@ -120,25 +470,25 @@ caught my attention here.&lt;/p&gt;
 &lt;p&gt;I decompiled the apk-file (using zip,
 &lt;a href="https://github.com/pxb1988/dex2jar"&gt;dex2jar&lt;/a&gt; and &lt;a href="http://jd.benow.ca"&gt;jd-gui&lt;/a&gt;)
 and then looked up the keyword &lt;code&gt;consumeCoupon&lt;/code&gt;, which revealed:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;UsedDealResponse&lt;/span&gt; &lt;span class="nf"&gt;loadDataFromNetwork&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="kd"&gt;throws&lt;/span&gt; &lt;span class="n"&gt;Exception&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
-        &lt;span class="n"&gt;Builder&lt;/span&gt; &lt;span class="n"&gt;campaignUriBuilder&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Uri&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;parse&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Constants&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;campaignService&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="na"&gt;buildUpon&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
-        &lt;span class="n"&gt;campaignUriBuilder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appendQueryParameter&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;requestType&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;consumeCoupon&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
-        &lt;span class="n"&gt;campaignUriBuilder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appendQueryParameter&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;pageId&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;pageId&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
-        &lt;span class="n"&gt;campaignUriBuilder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appendQueryParameter&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;userId&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;userId&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
-        &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;campaignUriBuilder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;build&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;toString&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
-        &lt;span class="n"&gt;Log&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;m17i&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;URL &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
-        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;UsedDealResponse&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="n"&gt;getRestTemplate&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;getForObject&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;UsedDealResponse&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;Object&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;]);&lt;/span&gt;
-    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="n"&gt;UsedDealResponse&lt;/span&gt; &lt;span class="nf"&gt;loadDataFromNetwork&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="kd"&gt;throws&lt;/span&gt; &lt;span class="n"&gt;Exception&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;Builder&lt;/span&gt; &lt;span class="n"&gt;campaignUriBuilder&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Uri&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;parse&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Constants&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;campaignService&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="na"&gt;buildUpon&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;campaignUriBuilder&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appendQueryParameter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;requestType&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;consumeCoupon&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;campaignUriBuilder&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appendQueryParameter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;pageId&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;pageId&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;campaignUriBuilder&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;appendQueryParameter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;userId&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;userId&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;campaignUriBuilder&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;build&lt;/span&gt;&lt;span class="p"&gt;().&lt;/span&gt;&lt;span class="na"&gt;toString&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;Log&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;m17i&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;URL &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;UsedDealResponse&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;getRestTemplate&lt;/span&gt;&lt;span class="p"&gt;().&lt;/span&gt;&lt;span class="na"&gt;getForObject&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;UsedDealResponse&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;Object&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;and where &lt;code&gt;userId&lt;/code&gt; seems to come from&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="nf"&gt;UseDealsRequest&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;userId&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;pageId&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
-        &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;UsedDealResponse&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
-        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;userId&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;md5&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;userId&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
-        &lt;span class="n"&gt;Log&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;m17i&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;MD5 &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;userId&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
-        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;pageId&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pageId&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="nf"&gt;UseDealsRequest&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;userId&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;pageId&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="kd"&gt;super&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;UsedDealResponse&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;class&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;userId&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;md5&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;userId&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;Log&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;m17i&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;MD5 &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;userId&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;this&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="na"&gt;pageId&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pageId&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -212,7 +562,7 @@ wrong here:&lt;/p&gt;
 &lt;p&gt;This doesn't seem like a super serious issue, but I've given Sibylla knowledge
 about it 2018-08-19 and as common practice I'll give them a 90 days to fix the
 issues I've found. I.e., somewhere after the 17th November 2018 I'll publish
-this article on my site.&lt;/p&gt;</content></entry><entry><title>Timing Attack - Proof of Concept</title><link href="https://jyx.github.io/blog/2014/02/02/timing-attack-proof-of-concept/" rel="alternate"></link><published>2014-02-02T10:38:37+01:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2014-02-02:/blog/2014/02/02/timing-attack-proof-of-concept/</id><summary type="html">&lt;p&gt;You might have heard about timing attacks, but either thought it sounded
+this article on my site.&lt;/p&gt;</content><category term="Hacking"></category></entry><entry><title>Timing Attack - Proof of Concept</title><link href="https://jyx.github.io/timing-attack-proof-of-concept.html" rel="alternate"></link><published>2014-02-02T10:38:37+01:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2014-02-02:/timing-attack-proof-of-concept.html</id><summary type="html">&lt;p&gt;You might have heard about timing attacks, but either thought it sounded
 too complicated to understand or that it is too complicated to actually do such
 an attack. In this post I'm going to give a brief overview of a timing attack
 and also provide some example code that you can play with on your own. Hopefully
@@ -338,4 +688,4 @@ leave a comment.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="/downloads/timing/time_attack_strcmp.c"&gt;time_attack_strcmp.c&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="/downloads/timing/Makefile"&gt;Makefile&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content></entry></feed>
+&lt;/ul&gt;</content><category term="Hacking"></category></entry></feed>
