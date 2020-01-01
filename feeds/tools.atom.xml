@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>joakimbech.com - Tools</title><link href="https://jyx.github.io/" rel="alternate"></link><link href="https://jyx.github.io/feeds/tools.atom.xml" rel="self"></link><id>https://jyx.github.io/</id><updated>2018-08-18T00:00:00+02:00</updated><entry><title>What about Total Commander?</title><link href="https://jyx.github.io/blog/2010/03/12/what-about-total-commander/" rel="alternate"></link><published>2010-03-12T06:26:00+01:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2010-03-12:/blog/2010/03/12/what-about-total-commander/</id><summary type="html">&lt;p&gt;&lt;img alt="Total Commander logo" src="https://jyx.github.io/images/logo_tc.jpg" align="right"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>joakimbech.com - Tools</title><link href="https://jyx.github.io/" rel="alternate"></link><link href="https://jyx.github.io/feeds/tools.atom.xml" rel="self"></link><id>https://jyx.github.io/</id><updated>2018-08-18T00:00:00+02:00</updated><entry><title>What about Total Commander?</title><link href="https://jyx.github.io/what-about-total-commander.html" rel="alternate"></link><published>2010-03-12T06:26:00+01:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2010-03-12:/what-about-total-commander.html</id><summary type="html">&lt;p&gt;&lt;img alt="Total Commander logo" src="https://jyx.github.io/images/logo_tc.jpg" align="right"&gt;
 As my first post on my new site I'll start by talking about Total Commander. I
 have been using this wonderful tools since I think I got my first PC. Back then
 it was called Windows Commander. So what is it that makes this tool so
@@ -43,16 +43,16 @@ between tabs in the panes by pressing &lt;code&gt;CTRL + TAB&lt;/code&gt;.&lt;/p
 &lt;p&gt;There's something called Multi-Rename Tool in Total Commander which is quite
 handy. It can rename a lot of files for you in very few clicks. Imagine you have
 a folder with following files:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    a_foo.zip
-    b_foo.zip
-    c_foo.zip
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;    a_foo.zip&lt;/span&gt;
+&lt;span class="err"&gt;    b_foo.zip&lt;/span&gt;
+&lt;span class="err"&gt;    c_foo.zip&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Now you want to rename those to:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    01_a.zip
-    02_b.zip
-    03_c.zip
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;    01_a.zip&lt;/span&gt;
+&lt;span class="err"&gt;    02_b.zip&lt;/span&gt;
+&lt;span class="err"&gt;    03_c.zip&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -109,4 +109,4 @@ author) deserves money for this great tool and he has given free updates since I
 registered it, which was quite long time ago. As the headline says, I think
 Microsoft should buy this tool/company and replace Windows Explorer with Total
 Commander. Thanks!&lt;/p&gt;
-&lt;p&gt;Link to the official site: http://www.ghisler.com&lt;/p&gt;</content></entry></feed>
+&lt;p&gt;Link to the official site: http://www.ghisler.com&lt;/p&gt;</content><category term="Tools"></category></entry></feed>

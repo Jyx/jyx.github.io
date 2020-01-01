@@ -35,9 +35,8 @@
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="https://jyx.github.io/blog/2012/03/04/perl-pack-and-unpack/" rel="bookmark"
+        <a href="https://jyx.github.io/perl-pack-and-unpack.html" rel="bookmark"
            title="Permalink to Perl pack and unpack">Perl pack and unpack</a></h1>
-<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="Jyxxan">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
     </header>
 
     <div class="entry-content">
@@ -66,14 +65,14 @@ the c struct.</p>
 
 <p>I.e, we have data consisting of 4 bytes of <code>a</code>, 4 bytes of <code>b</code> and 1 byte of
 <code>c</code>. Let us say that the binary files consist of the following values</p>
-<div class="highlight"><pre><span></span>a = 196 dec (0xC4 hex)
-b = 4293844428 dec (0xFFEEDDCC hex)
-c = 75 dec (0x4B hex)
+<div class="highlight"><pre><span></span><span class="err">a = 196 dec (0xC4 hex)</span>
+<span class="err">b = 4293844428 dec (0xFFEEDDCC hex)</span>
+<span class="err">c = 75 dec (0x4B hex)</span>
 </pre></div>
 
 
 <p>then our binary file, <code>binary_data.bin</code> would contain this:</p>
-<div class="highlight"><pre><span></span>c4 00 00 00 cc dd ee ff 4b
+<div class="highlight"><pre><span></span><span class="err">c4 00 00 00 cc dd ee ff 4b</span>
 </pre></div>
 
 
@@ -124,19 +123,6 @@ from the file and print the values both in decimal and hex.</p>
 <span class="nb">close</span> <span class="n">FILE</span><span class="p">;</span>
 </pre></div>
     </div><!-- /.entry-content -->
-    <div class="comments">
-      <h2>Comments !</h2>
-      <div id="disqus_thread"></div>
-      <script type="text/javascript">
-        var disqus_identifier = "blog/2012/03/04/perl-pack-and-unpack/";
-        var disqus_url = "https://jyx.github.io/blog/2012/03/04/perl-pack-and-unpack/";
-        (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//joakimbech.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        })();
-      </script>
-    </div>
 
   </article>
 </section>
@@ -165,14 +151,5 @@ from the file and print the values both in decimal and hex.</p>
                 <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
         </footer><!-- /#contentinfo -->
 
-<script type="text/javascript">
-    var disqus_shortname = 'joakimbech';
-    (function () {
-        var s = document.createElement('script'); s.async = true;
-        s.type = 'text/javascript';
-        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-    }());
-</script>
 </body>
 </html>

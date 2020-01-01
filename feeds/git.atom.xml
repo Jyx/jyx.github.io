@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>joakimbech.com - Git</title><link href="https://jyx.github.io/" rel="alternate"></link><link href="https://jyx.github.io/feeds/git.atom.xml" rel="self"></link><id>https://jyx.github.io/</id><updated>2018-08-18T00:00:00+02:00</updated><entry><title>Apply patches in Git</title><link href="https://jyx.github.io/blog/2012/03/09/apply-patches-in-git/" rel="alternate"></link><published>2012-03-09T00:16:48+01:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2012-03-09:/blog/2012/03/09/apply-patches-in-git/</id><summary type="html">&lt;p&gt;&lt;img alt="git logo" src="https://jyx.github.io/images/git/logo_git.gif" align="right"&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>joakimbech.com - Git</title><link href="https://jyx.github.io/" rel="alternate"></link><link href="https://jyx.github.io/feeds/git.atom.xml" rel="self"></link><id>https://jyx.github.io/</id><updated>2018-08-18T00:00:00+02:00</updated><entry><title>Apply patches in Git</title><link href="https://jyx.github.io/apply-patches-in-git.html" rel="alternate"></link><published>2012-03-09T00:16:48+01:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2012-03-09:/apply-patches-in-git.html</id><summary type="html">&lt;p&gt;&lt;img alt="git logo" src="https://jyx.github.io/images/git/logo_git.gif" align="right"&gt;
 A common task for a developer has is to apply a patch in Git. I have a simple
 scheme that I've been using for a long time and it is very seldom that I get
 into problem nowadays when I'm doing patch work.&lt;/p&gt;
@@ -78,4 +78,4 @@ that the "am" that you started have been resolved.&lt;/p&gt;
 
 
 &lt;p&gt;Patch work done! If you follow this scheme I'm pretty sure that you will do fine
-in the future when applying patches.&lt;/p&gt;</content></entry></feed>
+in the future when applying patches.&lt;/p&gt;</content><category term="Git"></category></entry></feed>

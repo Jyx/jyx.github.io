@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>joakimbech.com - Coding</title><link href="https://jyx.github.io/" rel="alternate"></link><link href="https://jyx.github.io/feeds/coding.atom.xml" rel="self"></link><id>https://jyx.github.io/</id><updated>2018-08-18T00:00:00+02:00</updated><entry><title>Fetchmail and GnuPG</title><link href="https://jyx.github.io/blog/2014/11/01/fetchmail-and-gnupg/" rel="alternate"></link><published>2014-11-01T23:02:03+01:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2014-11-01:/blog/2014/11/01/fetchmail-and-gnupg/</id><summary type="html">&lt;p&gt;When using &lt;a href="http://en.wikipedia.org/wiki/Internet_Message_Access_Protocol"&gt;imap&lt;/a&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>joakimbech.com - Coding</title><link href="https://jyx.github.io/" rel="alternate"></link><link href="https://jyx.github.io/feeds/coding.atom.xml" rel="self"></link><id>https://jyx.github.io/</id><updated>2018-08-18T00:00:00+02:00</updated><entry><title>Fetchmail and GnuPG</title><link href="https://jyx.github.io/fetchmail-and-gnupg.html" rel="alternate"></link><published>2014-11-01T23:02:03+01:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2014-11-01:/fetchmail-and-gnupg.html</id><summary type="html">&lt;p&gt;When using &lt;a href="http://en.wikipedia.org/wiki/Internet_Message_Access_Protocol"&gt;imap&lt;/a&gt;
 in &lt;a href="http://en.wikipedia.org/wiki/Mutt_(email_client)"&gt;mutt&lt;/a&gt; you have the
 possibility to use &lt;code&gt;gpg&lt;/code&gt; to decrypt your password instead of having it as
 plaintext in your configuration file (&lt;code&gt;.muttrc&lt;/code&gt;), see
@@ -45,7 +45,7 @@ rebuild.&lt;/p&gt;
 &lt;h1&gt;Source&lt;/h1&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="/downloads/patch/fetchmail_gpg.patch"&gt;fetchmail_gpg.patch&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</content></entry><entry><title>Perl pack and unpack</title><link href="https://jyx.github.io/blog/2012/03/04/perl-pack-and-unpack/" rel="alternate"></link><published>2012-03-04T00:15:48+01:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2012-03-04:/blog/2012/03/04/perl-pack-and-unpack/</id><summary type="html">&lt;p&gt;&lt;img alt="Perl logo" src="https://jyx.github.io/images/perlpap/logo_perl.jpg" align="right"&gt;
+&lt;/ul&gt;</content><category term="Coding"></category></entry><entry><title>Perl pack and unpack</title><link href="https://jyx.github.io/perl-pack-and-unpack.html" rel="alternate"></link><published>2012-03-04T00:15:48+01:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2012-03-04:/perl-pack-and-unpack.html</id><summary type="html">&lt;p&gt;&lt;img alt="Perl logo" src="https://jyx.github.io/images/perlpap/logo_perl.jpg" align="right"&gt;
 When you have to read and write binary data using Perl, then you preferably use
 the built in functions pack and unpack. With the pack function you will create
 a string which will be different depending on what kind of template you provide
@@ -71,14 +71,14 @@ the c struct.&lt;/p&gt;
 
 &lt;p&gt;I.e, we have data consisting of 4 bytes of &lt;code&gt;a&lt;/code&gt;, 4 bytes of &lt;code&gt;b&lt;/code&gt; and 1 byte of
 &lt;code&gt;c&lt;/code&gt;. Let us say that the binary files consist of the following values&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;a = 196 dec (0xC4 hex)
-b = 4293844428 dec (0xFFEEDDCC hex)
-c = 75 dec (0x4B hex)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;a = 196 dec (0xC4 hex)&lt;/span&gt;
+&lt;span class="err"&gt;b = 4293844428 dec (0xFFEEDDCC hex)&lt;/span&gt;
+&lt;span class="err"&gt;c = 75 dec (0x4B hex)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;then our binary file, &lt;code&gt;binary_data.bin&lt;/code&gt; would contain this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;c4 00 00 00 cc dd ee ff 4b
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;c4 00 00 00 cc dd ee ff 4b&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -127,7 +127,7 @@ from the file and print the values both in decimal and hex.&lt;/p&gt;
 &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="nv"&gt;$data&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="s"&gt;&amp;quot; - &amp;quot;&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="nb"&gt;sprintf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;%x&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nv"&gt;$data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;\n&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
 &lt;span class="nb"&gt;close&lt;/span&gt; &lt;span class="n"&gt;FILE&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</content></entry><entry><title>Using libcurl with minimal dependencies</title><link href="https://jyx.github.io/blog/2010/08/05/using-libcurl-with-minimal-dependencies/" rel="alternate"></link><published>2010-08-05T00:13:15+02:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2010-08-05:/blog/2010/08/05/using-libcurl-with-minimal-dependencies/</id><summary type="html">&lt;p&gt;&lt;img alt="LibCURL logo" src="https://jyx.github.io/images/libcurldep/logo_curl-200x150.jpg" align="right"&gt;
+&lt;/pre&gt;&lt;/div&gt;</content><category term="Coding"></category></entry><entry><title>Using libcurl with minimal dependencies</title><link href="https://jyx.github.io/using-libcurl-with-minimal-dependencies.html" rel="alternate"></link><published>2010-08-05T00:13:15+02:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2010-08-05:/using-libcurl-with-minimal-dependencies.html</id><summary type="html">&lt;p&gt;&lt;img alt="LibCURL logo" src="https://jyx.github.io/images/libcurldep/logo_curl-200x150.jpg" align="right"&gt;
 For an ongoing project I needed to retrieve webpages from my C-program and
 first I used sockets directly, but then I thought why not try use libcurl? If I
 could use libcurl and link it statically then I would get the good features
@@ -232,12 +232,8 @@ dependencies on a machine running Debian (Lenny).&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Have fun with libcurl!&lt;/p&gt;</content></entry><entry><title>My coming iPhone application</title><link href="https://jyx.github.io/blog/2010/04/25/my-coming-iphone-application/" rel="alternate"></link><published>2010-04-25T00:11:17+02:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2010-04-25:/blog/2010/04/25/my-coming-iphone-application/</id><summary type="html">&lt;p&gt;I just want to show an early screenshot of my coming iPhone application that
+&lt;p&gt;Have fun with libcurl!&lt;/p&gt;</content><category term="Coding"></category></entry><entry><title>My coming iPhone application</title><link href="https://jyx.github.io/my-coming-iphone-application.html" rel="alternate"></link><published>2010-04-25T00:11:17+02:00</published><updated>2018-08-18T00:00:00+02:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2010-04-25:/my-coming-iphone-application.html</id><content type="html">&lt;p&gt;I just want to show an early screenshot of my coming iPhone application that
 I'm currently is writing. I do not want to say to much about what purpose it
 should fulfill, but it's kind of a maths / algorithm / practice application.
 Below is screenshot of how it (most likely) will look.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="iPhone" src="https://jyx.github.io/images/iphonebd/bd_preview.jpg" align="left"&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;I just want to show an early screenshot of my coming iPhone application that
-I'm currently is writing. I do not want to say to much about what purpose it
-should fulfill, but it's kind of a maths / algorithm / practice application.
-Below is screenshot of how it (most likely) will look.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="iPhone" src="https://jyx.github.io/images/iphonebd/bd_preview.jpg" align="left"&gt;&lt;/p&gt;</content></entry></feed>
+&lt;p&gt;&lt;img alt="iPhone" src="https://jyx.github.io/images/iphonebd/bd_preview.jpg" align="left"&gt;&lt;/p&gt;</content><category term="Coding"></category></entry></feed>
