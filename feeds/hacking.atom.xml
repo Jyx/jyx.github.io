@@ -6,7 +6,7 @@
 tl;dr; and the &lt;a class="reference internal" href="#summary"&gt;summary&lt;/a&gt; section at the end should be enough to read to get an
 understanding of the issues.&lt;/p&gt;
 &lt;ul class="simple"&gt;
-&lt;li&gt;As of today, 2020-01-02, the issues presented here still haven't been fixed
+&lt;li&gt;As of today, 2020-01-01, the issues presented here still haven't been fixed
 even though initial report date was July 3rd 2019.&lt;/li&gt;
 &lt;li&gt;&lt;a class="reference external" href="https://www.alertalarm.se"&gt;Alert Alarm&lt;/a&gt; is a Swedish company selling burglar alarms (with various
 possibilities for …&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;For Swedish translation of the article please go &lt;a class="reference external" href="alert-alarm-exploit-se.html"&gt;here&lt;/a&gt;.&lt;/p&gt;
@@ -16,7 +16,7 @@ possibilities for …&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;</summary><content type="
 tl;dr; and the &lt;a class="reference internal" href="#summary"&gt;summary&lt;/a&gt; section at the end should be enough to read to get an
 understanding of the issues.&lt;/p&gt;
 &lt;ul class="simple"&gt;
-&lt;li&gt;As of today, 2020-01-02, the issues presented here still haven't been fixed
+&lt;li&gt;As of today, 2020-01-01, the issues presented here still haven't been fixed
 even though initial report date was July 3rd 2019.&lt;/li&gt;
 &lt;li&gt;&lt;a class="reference external" href="https://www.alertalarm.se"&gt;Alert Alarm&lt;/a&gt; is a Swedish company selling burglar alarms (with various
 possibilities for extensions) to home owners. At one of their pages [&lt;a class="reference external" href="https://www.alertalarm.se/hemlarm/garanti-och-funktion.html#1"&gt;1&lt;/a&gt;],
@@ -296,7 +296,7 @@ when we can go public with this. No answer to that.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;November 4th 2019&lt;/strong&gt;: I reach out once again asking for an update.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;November 7th 2019&lt;/strong&gt;: Verisure replies with more or less the same message as
 October 2nd. Again promises to get back to me soon.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;2:nd January 2020&lt;/strong&gt;: I'm cleaning up the write-up and publish all this. The
+&lt;li&gt;&lt;strong&gt;1:st January 2020&lt;/strong&gt;: I'm cleaning up the write-up and publish all this. The
 reason for doing it today is because today it's half a year ago since I
 initially reported the issues to Alert Alarm. If they would have been serious
 about this, it should all have been fixed by now and they should have
