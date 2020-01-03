@@ -1,36 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>joakimbech.com</title><link href="https://jyx.github.io/" rel="alternate"></link><link href="https://jyx.github.io/feeds/all.atom.xml" rel="self"></link><id>https://jyx.github.io/</id><updated>2020-01-02T12:01:00+01:00</updated><entry><title>Alert Alarm SMS exploit - English version</title><link href="https://jyx.github.io/alert-alarm-exploit.html" rel="alternate"></link><published>2020-01-02T12:01:00+01:00</published><updated>2020-01-02T12:01:00+01:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2020-01-02:/alert-alarm-exploit.html</id><summary type="html">&lt;p&gt;For Swedish translation of the article please go &lt;a class="reference external" href="alert-alarm-exploit-se.html"&gt;here&lt;/a&gt;.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>joakimbech.com</title><link href="https://jyx.github.io/" rel="alternate"></link><link href="https://jyx.github.io/feeds/all.atom.xml" rel="self"></link><id>https://jyx.github.io/</id><updated>2020-01-03T17:01:00+01:00</updated><entry><title>Alert Alarm SMS exploit - English version</title><link href="https://jyx.github.io/alert-alarm-exploit.html" rel="alternate"></link><published>2020-01-02T12:01:00+01:00</published><updated>2020-01-03T17:01:00+01:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2020-01-02:/alert-alarm-exploit.html</id><summary type="html">&lt;p&gt;For Swedish translation of the article please go &lt;a class="reference external" href="alert-alarm-exploit-se.html"&gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;div class="section" id="tl-dr"&gt;
 &lt;h2&gt;tl;dr;&lt;/h2&gt;
 &lt;p&gt;For less tech savvy people or people just bored about all the details, this
 tl;dr; and the &lt;a class="reference internal" href="#summary"&gt;summary&lt;/a&gt; section at the end should be enough to read to get an
 understanding of the issues.&lt;/p&gt;
-&lt;ul class="simple"&gt;
-&lt;li&gt;As of today, 2020-01-01, the issues presented here still haven't been fixed
-even though initial report date was July 3rd 2019.&lt;/li&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://www.alertalarm.se"&gt;Alert Alarm&lt;/a&gt; is a Swedish company selling burglar alarms (with various
-possibilities for …&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;For Swedish translation of the article please go &lt;a class="reference external" href="alert-alarm-exploit-se.html"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p class="first"&gt;As of today, 2020-01-01, the issues presented here still haven't been fixed
+even though initial report date was July 3rd 2019.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p class="first"&gt;&lt;a class="reference external" href="https://www.alertalarm.se"&gt;Alert Alarm&lt;/a&gt; is a Swedish company selling burglar alarms (with various
+possibilities for …&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;For Swedish translation of the article please go &lt;a class="reference external" href="alert-alarm-exploit-se.html"&gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;div class="section" id="tl-dr"&gt;
 &lt;h2&gt;tl;dr;&lt;/h2&gt;
 &lt;p&gt;For less tech savvy people or people just bored about all the details, this
 tl;dr; and the &lt;a class="reference internal" href="#summary"&gt;summary&lt;/a&gt; section at the end should be enough to read to get an
 understanding of the issues.&lt;/p&gt;
-&lt;ul class="simple"&gt;
-&lt;li&gt;As of today, 2020-01-01, the issues presented here still haven't been fixed
-even though initial report date was July 3rd 2019.&lt;/li&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://www.alertalarm.se"&gt;Alert Alarm&lt;/a&gt; is a Swedish company selling burglar alarms (with various
+&lt;ul&gt;
+&lt;li&gt;&lt;p class="first"&gt;As of today, 2020-01-01, the issues presented here still haven't been fixed
+even though initial report date was July 3rd 2019.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p class="first"&gt;&lt;a class="reference external" href="https://www.alertalarm.se"&gt;Alert Alarm&lt;/a&gt; is a Swedish company selling burglar alarms (with various
 possibilities for extensions) to home owners. At one of their pages [&lt;a class="reference external" href="https://www.alertalarm.se/hemlarm/garanti-och-funktion.html#1"&gt;1&lt;/a&gt;],
 they are saying that: &amp;quot;Our burglar alarms for home owners communicate using
 an encrypted channel primarily using GSM and secondarily using SMS&amp;quot;.
 Apparently there is also some collaboration with &lt;a class="reference external" href="https://www.verisure.se/"&gt;Verisure&lt;/a&gt; since the people
 that I've been in contact with after reporting the issue to Alert Alarm are
-coming from Verisure.&lt;/li&gt;
-&lt;li&gt;It all started out one morning in June 2019 when I noticed that when turning
+coming from Verisure.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p class="first"&gt;&lt;strong&gt;Added 2020-01-03&lt;/strong&gt;: An update and clarification regarding Verisure's role
+in this, since some people have misunderstood and misinterpreted some of the
+information in this article. Also, people working at Verisure have told me
+that the two burglar alarms solutions, i.e., Alert Alarms and Verisure's
+solution have nothing in common. Note however that these statements are
+&lt;strong&gt;not&lt;/strong&gt; coming directly from Verisure, but instead for people who claim that
+their working for Verisure.&lt;/p&gt;
+&lt;p&gt;So, what have this to do with Verisure otherwise? To start with Alert Alarm
+is a subsidiary to Verisure (see &lt;a class="reference external" href="https://www.merinfo.se/foretag/Alert-Alarm-AB-5566748975/2k2aqzz-hp1t/styrelse-koncern"&gt;merinfo.se&lt;/a&gt;). After my report last summer
+I've &lt;strong&gt;only&lt;/strong&gt; been in contact with Verisure people (people where their email
+address ends with &amp;#64;verisure.com). If it is Verisure employees or Alert Alarm
+employees that have been working with mitigations I cannot tell, likewise I
+cannot say anything about the differences and similarities between their
+different solutions. But what I definitely know is that I've only been in
+contact with people from Verisure.&lt;/p&gt;
+&lt;p&gt;But, to repeat and clarify, &lt;strong&gt;this report is only about Alert Alarms burglar
+alarm and have nothing to do with Verisures burglar alarm&lt;/strong&gt;. If (and when)
+Alert Alarm and/or Verisure want to add information, confirm or make other
+clarifications I'm going to update this article accordingly. My goal is to
+give facts and not distort or give wrong and misleading information. In
+other words, please reach out to my if you find information in this article
+not accurate so I can fix it by using your references and comments. Note
+however that neither Alert Alarm nor Verisure to this date have denied that
+the information in this report is wrong and what can be read here is more or
+less the same as sent to them in July last year.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p class="first"&gt;It all started out one morning in June 2019 when I noticed that when turning
 of the alarm from the App, a SMS was generated where the content was a long
 (hex-)string with random characters. After doing some reverse engineering I
 found out that Alert Alarm have multiple weaknesses in their SMS
 implementation that are used when turning on/off alarms from their Alert Alarm
-app (tested on Android). The weaknesses can be summaries in:&lt;ul&gt;
+app (tested on Android). The weaknesses can be summaries in:&lt;/p&gt;
+&lt;ul class="simple"&gt;
 &lt;li&gt;Crypto algorithm in use is plain AES-CBC which is &lt;a class="reference external" href="https://en.wikipedia.org/wiki/Malleability_(cryptography)"&gt;malleable&lt;/a&gt;.&lt;/li&gt;
 &lt;li&gt;No integrity protection of the encrypted messages.&lt;/li&gt;
 &lt;li&gt;Heavily reduced key space, from 128-bits to 9999 keys.&lt;/li&gt;
@@ -40,18 +72,20 @@ the Alert Alarm server.&lt;/li&gt;
 &lt;li&gt;No key exchange protocol in use (like Diffie Hellman for example).&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;This makes the security of the implementation very fragile, since all it
+&lt;li&gt;&lt;p class="first"&gt;This makes the security of the implementation very fragile, since all it
 takes for a rouge user is to get hold of a &lt;strong&gt;single&lt;/strong&gt; SMS generated by the
 Alert Alarm app to be able to gain access to someones house. I.e., when the
 attacker got that he can easily figure out the code used to turn on/off the
 burglar alarm. Using free services one can send &lt;a class="reference external" href="https://www.google.com/search?q=send+spoofed+sms&amp;amp;oq=send+spoofed+sms"&gt;spoofed SMS&lt;/a&gt; with manually
 crafted data and then it's just to enter the victims house and no alarm will
 go off. Alternatively a thief can break into the house and just simply enter
-the code to turn off the alarm as the homeowner would do.&lt;/li&gt;
-&lt;li&gt;On this page, one can find examples and a script that can decrypt Alert Alarm
+the code to turn off the alarm as the homeowner would do.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p class="first"&gt;On this page, one can find examples and a script that can decrypt Alert Alarm
 SMSes and also create valid Alert Alarm SMSes. The script is also capable of
 finding a key using a brute force attack and it's also possible to flip bits
-to change the original intention of the SMS.&lt;/li&gt;
+to change the original intention of the SMS.&lt;/p&gt;
+&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class="line-block"&gt;
 &lt;div class="line"&gt;&lt;br /&gt;&lt;/div&gt;
@@ -301,6 +335,8 @@ reason for doing it today is because today it's half a year ago since I
 initially reported the issues to Alert Alarm. If they would have been serious
 about this, it should all have been fixed by now and they should have
 reconnected better with me.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;3:rd January 2020&lt;/strong&gt;: Updating the article with clarification regarding Alert
+Alarm's vs Verisure's role in this.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class="line-block"&gt;
 &lt;div class="line"&gt;&lt;br /&gt;&lt;/div&gt;
@@ -349,33 +385,63 @@ for the last 12 years. I did the work above on my spare time, but otherwise I
 head the security team at a company called &lt;a class="reference external" href="https://www.linaro.org/"&gt;Linaro&lt;/a&gt; where I've been working for
 a little bit more than 6 years.&lt;/p&gt;
 &lt;/div&gt;
-</content><category term="Hacking"></category></entry><entry><title>Alert Alarm SMS exploit - Svensk version</title><link href="https://jyx.github.io/alert-alarm-exploit-se.html" rel="alternate"></link><published>2020-01-02T12:01:00+01:00</published><updated>2020-01-02T12:01:00+01:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2020-01-02:/alert-alarm-exploit-se.html</id><summary type="html">&lt;p&gt;For English translation of the article please go &lt;a class="reference external" href="alert-alarm-exploit.html"&gt;here&lt;/a&gt;.&lt;/p&gt;
+</content><category term="Hacking"></category></entry><entry><title>Alert Alarm SMS exploit - Svensk version</title><link href="https://jyx.github.io/alert-alarm-exploit-se.html" rel="alternate"></link><published>2020-01-02T12:01:00+01:00</published><updated>2020-01-03T17:01:00+01:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2020-01-02:/alert-alarm-exploit-se.html</id><summary type="html">&lt;p&gt;For English translation of the article please go &lt;a class="reference external" href="alert-alarm-exploit.html"&gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;För mindre teknikintresserade personer eller för er som inte bryr sig mycket
 om detaljerna räcker det förmodligen att läsa denna introduktion och sektionen
 &lt;a class="reference internal" href="#sammanfatting"&gt;Sammanfatting&lt;/a&gt; sist i artikeln för att få ett hum om vad det rör sig om.&lt;/p&gt;
-&lt;ul class="simple"&gt;
-&lt;li&gt;Testat idag 2020-01-01 så är det som presenteras här fortfarande ej åtgärdat,
+&lt;ul&gt;
+&lt;li&gt;&lt;p class="first"&gt;Testat idag 2020-01-01 så är det som presenteras här fortfarande ej åtgärdat,
 dvs bristerna som nämns här finns fortfarande i Alert Alarms system trots att
-det rapporterades till dem den 3:e Juli …&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;For English translation of the article please go &lt;a class="reference external" href="alert-alarm-exploit.html"&gt;here&lt;/a&gt;.&lt;/p&gt;
+det rapporterades till dem den 3:e Juli …&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;For English translation of the article please go &lt;a class="reference external" href="alert-alarm-exploit.html"&gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;För mindre teknikintresserade personer eller för er som inte bryr sig mycket
 om detaljerna räcker det förmodligen att läsa denna introduktion och sektionen
 &lt;a class="reference internal" href="#sammanfatting"&gt;Sammanfatting&lt;/a&gt; sist i artikeln för att få ett hum om vad det rör sig om.&lt;/p&gt;
-&lt;ul class="simple"&gt;
-&lt;li&gt;Testat idag 2020-01-01 så är det som presenteras här fortfarande ej åtgärdat,
+&lt;ul&gt;
+&lt;li&gt;&lt;p class="first"&gt;Testat idag 2020-01-01 så är det som presenteras här fortfarande ej åtgärdat,
 dvs bristerna som nämns här finns fortfarande i Alert Alarms system trots att
-det rapporterades till dem den 3:e Juli 2019.&lt;/li&gt;
-&lt;li&gt;&lt;a class="reference external" href="https://www.alertalarm.se"&gt;Alert Alarm&lt;/a&gt; är ett svenskt företag som säljer inbrottslarm till
+det rapporterades till dem den 3:e Juli 2019.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p class="first"&gt;&lt;a class="reference external" href="https://www.alertalarm.se"&gt;Alert Alarm&lt;/a&gt; är ett svenskt företag som säljer inbrottslarm till
 privatpersoner och villaägare. På en av deras sidor kan man läsa [&lt;a class="reference external" href="https://www.alertalarm.se/hemlarm/garanti-och-funktion.html#1"&gt;1&lt;/a&gt;] att:
 &amp;quot;våra hemlarm kommunicerar krypterat över GSM i första hand och med SMS i
 andra hand&amp;quot;. Utöver det verkar det som att det finns en koppling mellan Alert
 Alarm och &lt;a class="reference external" href="https://www.verisure.se/"&gt;Verisure&lt;/a&gt; eftersom de personer jag varit i kontakt med efter
-första rapportering kommer från Verisure.&lt;/li&gt;
-&lt;li&gt;Allt började med att jag en morgon i Juni 2019 märkte att när man larmar av
+första rapportering kommer från Verisure.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p class="first"&gt;&lt;strong&gt;Tillagt 2020-01-03:&lt;/strong&gt;: Ett förtydligande gällande Verisure's roll i det
+hela eftersom vissa personer dels misstolkat informationen här, dels har
+personer som jobbar på Verisure sagt att de två larm-lösningarna, dvs Alert
+Alarms och Verisures, inte har något gemensamt. Notera dock ett dessa
+uttalande &lt;strong&gt;inte&lt;/strong&gt; kommer direkt ifrån Verisure utan från personer på forum
+så säger sig jobba hos Verisure.&lt;/p&gt;
+&lt;p&gt;Vad har då detta att göra med Verisure i övrigt? Alert Alarm är ett
+dotterbolag till Verisure (se &lt;a class="reference external" href="https://www.merinfo.se/foretag/Alert-Alarm-AB-5566748975/2k2aqzz-hp1t/styrelse-koncern"&gt;merinfo.se&lt;/a&gt;). Efter att jag hade rapporterat
+detta i somras har jag &lt;strong&gt;enbart&lt;/strong&gt; varit i kontakt med Verisure (personer
+vars email slutar på &amp;#64;verisure.com). Om det är Verisure anställda eller
+Alert Alarm anställda som jobbat med att försöka lösa
+svagheterna/säkerhetshålen det vet jag inte, likaså vet jag inget om
+skillnader eller likheter mellan deras lösningar. Men det jag vet är att jag
+enbart varit i kontakt med folk från Verisure.&lt;/p&gt;
+&lt;p&gt;Men för att repetera och göra det extra tydligt, &lt;strong&gt;denna rapport rör
+endast Alert Alarms larmlösning och rör inte Verisures larmlösning&lt;/strong&gt;. Om
+(och när?) Alert Alarm och/eller Verisure vill göra tillägg, bekräftelser
+eller förtydligande, så kommer jag att uppdatera denna artikel. Mitt mål är
+att ge fakta och inte förvränga eller ge felaktiga uppgifter. Med andra ord
+vänligen hör av er om ni finner att det som står i denna artikel inte
+stämmer eller är missvisande, så kommer jag att åtgärda det med era
+referenser och kommentarer. Ingen ifrån vare sig Alert Alarm eller Verisure
+har till dags datum dementerat det som står här och denna artikel är i
+princip densamma som skickades till dem i Juli 2019.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p class="first"&gt;Allt började med att jag en morgon i Juni 2019 märkte att när man larmar av
 från Alert Alarms app så genereras ett SMS med en (hex-)sträng, dvs en 64
 tecken lång sträng med siffror och bokstäver. Efter att jag gjort lite
 &amp;quot;reverse engineering&amp;quot; av appen så hittade jag ett flertal säkerhetssvagheter
 relaterat till deras sätt att larma på/av systemet från deras Android app.
-Dessa svagheter kan summeras i:&lt;ul&gt;
+Dessa svagheter kan summeras i:&lt;/p&gt;
+&lt;ul class="simple"&gt;
 &lt;li&gt;Krypteringen består av ren AES-CBC som är &lt;a class="reference external" href="https://en.wikipedia.org/wiki/Malleability_(cryptography)"&gt;malleable&lt;/a&gt; (hittar ingen bra
 svensk översättning), vilket innebär att man kan ändra den krypterade texten
 och det slår i sin tur på den dekrypterade texten.&lt;/li&gt;
@@ -390,19 +456,21 @@ varit önskvärt i ett sånt här scenario.&lt;/li&gt;
 komma överens om en unik krypteringsnyckel.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;Sammantaget gör detta att Alert Alarms system är ganska sårbart. Allt som
+&lt;li&gt;&lt;p class="first"&gt;Sammantaget gör detta att Alert Alarms system är ganska sårbart. Allt som
 krävs från en illvillig person är att få tag på ett endaste krypterat
 meddelande för att enkelt lista ut koden för att larma av ett hus. Antingen
 kan man skicka ett manuellt skapat och fejkat &amp;quot;larma av SMS&amp;quot; (Google &lt;a class="reference external" href="https://www.google.com/search?q=send+spoofed+sms&amp;amp;oq=send+spoofed+sms"&gt;spoofed
 SMS&lt;/a&gt;) som ser ut att komma från användaren. Eller kan en inbrottstjuv bryta
 upp dörren och slå in koden undertiden som larmet räknar ner, dvs slå in koden
-precis som ägaren till larmet skulle gjort.&lt;/li&gt;
-&lt;li&gt;På resten av denna sida finns exempel och skript som kan dekryptera Alert
+precis som ägaren till larmet skulle gjort.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p class="first"&gt;På resten av denna sida finns exempel och skript som kan dekryptera Alert
 Alarm SMS, skapa giltiga Alert Alarm SMS, hitta den korrekta koden för att
 larma av/på genom att göra en s.k. &amp;quot;bruteforce&amp;quot; attack. En sådan attack tar
 mindre än en sekund att utföra på Alert Alarms system. Det är även möjligt att
 vända på bitar så att ett meddelande får en annan betydelse än vad var menat
-till att börja med.&lt;/li&gt;
+till att börja med.&lt;/p&gt;
+&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class="line-block"&gt;
 &lt;div class="line"&gt;&lt;br /&gt;&lt;/div&gt;
@@ -417,7 +485,7 @@ vårt hemlarm).&lt;/p&gt;
 &lt;img alt="SMS image" src="/images/alert/aa_initial_sms.png" /&gt;
 &lt;/div&gt;
 &lt;p&gt;Efter att ha spenderat resten av morgonen med att &amp;quot;reverse engineera&amp;quot; SMS delen
-i Alert Alarm appen kom jag from till att den 64 byte långa hexsträngen består
+i Alert Alarm appen kom jag fram till att den 64 byte långa hexsträngen består
 av två delar. Den första delen är &lt;a class="reference external" href="https://en.wikipedia.org/wiki/Initialization_vector"&gt;IV&lt;/a&gt;'t som är en slumpmässig hexsträng (skapas
 av &lt;tt class="docutils literal"&gt;SHA1PRNG&lt;/tt&gt;) och den andra delen är det faktiska meddelandet.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;   32 bytes   32 bytes
@@ -658,6 +726,8 @@ allt. Anledningen att jag gör det denna dag är att det är ett halvår sen jag
 rapporterade säkerhetshålen och hade man menat allvar med att lösa dem, så
 hade man både löst problemen vid det här laget samt återkopplat bättre till
 mig.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;3:e Januari 2020&lt;/strong&gt;: Uppdaterar artikeln för att klaragöra Verisure vs Alert
+Alarms roll i det hela.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class="line-block"&gt;
 &lt;div class="line"&gt;&lt;br /&gt;&lt;/div&gt;
