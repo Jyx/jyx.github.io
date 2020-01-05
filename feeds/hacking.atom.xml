@@ -328,7 +328,7 @@ answers to some of it here.&lt;/p&gt;
 good I maybe was too quick on that. However, if the company offer such a
 service/feature then they must carefully architect the solution in a way
 that it is secure and that man in the middle cannot make any sense out of
-the data that is send between the app and the one receiving the SMS.&lt;/li&gt;
+the data that is sent between the app and the one receiving the SMS.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;li&gt;Q: Will the one making a brute force SMS attack get any notification when the
