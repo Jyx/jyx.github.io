@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>joakimbech.com - Hacking</title><link href="https://jyx.github.io/" rel="alternate"></link><link href="https://jyx.github.io/feeds/hacking.atom.xml" rel="self"></link><id>https://jyx.github.io/</id><updated>2020-01-03T17:01:00+01:00</updated><entry><title>Alert Alarm SMS exploit - English version</title><link href="https://jyx.github.io/alert-alarm-exploit.html" rel="alternate"></link><published>2020-01-02T12:01:00+01:00</published><updated>2020-01-03T17:01:00+01:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2020-01-02:/alert-alarm-exploit.html</id><summary type="html">&lt;p&gt;For Swedish translation of the article please go &lt;a class="reference external" href="alert-alarm-exploit-se.html"&gt;here&lt;/a&gt;.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>joakimbech.com - Hacking</title><link href="https://jyx.github.io/" rel="alternate"></link><link href="https://jyx.github.io/feeds/hacking.atom.xml" rel="self"></link><id>https://jyx.github.io/</id><updated>2020-01-05T15:01:00+01:00</updated><entry><title>Alert Alarm SMS exploit - English version</title><link href="https://jyx.github.io/alert-alarm-exploit.html" rel="alternate"></link><published>2020-01-02T12:01:00+01:00</published><updated>2020-01-05T15:01:00+01:00</updated><author><name>Joakim Bech</name></author><id>tag:jyx.github.io,2020-01-02:/alert-alarm-exploit.html</id><summary type="html">&lt;p&gt;For Swedish translation of the article please go &lt;a class="reference external" href="alert-alarm-exploit-se.html"&gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;div class="section" id="tl-dr"&gt;
 &lt;h2&gt;tl;dr;&lt;/h2&gt;
 &lt;p&gt;For less tech savvy people or people just bored about all the details, this
@@ -61,7 +61,7 @@ of the alarm from the App, a SMS was generated where the content was a long
 (hex-)string with random characters. After doing some reverse engineering I
 found out that Alert Alarm have multiple weaknesses in their SMS
 implementation that are used when turning on/off alarms from their Alert Alarm
-app (tested on Android). The weaknesses can be summaries in:&lt;/p&gt;
+app (tested on Android). The weaknesses can be summarised in:&lt;/p&gt;
 &lt;ul class="simple"&gt;
 &lt;li&gt;Crypto algorithm in use is plain AES-CBC which is &lt;a class="reference external" href="https://en.wikipedia.org/wiki/Malleability_(cryptography)"&gt;malleable&lt;/a&gt;.&lt;/li&gt;
 &lt;li&gt;No integrity protection of the encrypted messages.&lt;/li&gt;
@@ -159,7 +159,10 @@ can be sent as an SMS and that will either turn on or turn off the alarm. &amp;q
 here is the code that you want to use. If you own an Alert Alarm system, then
 you can try this, put your own and known code after &amp;quot;-p&amp;quot; and use either &amp;quot;--on&amp;quot;
 or &amp;quot;--off&amp;quot; to arm or disarm the alarm. Then take the crafted SMS and send it as
-an SMS to +467190009972713.&lt;/p&gt;
+an SMS to the alarm unit to attack.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Added 2020-01-05&lt;/strong&gt;: After getting feedback from other Alert Alert users, we
+can conclude that there is no central SMS number, instead it seems like it's
+main unit itself that receives the SMS directly.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ./aaxploit.py -e -p &lt;span class="m"&gt;1234&lt;/span&gt;
 &lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: Msg:              &lt;span class="m"&gt;32303131393630333038343830310000&lt;/span&gt;
 &lt;span class="o"&gt;[&lt;/span&gt;INFO&lt;span class="o"&gt;]&lt;/span&gt;: IV:               d244e98aed6f2dfbf991485e5e43cd56
@@ -277,6 +280,11 @@ data in the SMS isn't too old.&lt;/li&gt;
 9999 SMS in a short amount of time and thereby gain access to someones house?&lt;ul&gt;
 &lt;li&gt;I haven't got this confirmed, but it's certainly something one easily could
 try.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Added 2020-01-05&lt;/strong&gt;: Since other Alert Alarm users have helped confirming
+that it's not a single number for SMSes going to a common server, this
+attack in practice becomes infeasible, since it'd require too many SMSes to
+be able to practically make an attack. However, don't mix up this brute
+force attack with the brute force attack on the SMS (two different attacks).&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
@@ -296,9 +304,53 @@ and send out a request (using the data connection over GSM) to the home
 owners main unit controlling the alarm.&lt;/li&gt;
 &lt;li&gt;When the alarm has been armed/disarmed, the Android app gets a
 notification of the updated status.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Added 2020-01-05&lt;/strong&gt;: Since other Alert Alarm users have helped confirming
+that there is no single SMS service, the reasoning above cannot be correct.
+It's probably instead SMS -&amp;gt; Main unit -&amp;gt; Change status -&amp;gt; Inform Alert Alarm
+server -&amp;gt; Notification in the app. But, it's impossible to tell whether this
+is how it really works, I can just speculate on my own, Alert Alarm would need
+to confirm.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Why on earth use SMS at all? Doesn't all mobile phone / users have a data
 connection in 2019?&lt;/p&gt;
+&lt;div class="line-block"&gt;
+&lt;div class="line"&gt;&lt;br /&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="questions-and-statements-on-forums-etc"&gt;
+&lt;h2&gt;Questions and statements on forums etc&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Added 2020-01-05&lt;/strong&gt;: After going public with this people have started asking
+questions directly to me and in forums etc, I will try to give my view and
+answers to some of it here.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;Q: SMS is actually a feature, since there are areas without data coverage.&lt;ul&gt;
+&lt;li&gt;A: I agree on that part. Living in a country where data coverage is very
+good I maybe was too quick on that. However, if the company offer such a
+service/feature then they must carefully architect the solution in a way
+that it is secure and that man in the middle cannot make any sense out of
+the data that is send between the app and the one receiving the SMS.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Q: Will the one making a brute force SMS attack get any notification when the
+correct number has been found?&lt;ul&gt;
+&lt;li&gt;A: No, it's just a regular SMS sent out, so in an attack one would send all
+messages needed to cover the entire key space (9999 keys). However as stated
+in other places in this article after the 2020-01-05 update, this brute
+force attack will be practically infeasible since you'd need to brute force
+the SMS phone number also.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Q: A burglar alarm isn't at the end of the day that useful, at best it'll
+put some stress on the thieves and maybe the thieves goes to the neighbors
+with no burglar alarm instead of trying to get into your house.&lt;ul&gt;
+&lt;li&gt;A: I think I mostly agree on that. If police and/or a guard would have shown
+up within minutes after the alarm goes of, then it'd be really useful. But I
+think most people with me knows that it can take quite a bit of time until
+someone actually shows up. However today alarms have many other features
+that can be useful to home owners, fire alarm, leaking water etc.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
 &lt;div class="line-block"&gt;
 &lt;div class="line"&gt;&lt;br /&gt;&lt;/div&gt;
 &lt;/div&gt;
@@ -330,6 +382,14 @@ when we can go public with this. No answer to that.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;November 4th 2019&lt;/strong&gt;: I reach out once again asking for an update.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;November 7th 2019&lt;/strong&gt;: Verisure replies with more or less the same message as
 October 2nd. Again promises to get back to me soon.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="line-block"&gt;
+&lt;div class="line"&gt;&lt;br /&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="section" id="page-updates"&gt;
+&lt;h2&gt;Page updates&lt;/h2&gt;
+&lt;ul class="simple"&gt;
 &lt;li&gt;&lt;strong&gt;1:st January 2020&lt;/strong&gt;: I'm cleaning up the write-up and publish all this. The
 reason for doing it today is because today it's half a year ago since I
 initially reported the issues to Alert Alarm. If they would have been serious
@@ -337,6 +397,9 @@ about this, it should all have been fixed by now and they should have
 reconnected better with me.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;3:rd January 2020&lt;/strong&gt;: Updating the article with clarification regarding Alert
 Alarm's vs Verisure's role in this.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;5:th January 2020&lt;/strong&gt;: Updating the article with additional information
+regarding the SMS attack and a new section about questions that have been
+asked on forums etc.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class="line-block"&gt;
 &lt;div class="line"&gt;&lt;br /&gt;&lt;/div&gt;
@@ -369,6 +432,20 @@ owner is probably a bit challenging, so it's probably a bit hard to actually do
 the attack (don't leave your phone unattended!). On the other hand if Alert
 Alarm &lt;strong&gt;doesn't&lt;/strong&gt; notice brute force attacks on the receiving side of the SMS,
 then it's fairly easy to put this attack into practice.&lt;/p&gt;
+&lt;ul class="simple"&gt;
+&lt;li&gt;&lt;strong&gt;Added 2020-01-05&lt;/strong&gt;: Since other Alert Alarm users have helped confirming
+that it's not a single and common SMS number that receives the alarm SMSes,
+the brute force attack where one needs to send multiple SMSes isn't
+practically doable, since it'd require too many SMSes to be sent out. So my
+conclusion is that Alert Alarm owners doesn't have to worry about that
+particular attack, it's simply too complicated to put the attack in practice.
+However, it should not be mixed with the brute force attack on the SMS to get
+the pin code. That still works as described. I.e., a man in the middle can
+figure out a home owners code to turn on/off the alarm. What we would like to
+see is that the protocol is designed in such a way that the man in middle gets
+&lt;strong&gt;no&lt;/strong&gt; useful information out for the data sent between the phone and the
+receiver of the data/SMS.&lt;/li&gt;
+&lt;/ul&gt;
 &lt;p&gt;No matter, the flaws identified are quite severe and gives an attacker several
 ways to attack the system. Attacks that shouldn't be possible to do that easy on
 a system meant to protect our homes. Me and the other customers of Alert Alarm
